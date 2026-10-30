@@ -1,0 +1,452 @@
+     1→# AGENT STATE — read me first / وضعیت پروژه (برای ایجنت ادامه‌دهنده)
+     2→
+     3→> **فارسی:** این فایل ساعتِ پروژه است. قبل از هر کاری این را کامل بخوان، بعد `ROADMAP.md`، بعد مستندات `docs/`. بعد از هر مایل‌استون این فایل را به‌روز کن، commit و push کن. اگر همه‌ی مایل‌استون‌ها تمام شد، cron را حذف کن و `FINAL_REPORT.md` بنویس.
+     4→
+     5→> **English:** This file is the project's clock. Read it fully, then `ROADMAP.md`, then `docs/`.
+     6→> Update it after every milestone, then commit + push. When ALL milestones are done: delete the
+     7→> cron job and write `FINAL_REPORT.md`.
+     8→
+     9→## Snapshot (updated 2026-10-30)
+    10→
+    11→| Field | Value |
+    12→|---|---|
+    13→| Project | Kiara — language learning with a living personal skill tree |
+    14→| Root | `/home/z/my-project` |
+    15→| Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
+    16→| Current milestone | **M0–M8 ALL ✅ DONE → next: M9 (final milestone)** |
+    17→| Tests | 224/224 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+    18→| Lint | clean (`bun run lint`); `src/` also fully typechecks (`bunx tsc --noEmit` — examples/skills/scripts noise predates M8) |
+    19→| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded (world rows; user-generated plantings add rows on top); demo user has a seeded tree + M7 seeds + **M8: `en:word:recommend` mastered via live confirmatory probe; `en:word:journey` failed a probe honestly (7d retry)** |
+    20→| Dev server | auto-runs on :3000 (no schema push in M8 — no restart needed) |
+    21→
+    22→## Environment & secrets (CRITICAL RULES)
+    23→
+    24→- Keys live in `.env` (gitignored): `XAI_API_KEY` (xAI), plus `XAI_TUTOR_MODEL=grok-4.7`,
+    25→  `XAI_ANALYST_MODEL=grok-4.20-0309-non-reasoning` (both verified live).
+    26→- **NEVER commit `.env`, `.git-credentials`, or any key.** Before every push run the leak
+    27→  check from the continuation prompt (regex: `xai` prefix + dash, `ghp` + underscore,
+    28→  `sk` + dash — written here with bracketed separators so this doc never self-matches):
+    29→  `git diff --cached | grep -iE "xai[-]…|ghp[_]…|sk[-]…" && echo "SECRET LEAK — ABORT" || echo clean`
+    30→- Git push works via credential helper already configured (`.git-credentials`, outside git).
+    31→- xAI API: OpenAI-compatible. `POST https://api.x.ai/v1/chat/completions`,
+    32→  `GET https://api.x.ai/v1/models`. Verified models include: grok-4.7, grok-4.6, grok-4.5,
+    33→  grok-4.3, grok-4.20-0309-non-reasoning, grok-4.20-0309-reasoning.
+    34→- Sandbox UI constraint: **the user only sees the `/` route** — build the product UI as ONE
+    35→  route with client-side view switching (chat / tree / seed inbox / settings tabs via
+    36→  zustand). `/api/*` routes are fine. Do NOT run `bun run build`. Check `dev.log` after changes.
+    37→
+    38→## How to work (the loop)
+    39→
+    40→1. Read `ROADMAP.md` → first unchecked milestone in order.
+    41→2. Read the matching acceptance tests in `docs/05-roadmap.md` (they are the definition of done).
+    42→3. Implement (follow `docs/01` stack + `docs/02` schema + `docs/03` engine rules + `docs/04` prompts).
+    43→4. `bun run test` + `bun run lint` must be green. Never weaken a test to pass it — fix the code.
+    44→5. Update `ROADMAP.md` checkboxes + this file's Snapshot/sections.
+    45→6. Secret-leak check (command above), then `git add -A && git commit -m "M<n>: <what>" && git push`.
+    46→7. Verify the cron job still exists (`cron` tool, action: list). If missing and work remains → recreate it (see "Cron self-healing" below).
+    47→
+    48→## Architecture invariants (never violate)
+    49→
+    50→1. `src/lib/engine/**` stays PURE: no prisma/next/llm imports, no ambient clock
+    51→   (`tests/engine/purity.test.ts` enforces this).
+    52→2. LLM output → zod + `isKnownNodeId()` whitelist → Evidence rows → deterministic engine →
+    53→   state. LLM NEVER writes state directly.
+    54→3. Evidence is append-only; users can dispute (excluded from aggregation), never delete.
+    55→4. Mastery only via delayed test (docs/03 §A6); `assumed_known` ≠ mastered.
+    56→5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
+    57→6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
+    58→
+    59→## Current state of the code (M0–M8 delivered)
+    60→
+    61→- `docs/00–05` complete design (bilingual). `README.md` with quickstart.
+    62→- `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
+    63→  ChatSession, Turn, Seed, NodePosition, MetricEvent, User, UserSession).
+    64→- `src/lib/engine/` — pure deterministic core, 81 tests total:
+    65→  `types.ts` (all unions/contracts + CefrBand + placement contracts) · `config.ts` (every constant,
+    66→  documented) · `grading.ts` (evidence→aggregate→FSRS rating; gap vs slip) · `fsrs.ts` (ts-fsrs v6
+    67→  wrapper) · `state.ts` (applySessionReview, display states, propagation, root-cause,
+    68→  mastery/revocation, fading) · `growth.ts` (repeated_error trigger, scoring, cap) · `brief.ts`
+    69→  (session brief + planner mix + i+1 budget) · `graph.ts` (availability/frontier/tier) ·
+    70→  `placement.ts` (M1: seeded quiz pools, 2-up/1-down ladder, assumed_known writer — never mastered).
+    71→- `src/lib/graph/load.ts` — in-memory graph cache + node-id whitelist.
+    72→- `data/graph-en/` — **M1: 268 nodes / 205 edges** (189 words A1–B1 with fa glosses + freq ranks,
+    73→  25 chunks, 21 grammar patterns, 15 pragmatic skills, 12 fa→en error patterns, 6 clusters).
+    74→  Content authored via `scripts/graph_data_*.py` → `scripts/build-graph-data.py` (validates ids,
+    75→  endpoints, dupes, DAG, quiz-ability → writes JSON). `scripts/seed-graph.ts` — idempotent,
+    76→  two-pass (all nodes → all edges) inside one transaction.
+    77→- `src/app/api/graph/stats/route.ts` — GET counts by type/cefr (live-verified on :3000).
+    78→- `src/lib/auth/` — **M2**: `password.ts` (bcryptjs cost 10) · `session.ts` (30-day cookie
+    79→  sessions on `UserSession`; framework-free `Request`/`Response` — NO `next/headers`, so routes
+    80→  are directly unit-testable; `requireUser` guard; `toPublicUser` never leaks passwordHash) ·
+    81→  `schemas.ts` (zod v4: register/login/onboarding; consentLlm boolean → `consentLlmAt` timestamp).
+    82→- API routes (all live-verified on :3000): `POST /api/auth/register|login|logout`, `GET /api/auth/me`,
+    83→  `GET|PATCH /api/onboarding` (guarded, 401). `GET /api/graph/stats` stays PUBLIC (world metadata,
+    84→  no user data). New user-scoped routes MUST use `requireUser` (M3 chat/tree included).
+    85→- `scripts/seed-demo-user.ts` — dev demo login `demo@kiara.app` / `kiara-demo-1234` (dev-only).
+    86→- Tests: `tests/engine/` (53+8 i+1) + `tests/graph/integrity.test.ts` (9) + `tests/api/graph-stats.test.ts`
+    87→  + `tests/db/seed-idempotency.test.ts` (runs the real seeder twice against SQLite)
+    88→  + `tests/api/auth-roundtrip.test.ts` (9: round-trip, consent timestamp, guards, 400/401/409)
+    89→  + **M3**: `tests/engine/iplus1.test.ts` (8) · `tests/llm/prompts.test.ts` (7) ·
+    90→  `tests/llm/xai-client.test.ts` (7: retry/timeout/fail-fast/model routing, injected fetch) ·
+    91→  `tests/session/brief-builder.test.ts` (5: sections, whitelist, ≤1500 tokens, boundToBudget) ·
+    92→  `tests/api/session-flow.test.ts` (8: start/turn/guards/rewrite/fallback/summary — mocked LLM
+    93→  via `vi.mock('@/lib/llm/xai')`) · `tests/llm/live-smoke.test.ts` (1, runs only with
+    94→  `KIARA_LIVE_SMOKE=1` — real grok-4.7 in-character check).
+    95→  + **M4**: `tests/llm/analyst-validate.test.ts` (10: schema/clamp/hallucination/fences/repair) ·
+    96→  `tests/llm/analyst-golden.test.ts` (4: ≥20 turns, ids real, accuracy ≥85% = 100%) ·
+    97→  `tests/db/session-pipeline.test.ts` (6: S1–S8 through the REAL DB incl. disputed-exclusion,
+    98→  propagation boost, root-cause routing, flight seed proposal + dedupe, summary shape) ·
+    99→  `tests/api/evidence-dispute.test.ts` (4: flag+reason, append-only, exclusion → no state,
+   100→  undisputed control) · `tests/api/session-end.test.ts` (6: guards, summary persistence,
+   101→  409 idempotency, per-turn evidence wiring, analyst_parse_fail metric) ·
+   102→  `tests/engine/growth.test.ts` (+1 BUGFIX regression: track_pattern novelty).
+   103→- `scripts/fsrs-probe.ts` — produces the REAL numeric tables used in docs/03.
+   104→- `src/lib/engine/iplus1.ts` — **M3**: pure i+1 checker (tokenizer, light lemmatizer,
+   105→  irregular map, function/discourse-word exemptions, proper-noun & number exemption,
+   106→  tiny-reply guard ≤3 content words). Violation = rate > 0.1 on >3 content words.
+   107→- `src/lib/llm/xai.ts` — **M3**: OpenAI-compatible fetch client; 30 s AbortController timeout,
+   108→  ONE retry on network/429/5xx (400 ms backoff), injectable `fetchImpl`/`sleep`/`env` for tests;
+   109→  models from `XAI_TUTOR_MODEL` / `XAI_ANALYST_MODEL`; never throws (discriminated result).
+   110→- `src/lib/llm/prompts.ts` — **M3**: docs/04 tutor template VERBATIM + tiny deterministic
+   111→  renderer (`{{#each}}` blocks), `wrapUserMessage` injection defense (<<<USER … >>>),
+   112→  rewrite messages (unknown list fed back), deterministic fallback replies, rolling-summary prompt.
+   113→- `src/lib/session/` — **M3** wiring layer (imports db + engine + llm):
+   114→  `scenarios.ts` (12 goal-tagged roleplay scenarios, FNV-1a deterministic pick per user+day,
+   115→  mustElicit whitelist-resolved) · `brief-builder.ts` (states→knownBands/sampleLemmas,
+   116→  rankWeakNodes dedupe, frontier by freq rank, error patterns from last-30d confident errors
+   117→  with Persian descs + faDigits, `boundToBudget` trims error-patterns→weak→frontier→lemmas,
+   118→  `getKnownLemmas` for the i+1 allowlist) · `chat.ts` (startSession + runTutorTurn;
+   119→  shared `enforceIPlus1`: check → 1 rewrite → fallback, used by opener AND turns;
+   120→  history window 20 + rolling summary injection; summary every 10 user turns via analyst role;
+   121→  `ChatError` → 404/409/400; LLM failure NEVER blocks the conversation — fallback replies).
+   122→- API routes (live-verified on :3000 with real grok-4.7): `POST /api/session/start`
+   123→  (401/403-consent/200 brief+scenario+opener), `POST /api/session/turn`
+   124→  (401/400/404/409/200 tutor+meta{unknownRate,unknownWords,rewritten,fallback}+summaryUpdated).
+   125→  Both `requireUser`-guarded; turn validates ownership (foreign session → 404) + active status.
+   126→- Live-verified behavior: tutor elicits mustElicit targets ("Hotel Mehr is on the left"),
+   127→  i+1 violation triggers rewrite (meta.rewritten=true); LLM flakiness degrades to original/
+   128→  fallback replies without 500s.
+   129→- Landing page `/` — Persian RTL status page (browser-verified, no console errors).
+   130→- `src/lib/llm/analyst.ts` — **M4**: docs/04 §2 analyst prompt VERBATIM + few-shot;
+   131→  zod schema (confidence CLAMPED not rejected); `validateAnalystOutput` = parse → zod →
+   132→  node whitelist (hallucinated id → item dropped, last id segment feeds new_unknown_words)
+   133→  → skill whitelist → clamp; `analyzeTurn` = ONE repair retry (validation error appended,
+   134→  docs/04 §3) then give-up with `ok:false` (chat never blocked); markdown fences stripped.
+   135→- `src/lib/evidence/writer.ts` — **M4**: `writeTurnEvidence` (append-only, idempotent per
+   136→  (sessionId, turnId), persists `disputed` when present) · `writeEngineEvidence`
+   137→  (propagation/root-cause rows, `turnId='engine'`, NO per-turn guard — the session status
+   138→  guard already makes the run once-only) · `disputeEvidence` (flag-only, never delete).
+   139→- `src/lib/session/pipeline.ts` — **M4**: `endSession` = docs/03 §A7 exactly:
+   140→  pass A propagation emits (pre-update states) → persisted via writeEngineEvidence → merged
+   141→  into groups → pass B per-group aggregate (ENGINE aggregateSession) → rating → FSRS →
+   142→  persist → metrics; pass C root-cause re-attribution for confirmed gaps (routed error
+   143→  becomes real evidence + applied to the weak prereq immediately); pass D growth scan
+   144→  (`scanRepeatedErrors` + `buildSeedDraft`, dedupe by candidateNodeId / payload title /
+   145→  triggerRef dedupeKey) → Seed rows; summary (reinforced/fading/delayTestResults/seeds/
+   146→  tomorrow) stored on ChatSession + status ended (409 on second call).
+   147→- API routes (M4, all live-verified): `POST /api/session/end` (401/400/404/409) ·
+   148→  `POST /api/evidence/[id]/dispute` (owner-checked, 200/404/401, append-only flag).
+   149→- Per-turn analyst wired into `runTutorTurn`: runs IN PARALLEL with the tutor call (needs
+   150→  only the learner message + previous tutor context → zero added latency); whitelist =
+   151→  user's touched nodes + session targets; failure → `analyst_parse_fail` metric only.
+   152→- `data/analyst-golden.json` — **M4**: 22 labeled turns (docs/04 examples + L1 patterns +
+   153→  hallucinated-id + fenced-output cases), all ids verified against the graph.
+   154→- Live-verified M4 loop (real grok-4.20 analyst): learner message → evidence rows →
+   155→  `POST /api/session/end` → FSRS state rows + summary + metrics in one shot (200, 210ms).
+   156→- `src/lib/client/api.ts` — **M5**: typed fetch client for every endpoint (PublicUser, brief,
+   157→  turn meta, session-end summary, placement); `ApiError` carries the server's `errorFa`.
+   158→- `src/stores/app-store.ts` — **M5**: zustand store = single source of truth for client-side
+   159→  view switching on `/` (landing | auth | onboarding | home | chat) + chat session state
+   160→  (messages, typing, status, summary). Exposes `window.__kiaraStore` for browser-test driving.
+   161→- `src/lib/client/format.ts` — **M5**: pure UI formatters (faDigits, formatDuration mm:ss,
+   162→  formatUnknownRate ≥1% else null, wordQuestionTemplate) — unit-tested (tests/ui/format.test.ts).
+   163→- `src/app/api/placement/route.ts` — **M5**: stateless adaptive ladder. Client sends
+   164→  `{ selfBand, answers[{nodeId, optionIndex}], finish? }`; server rebuilds the SAME quiz
+   165→  (seed=hash(userId)), grades where correctIndex lives, reruns ladder (needs `currentBand`
+   166→  — added to `PlacementLadderResult`, engine-tested) and returns the next item WITHOUT
+   167→  correctIndex. `finish:true` → applyPlacement upserts (update:{} — never overwrites
+   168→  practiced state) + cefrComputed + `placement_applied` metric. 401-guarded.
+   169→- `src/components/app/` — **M5** the single-route shell:
+   170→  `app-root.tsx` (boot `/api/auth/me` once → landingViewFor) · `landing-view.tsx` (old page
+   171→  content, CTA wired) · `auth-view.tsx` (login/register tabs, LTR credential inputs) ·
+   172→  `onboarding-view.tsx` (profile → prefs → timestamped consent → LIVE adaptive placement
+   173→  ladder → done screen with finalBand + litCount) · `home-view.tsx` (start-chat card +
+   174→  honest M6/M7/M9 placeholders + logout) · `chat-view.tsx` (start card, scenario header,
+   175→  timer badge Persian digits, tutor/user bubbles `dir="ltr"` inside RTL with logical
+   176→  corner radii, ✏️ unknown-word chips → composer template tap-fill, subtle unknown-rate
+   177→  hint, rewritten/fallback meta notes, typing indicator, AlertDialog end-session →
+   178→  compact summary card).
+   179→- **M5 agent-browser-verified live** (user sara-m5@test.local): register → onboarding
+   180→  (placement ladder 12/12, A2→B1, 378 states lit, never mastered, pendingDelayTest=true) →
+   181→  home → chat start → 3 real grok-4.7 turns (one degraded to fallback — graceful) →
+   182→  end-session summary. LTR-in-RTL renders without breakage (desktop 1280px + mobile 390px).
+   183→  Zero console errors; all API calls 2xx. Keyboard: native tab order, Enter=send,
+   184→  Shift+Enter newline, Radix dialog focus trap, chips tap-fill composer (verified via
+   185→  `__kiaraStore` injection). Contrast: `--muted-foreground` darkened 0.556→0.44 (≈7.8:1).
+   186→
+   187→- `src/lib/engine/tree-layout.ts` — **M6**: PURE deterministic layered layout.
+   188→  `buildLayoutTiers` = longest prerequisite depth, raised to `cluster tier + 1` for `part_of`
+   189→  members (own DFS with cycle guard — do NOT pass a pre-seeded memo into `nodeTier`, it
+   190→  short-circuits). `computeTreeLayout` = saved positions pass through UNTOUCHED; fresh nodes
+   191→  placed per tier at the NEXT FREE SLOT (docs/03 §B5), ordered by (cluster, typeGroup,
+   192→  frequencyRank, id); x always integer slot × TREE_GAP_X, y = tier × TREE_TIER_GAP_Y — both
+   193→  exactly recoverable from a saved row. `plantTierFor` = 1 + max(prereq tiers) for M7 planting.
+   194→  Config: TREE_NODE_W 132 · TREE_NODE_H 76 · TREE_GAP_X 148 · TREE_TIER_GAP_Y 130.
+   195→- `src/lib/tree/tree-service.ts` — **M6** wiring layer: `getTreeView(userId, now)` merges
+   196→  world graph (files) ∪ user-generated nodes (DB) + states + saved positions → layout →
+   197→  persists only `newIds` (createMany, P2002-tolerant) → recomputes display state ON READ
+   198→  (`computeDisplayState`) → node state = strongest across skills with priority
+   199→  fading > learning > mastered > assumed_known > available > locked → evidence aggregates
+   200→  (last 2000 non-disputed rows: lastOutcome + confident errors/30d) → Persian `why` per node
+   201→  (`buildWhy`: locked names blocking prereq titles, fading/learning cite evidence) →
+   202→  prerequisite-only edge list + stats + bounds. `setTreeNodeFlags` = pin/hide on the
+   203→  NodePosition row (creates the row with a deterministic position when missing).
+   204→- API routes (M6, live-verified on :3000): `GET /api/tree` (requireUser; first call lays out
+   205→  and persists ALL positions, later calls keep them — the semi-fixed contract) ·
+   206→  `PATCH /api/tree/[nodeId]` (zod pinned/hidden, 401/400/404; returns `{ ok, id, pinned,
+   207→  hidden }` — the client expects `id`, keep them in sync).
+   208→- `src/components/app/tree-view.tsx` — **M6** the tree view (client-side `tree` view in the
+   209→  `/` shell): SVG canvas `absolute inset-0` (h-full on a flex child collapses to the 150px
+   210→  SVG default — do not regress), pointer-drag pan, zoom buttons 0.45–2.5 (default 0.72),
+   211→  «نمایش ناحیه‌ی من» recenter on the user's lit region, state colors + DOUBLE dashed ring for
+   212→  fading (non-color cue), 4 skill mini-rings (stroke-dasharray = strength; listening/speaking
+   213→  render "—"), pinned = green border + 📌 badge, selected-node panel = the "why?" tooltip with
+   214→  pin/hide actions, legend, Esc/keyboard support (`role=button` nodes). Home view's tree card
+   215→  is live; M7/M9 cards remain placeholders.
+   216→- **M6 agent-browser-verified live** (demo user, 114 states): 268 nodes render; 32 readable
+   217→  at 1280px after one zoom-out (26 at default 0.72); positions identical across reload
+   218→  (268/268 within ±1px); pin persists across reload; fading card shows dashed rings + why;
+   219→  zero console errors. `scripts/seed-demo-tree.ts` seeds the demo user's spread
+   220→  (learning/fading/mastered/assumed_known).
+   221→- `tests/engine/tree-layout.test.ts` (11: tier math, two-render identity, exact preservation
+   222→  + next-free-slot, collision-freedom, stale rows, cluster-hug ordering, plantTierFor) ·
+   223→  `tests/api/tree.test.ts` (7: 401 guards, persist-then-identical GETs + availability wiring
+   224→  (fresh user MUST see >50 `available`), per-skill payload + read-time fading, locked-why,
+   225→  planted user-generated node lands at stable tier prereq+1 and never moves others, pin/hide
+   226→  persistence, 400/404). NodePosition rows are DERIVED data — wiping them is safe
+   227→  (deterministic re-layout on next GET); positions of real users must never move though.
+   228→- `src/lib/tree/seed-service.ts` — **M7** the seed-inbox wiring layer (docs/03 §B1
+   229→  approval half): `getSeedInbox` (lazy-expires stale proposals §B4, returns ranked proposals
+   230→  score-desc + recently decided + cap meter) · `plantedInWindow` (trailing 7-day count) ·
+   231→  `approveSeed` (weekly cap FIRST — the 4th approval returns `{held:true}` and the seed stays
+   232→  `proposed`, NOTHING planted; then planting: user-generated `error_pattern` GraphNode
+   233→  (`en:err:u-<8hex>`, ownerId) + prerequisite edge source→pattern for track_pattern seeds;
+   234→  UserNodeState reading+writing upsert with `update:{}` — **planting never overwrites
+   235→  practiced state** (error-tracking history survives, node shows `learning` not `available`);
+   236→  NodePosition created only when missing via `plantTierFor` + next-free-slot recovered with
+   237→  `slotOfX` (world nodes keep their M6 layout position); `seed_approved` metric) ·
+   238→  `rejectSeed` (flag-only decision, `seed_rejected` metric).
+   239→- `src/lib/engine/growth.ts` — M7 adds pure `rejectCooldownActive(decidedAt, now)`
+   240→  (14-day math; the muted-node SET is built by the wiring layers).
+   241→- Pipeline pass D (M7 additions): lazy expiry of `proposed` seeds past `expiresAt` →
+   242→  `expired`; 14-day reject cooldown — recent rejected Seeds (decidedAt ≥ now−14d) build
+   243→  `mutedNodeIds` from candidateNodeId + triggerRef.nodeId, candidates matching are skipped
+   244→  (lookup failure never blocks the pipeline).
+   245→- API routes (M7, all live-verified on :3000): `GET /api/seeds` ·
+   246→  `POST /api/seeds/[id]/approve` (200 held | planted, 404 foreign, 409 decided/expired) ·
+   247→  `POST /api/seeds/[id]/reject` (200, 404, 409). All requireUser-guarded.
+   248→- `src/components/app/seed-inbox.tsx` — **M7** the inbox view (client-side `seeds` view):
+   249→  proposal cards = kind chip (کاشت واژه/الگوی خطا) + LTR title + gloss + score badge
+   250→  (۰٫۸۰ style faScore) + 4 breakdown meters (ارتباط با هدف/فراوانی/آمادگی/تازگی, role=meter)
+   251→  + Persian reason + LTR sample (red strikethrough → green) + بکارش در درخت / نه فعلاً;
+   252→  cap meter in header («رشد این هفته: ۰ از ۳»); held-note explains the weekly cap; rejected
+   253→  flash note (۱۴ روز); celebration overlay (data-testid=celebration, CSS confetti burst
+   254→  `kiara-burst` + `kiara-pop` keyframes in globals.css, «درختت رشد کرد!» + دیدن درخت);
+   255→  empty state → chat CTA; recent decisions list.
+   256→- `src/components/app/home-view.tsx` — M7: the M7 placeholder card is now LIVE (fetches
+   257→  inbox once, shows «N پیشنهاد تازه» badge / empty-state cap line); M9 settings card stays
+   258→  placeholder. AppView += 'seeds'; app-root switches it.
+   259→- `scripts/seed-demo-seeds.ts` — demo inbox seeding: picks 2 unplanted goal-relevant
+   260→  prereq-free words (rank ≤5k), writes 2 sessions × 1 confident error each through the REAL
+   261→  writer, ends session 2 through the REAL pipeline → real proposals (offer + bus, score 1.0).
+   262→- **M7 agent-browser-verified live** (demo user): home card shows «۲ پیشنهاد تازه» → inbox
+   263→  renders full breakdowns → approve `bus` → 200 planted → celebration overlay visible →
+   264→  «دیدن درخت» → 268 nodes render, `bus` present with evidence-based why («در حال یادگیری —
+   265→  ۲ خطای مطمئن در ۳۰ روز اخیر»), position (x=7104, tier=1) identical across GETs. Zero
+   266→  console errors.
+   267→- Tests: `tests/engine/growth.test.ts` (+2 M7 acceptance units: 2-sessions→proposal ≥0.45
+   268→  with exact breakdown {1, 0.8, 1, 1}; cooldown 14d boundary) · `tests/api/seeds.test.ts`
+   269→  (7: 401 guards, foreign-seed 404, DB-pipeline acceptance 2-sessions→proposal ≥0.45 +
+   270→  inbox payload shape, approve→plant→tree `learning`-with-history + reading `available` +
+   271→  double-approve 409, weekly cap 4th held with nothing planted, reject→14d cooldown through
+   272→  a REAL re-scan (control node still re-proposes), track_pattern approve → user-generated
+   273→  node + prereq edge + tree appearance). `tests/db/seed-idempotency.test.ts` mirror
+   274→  invariant is WORLD-scoped now (`isUserGenerated:false`) — M7 plantings are a separate
+   275→  intended population, non-world edge endpoints must be existing user-generated nodes.
+   276→
+   277→### M8 — delayed tests, mastery & session summary (2026-10-30)
+   278→
+   279→- `src/lib/engine/delayed-test.ts` — **M8** PURE delayed-test machinery (docs/03 §A6):
+   280→  `probeEligible` (full gate: reps≥4 ∧ S≥21d ∧ ≥3d old ∧ pendingDelayTest ∧ no open gap ∧
+   281→  not hint-assisted last 2 sessions) · `maintenanceProbeDue` (mastered nodes re-probe when
+   282→  their card is due + 3d age + 7d retry) · `selectProbeNodes` (≤2, injected rng, partial
+   283→  Fisher-Yates) · `buildConfirmatoryContexts` (3 contexts from DISTINCT families ≠ practice
+   284→  family; cued recall — the item names its target, secrecy is about WHICH nodes, docs/00 C2) ·
+   285→  `probeSlotFor` (warm-up math: explicit confirmatory warmup=0, ride-along warmup=2) ·
+   286→  `gradeProbe` (context correct = ∃ correct@≥0.8 ∧ ∄ confident error; **minConfidence = min
+   287→  over CORRECTNESS-ESTABLISHING items only** — an error item's confidence measures
+   288→  error-DETECTION certainty and must not dilute the production gate).
+   289→- `src/lib/engine/rng.ts` — mulberry32 + FNV-1a `rngFromSeed` (pure, deterministic).
+   290→- `src/lib/engine/state.ts` — M8 decision: mastery pass ALSO applies `Good` to the card →
+   291→  the mastered node gets a natural maintenance-probe schedule (due + 3d + retry); fail path
+   292→  unchanged (Again + 7d retry via delayTestEligibleAt).
+   293→- `src/lib/session/db-map.ts` — shared wiring helpers moved out of pipeline: rowToItem /
+   294→  groupKey / stateKeyOf / rowToState / persistState / priorErrorSessions / loadStateMap /
+   295→  `probeFlagsFor` (openGap = Relearning card; hint-assisted = hintUsed in last 2 touching
+   296→  sessions) / `collectDelayedTestStatus` (≤1 candidate per NODE, writing skill first) /
+   297→  `parseBriefColumn` (legacy plain-brief ↔ M8 wrapper `{brief, probePlan}`) /
+   298→  computeFading + computeTomorrow (summary tails with titles).
+   299→- `src/lib/session/confirmatory.ts` — **M8** the delayed-test service:
+   300→  `startConfirmatorySession` (≤2 eligible nodes × 3 contexts, deterministic, ZERO LLM) ·
+   301→  `runConfirmatoryTurn` (analyst grades the answer against ONLY the probed node; next
+   302→  context or deterministic closing line) · `gradeAndApplyProbes` (turn-meta-mapped evidence →
+   303→  gradeProbe → applyDelayedTestOutcome → persist + `delay_test_result` metric) ·
+   304→  `countFailedProbesSinceMastery` (derived from prior sessions' summary.delayTestResults —
+   305→  no schema change) · `probeSpecsFromStates` (planner picks → ProbeSpecs with contexts).
+   306→- `src/lib/session/chat.ts` — M8: `runTutorTurn` dispatches confirmatory sessions to
+   307→  `runConfirmatoryTurn`; RIDE-ALONG probes in roleplay sessions (docs/00 C2): after a 2-turn
+   308→  warm-up the plan's contexts replace the tutor LLM for one turn each (meta.probe /
+   309→  probeTurn / probesDone), analyst whitelist SUBTRACTS probe node ids (no contamination), and
+   310→  `startSession` stores the `{brief, probePlan}` wrapper + returns `probeCount`.
+   311→- `src/lib/session/pipeline.ts` — M8: `endSession` branches type='confirmatory' →
+   312→  `endConfirmatory` (probes ARE the rating decision — NO §A7 aggregation, so FSRS is never
+   313→  double-applied); roleplay sessions grade ride-along probes and EXCLUDE probe (node×skill)
+   314→  groups from aggregation; summary gains titles + real delayTestResults.
+   315→- `src/lib/session/brief-builder.ts` — M8: planner WIRED (`planSession` with seeded
+   316→  rng per (user, day)); the 40:25:20:15 mix bounds weak/frontier counts; probed nodes are
+   317→  REMOVED from brief.weak/frontier + scenario.mustElicit (no warm-up); BriefUserRow +
+   318→  dailyMinutes (default 15); bundle carries `plan`.
+   319→- API (M8, live-verified on :3000): `POST /api/session/start` accepts `{type:'confirmatory'}`
+   320→  (200 `{started:false, messageFa}` when nothing eligible) · `GET /api/delayed-test/status`
+   321→  (`{eligible, pending, maxPerSession, contextsPerProbe}` — node ids never leave the server).
+   322→- UI (M8): home «آزمون تأییدی» card (eligible badge / disabled with pending count,
+   323→  data-testid=delayed-test-card + start-confirmatory) · chat confirmatory mode (header
+   324→  progress «گره ۱ از ۲ · سؤال ۲ از ۳», honest mode description, no scenario chrome) ·
+   325→  SessionSummary full (✅ تسلط تأیید شد / ❌ ۷ روز دیگر / ⚠️ لغو شد / ⏭️ ناتمام rows with LTR
+   326→  titles, reinforced/fading titles, seeds CTA → seeds view; stale «M۷ باز می‌شود» note removed).
+   327→- Live-verified M8 (real grok-4.20 analyst): demo user → seeded eligible state → status API
+   328→  eligible:1 → confirmatory start → 3 contexts answered → REAL analyst graded (correct@0.95
+   329→  ×2, error@0.65) → engine honestly FAILED the probe in the pre-fix run (error-item
+   330→  confidence diluted minConfidence) → gradeProbe fixed → same pattern now passes per §A6 →
+   331→  second live run: `en:word:recommend` MASTERED (masteredAt set, reps 6, pending false).
+   332→  agent-browser: home card → confirmatory chat with progress → 3 answers → end → summary
+   333→  renders «❌ «journey» — تأیید نشد؛ ۷ روز دیگر» — zero console errors.
+   334→- Tests (M8, +33): `tests/engine/delayed-test.test.ts` (25: gate/eligibility/sampler/
+   335→  contexts/slots/grading/maintenance + revocation integration) ·
+   336→  `tests/db/confirmatory.test.ts` (5: pass→mastered+card-advance, incomplete→skip, low-conf
+   337→  fail→7d retry, DOUBLE-FAIL→REVOKED through the real DB, no-eligible message) ·
+   338→  `tests/e2e/mvp-loop.test.ts` (1: THE SUCCESS CRITERION — chat → evidence → tree learning →
+   339→  next brief counts the word → 4-session ladder → pendingDelayTest → confirmatory 2/3 →
+   340→  mastered → tree shows mastered). Brief-builder test fixture updated for the `plan` field.
+   341→
+   342→## Known issues / gotchas
+   343→
+   344→- **M8 — secret-check self-match resolved**: the check command was documented verbatim in
+   345→  this file, so every staged diff matched its own regex text (`sk` + dash inside the
+   346→  documented pattern). Rewritten with bracketed separators (see Environment above); the ONE
+   347→  remaining match in the M8 commit is the removed old line (`-` side of the diff) — no real
+   348→  key material was ever staged (the two literal key patterns from the continuation prompt
+   349→  were grep-verified absent before pushing). Future checks run clean.
+   350→- **M8 — turn ordering in confirmatory grading**: `gradeAndApplyProbes` maps probe contexts
+   351→  to answers by walking turns ordered `(createdAt asc, id asc)`; if several turns share a
+   352→  timestamp the order falls to cuid ids. Tests MUST advance `now` per turn (the live clock
+   353→  differs naturally). Use distinct `now` per `runConfirmatoryTurn` call.
+   354→- **M8 — analyst mock shape**: a fake `analyze` returning `EvidenceItem[][]` where
+   355→  `EvidenceItem[]` is expected fails at the writer with `skill: undefined` (Prisma
+   356→  validation), not a TS error at the mock — the per-call script helper
+   357→  (`analystScript(script: EvidenceItem[][])`) is the pattern to copy.
+   358→- **M8 — revocation needs maintenance probes to ignore `openGap`**: a failed maintenance
+   359→  probe always lands the mastered card in Relearning (Again) and mastered nodes are never
+   360→  re-practiced, so gating maintenance probes on `fsrsState === 'Relearning'` would make the
+   361→  §A6 revocation path unreachable. `probeEligible` gates CONFIRMATION probes on openGap,
+   362→  MAINTENANCE probes only on the card schedule + 7d retry + hint gate.
+   363→- **M7 — calling dynamic route handlers directly in tests**: the handler signature is
+   364→  `(req, ctx)` where `ctx.params` is a Promise. Passing the cookie as the 2nd arg (instead
+   365→  of into the Request headers) silently yields 401 (the request lacks the cookie). Use
+   366→  `handler(jsonReq(url, body, cookie), { params: Promise.resolve({ id }) })`.
+   367→- **M7 — planting a node with error-tracking history keeps `learning`**: `approveSeed`
+   368→  uses upsert `update:{}` on purpose (§B5 never overwrites practiced state). Only the
+   369→  skills WITHOUT history get a fresh `available` state. Tests + UI must not expect a node
+   370→  that already produced confident errors to flip to `available`.
+   371→- **M7 — user-generated GraphNodes are NOT FK-owned by users**: `ownerId` is a soft
+   372→  reference; deleting a user does not delete their created nodes (by design — nodes feed
+   373→  the shared world later). Test teardowns must delete them explicitly. The idempotency
+   374→  test's mirror invariant is world-scoped (`isUserGenerated:false`) for the same reason.
+   375→- **M6 — stale Prisma client after `prisma db push`**: a RUNNING dev server keeps the old
+   376→  generated client in its require cache → new schema fields (e.g. NodePosition.pinned)
+   377→  cause `Unknown argument` 500s even though tests (fresh processes) pass. Fix: restart the
+   378→  dev server via `setsid bash .zscripts/dev.sh > /tmp/devsh.log 2>&1 < /dev/null & disown`
+   379→  (the harness's own entry: bun install → db:push → bun run dev → disown). Plain `nohup bun
+   380→  run dev &` does NOT survive between tool calls. Check `dev.log` + `curl :3000` after.
+   381→- **M6 — SVG height trap**: `h-full` on an `<svg>` inside a flex-grown div resolves to the
+   382→  150px replaced-element default (percentage against an indefinite height). The tree canvas
+   383→  svg must stay `absolute inset-0` inside the `relative overflow-hidden` canvas div.
+   384→- **M6 — panel vs. canvas pointer handlers**: the panel lives inside the pointer-drag
+   385→  container; `onPointerDown` must ignore events from `[data-testid=node-panel]` and
+   386→  background-deselect must be skipped when the press started on a node — otherwise panel
+   387→  buttons unmount before their onClick fires.
+   388→- **M6 — node ids contain colons** (`en:word:flight`) — never `split(':')` on composite
+   389→  "id:value" fingerprints; use `lastIndexOf(':')`.
+   390→- **M6 — availability map key**: `computeAvailability` returns `{ node: EngineNode, ... }`
+   391→  — the per-id map must key on `a.node.id` (TS won't catch `a.nodeId` under esbuild/vitest,
+   392→  which strip types without checking).
+   393→
+   394→- ts-fsrs v6 API: `new FSRS(generatorParameters())`, `f.repeat(card, now)[Rating.X].card`,
+   395→  `f.retrievability(card, now)`; Rating/State are plain objects (no reverse map).
+   396→- Prisma on SQLite: no enums — strings + zod. `UserNodeState.learningSteps` persists
+   397→  `card.learning_steps` (needed for correct round-trips).
+   398→- **Seeder must insert ALL nodes before ANY edges** (FK order): fixed in M1 by two-pass +
+   399→  `$transaction`; do not regress this.
+   400→- Placement final band = highest band with positive correct/wrong majority (docs/05 M1 unit
+   401→  test pins this); null → light NOTHING (absolute beginner, C2a ultra-light register).
+   402→- `.gitignore` excludes `download/ upload/ skills/ tests/*.sh examples/ mini-services/ .zscripts/
+   403→  Caddyfile db/ .env* .git-credentials` — real tests under `tests/**/*.test.ts` ARE tracked. Keep it that way.
+   404→- Auth routes avoid `next/headers` on purpose (plain Request/Response → unit-testable). Keep
+   405→  this pattern; read cookies via `req.headers.get('cookie')`, set via `set-cookie` header.
+   406→- `package.json` name is still `nextjs_tailwind_shadcn_ts` — fine to rename in M9 polish.
+   407→- The route `src/app/api/route.ts` is a template leftover health endpoint — replace in M3.
+   408→  (M3 note: left as-is; it's harmless. Remove in M9 polish.)
+   409→- **RESOLVED (M5) — empty known lexicon for fresh users**: placement is now wired into the
+   410→  onboarding wizard (`POST /api/placement` + `applyPlacement` upserts). A user finishing the
+   411→  ladder gets assumed_known states immediately, so i+1 no longer treats everything as unknown.
+   412→  Users who skip/finish with null finalBand still light nothing (data-honest, C2a).
+   413→- **M5 BUGFIX — session-end `applied` shape**: the §A7 pipeline returns `applied: AppliedGroup[]`
+   414→  (per-group FSRS applications), not a count. The first ChatView wiring rendered an empty
+   415→  number; fixed to `r.applied.length` + corrected `SessionEndResponse` type (rootCaused is
+   416→  `string[]` too). Keep client types in sync with pipeline returns.
+   417→- **agent-browser gotcha**: Persian labels contain ZWNJ (‌) — `find text "ثبتنام"` fails;
+   418→  snapshot refs (`@eN`) or `eval` selectors are the reliable way to click Persian UI.
+   419→- **BUGFIX (M4) — track_pattern scoring**: `scoreCandidate` scored the error SOURCE node with
+   420→  novelty=0 (it always has a state), so error-pattern seed proposals could never reach the
+   421→  0.45 bar — contradicted docs/03 §B3's own example (0.72). Fixed: track_pattern candidates
+   422→  use ERROR_PATTERN_RELEVANCE/FREQUENCY and novelty=1 (the pattern node is new). Regression
+   423→  test added (`tests/engine/growth.test.ts`).
+   424→- **Semantics decision (M4)** — "active UserNodeState" for the growth trigger (docs/03 §B2):
+   425→  = planted-but-unpracticed (available/assumed_known) OR strength > 0. States created purely
+   426→  by error evidence (reps ≥ 1, strength 0) are error-tracking, NOT adoption — otherwise
+   427→  plant_existing could never fire (any analyzed error auto-creates a state).
+   428→- **BUGFIX (M4) — engine-generated evidence persistence**: propagation emits were merged
+   429→  into aggregates but never written to Evidence; `writeEngineEvidence` now appends them
+   430→  (turnId='engine', propagated=true) OUTSIDE the per-turn idempotency guard (which would
+   431→  wrongly block the second engine batch of the same run).
+   432→- DB contains the M0 sample nodes TOO (seed.sample.json): e.g. en:word:airport/hotel/recommend
+   433→  exist ONLY there — when authoring content, check `loadGraph()` (all files) not just words.*.json.
+   434→- xAI latency is real-world slow (opener ~2.5–7 s; a turn + rewrite can hit ~60 s when the
+   435→  rewrite path fires — 30 s timeout × 2 attempts). Keep UI timeouts generous (M5).
+   436→- Known-lexicon counts come from the loader's 268 nodes; `en:word:you/do/good` (sample file)
+   437→  surface as frontier targets — harmless but noisy; consider pruning sample function words in
+   438→  a later data pass.
+   439→
+   440→## Blockers
+   441→
+   442→(none)
+   443→
+   444→## Cron self-healing
+   445→
+   446→The scheduled job `kiaraself-continuation` (every 10 min) runs this prompt. If you are reading
+   447→this from a cron run and the job list is empty while work remains, recreate it:
+   448→`cron` tool → action `create`, name `kiaraself-continuation`, kind `agentTurn`, cron
+   449→`0,10,20,30,40,50 * * * *`, tz `Asia/Tehran`, message = the same continuation prompt stored
+   450→in `docs/06-continuation-prompt.md`. When ALL milestones are complete instead: delete the job,
+   451→write `FINAL_REPORT.md` (what was built, test counts, how to run, what's next post-MVP), push.
+   452→
