@@ -59,12 +59,12 @@
 - [x] Reject → 14-day cooldown on same node
 - [x] Unit + agent-browser tests per docs/05 M7
 
-## M8 — Delayed tests, mastery & session summary
-- [ ] Confirmatory session mode: samples ≤2 eligible nodes, 3 fresh contexts each, no hints, no warm-up
-- [ ] Pass → mastered; fail → Again + 7d retry; double-fail post-mastery → revoked
-- [ ] Session summary (reinforced/seeds/fading/delay results/tomorrow) rendered at session end
-- [ ] Planner mix 40:25:20:15 + probes p=0.3
-- [ ] **E2E: full MVP loop (chat → evidence → tree update → next brief reflects it → delayed test → mastery) — the success criterion**
+## M8 — Delayed tests, mastery & session summary ✅ (2026-10-30)
+- [x] Confirmatory session mode: samples ≤2 eligible nodes, 3 fresh contexts each, no hints, no warm-up
+- [x] Pass → mastered; fail → Again + 7d retry; double-fail post-mastery → revoked
+- [x] Session summary (reinforced/seeds/fading/delay results/tomorrow) rendered at session end
+- [x] Planner mix 40:25:20:15 + probes p=0.3
+- [x] **E2E: full MVP loop (chat → evidence → tree update → next brief reflects it → delayed test → mastery) — the success criterion**
 
 ## M9 — Metrics, guardrails, cost caps, polish
 - [ ] MetricEvent emission at all documented points; metrics test

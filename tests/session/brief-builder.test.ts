@@ -143,7 +143,13 @@ describe('brief builder (DB wiring)', () => {
     }
     // sanity: the fixture really is over budget
     expect(estimateBriefTokens(fat)).toBeGreaterThan(1500)
-    const bundle = boundToBudget({ brief: fat, scenario: { id: 'x', title: 'سناریو', role: 'r', mustElicit: [] }, knownLemmas: [], tokenEstimate: 1e9 })
+    const bundle = boundToBudget({
+      brief: fat,
+      scenario: { id: 'x', title: 'سناریو', role: 'r', mustElicit: [] },
+      knownLemmas: [],
+      tokenEstimate: 1e9,
+      plan: { reviews: [], newNodes: [], remedial: [], interestFlavor: null, delayedTestProbes: [] },
+    })
     expect(bundle.tokenEstimate).toBeLessThanOrEqual(1500)
     expect(bundle.brief.weakNodes.length).toBeLessThan(30)
   })

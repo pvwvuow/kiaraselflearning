@@ -1,10 +1,13 @@
 /**
- * POST /api/session/start — create a roleplay session (docs/05 M3).
- * Builds the brief from real state, picks a scenario, opens the roleplay
- * with a tutor line. 401 unauthenticated · 403 LLM consent missing.
+ * POST /api/session/start — create a session (docs/05 M3 + M8).
+ * Body `{ type: 'confirmatory' }` starts a delayed-test session (≤2 eligible
+ * nodes × 3 fresh contexts, deterministic, no LLM). Default: roleplay session
+ * with the planner's mix; ride-along probes ride at p≈0.3 (docs/00 C2).
+ * 401 unauthenticated · 403 LLM consent missing.
  */
 import { requireUser } from '@/lib/auth/session'
 import { startSession, toBriefUserRow } from '@/lib/session/chat'
+import { startConfirmatorySession } from '@/lib/session/confirmatory'
 
 export async function POST(req: Request) {
   const auth = await requireUser(req)
@@ -18,8 +21,32 @@ export async function POST(req: Request) {
     )
   }
 
+  let type = 'roleplay_targeted'
   try {
-    const result = await startSession(toBriefUserRow(auth.user))
+    const body = (await req.json().catch(() => ({}))) as { type?: string }
+    if (body?.type === 'confirmatory') type = 'confirmatory'
+  } catch {
+    // empty body → roleplay
+  }
+
+  try {
+    const userRow = toBriefUserRow(auth.user)
+
+    if (type === 'confirmatory') {
+      const result = await startConfirmatorySession(userRow)
+      return Response.json({
+        ok: true,
+        started: result.started,
+        sessionId: result.sessionId ?? null,
+        opener: result.opener ?? null,
+        plan: result.plan ?? null,
+        messageFa: result.messageFa ?? null,
+        eligible: result.eligible ?? null,
+        pendingCount: result.pendingCount ?? null,
+      })
+    }
+
+    const result = await startSession(userRow)
     return Response.json({
       ok: true,
       sessionId: result.sessionId,

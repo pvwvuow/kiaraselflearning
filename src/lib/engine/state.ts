@@ -276,7 +276,9 @@ export function isDelayTestDue(state: NodeSkillState, now: Date): boolean {
 }
 
 /**
- * Apply a delayed-test outcome. Pass = mastery. Fail = Again + retry window.
+ * Apply a delayed-test outcome. Pass = mastery (+ a `Good` on the card, which
+ * gives the mastered node its natural maintenance-probe schedule: due + 3d age
+ * gate — see src/lib/engine/delayed-test.ts). Fail = Again + retry window.
  * Revocation after MASTERY_REVOKE_FAILS failed probes since mastery.
  */
 export function applyDelayedTestOutcome(
@@ -297,9 +299,14 @@ export function applyDelayedTestOutcome(
   let updated: NodeSkillState = { ...state }
 
   if (pass && !state.masteredAt) {
+    // advance the card (Good) so the maintenance probe has a due date, then
+    // stamp mastery on top (docs/03 §A6: masteredAt = now)
+    const card = applyRating(state, 'Good', now)
+    updated = { ...updated, ...cardToStateFields(card) }
     updated.masteredAt = now
     updated.displayState = 'mastered'
     updated.pendingDelayTest = false
+    updated.delayTestEligibleAt = null
     return { updated, mastered: true, revoked: false }
   }
 

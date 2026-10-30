@@ -15,13 +15,15 @@ import { db } from '@/lib/db'
 import { loadGraph } from '@/lib/graph/load'
 import { ENGINE_CONFIG } from '@/lib/engine/config'
 import { aggregateSession } from '@/lib/engine/grading'
-import { applySessionReview, computeDisplayState, propagateFromSuccess, rootCauseAttribution } from '@/lib/engine/state'
+import { applySessionReview, propagateFromSuccess, rootCauseAttribution } from '@/lib/engine/state'
 import { scanRepeatedErrors, buildSeedDraft } from '@/lib/engine/growth'
 import { prerequisitesOf } from '@/lib/engine/graph'
-import { rowToState } from './brief-builder'
+import { rowToItem, groupKey, priorErrorSessions, persistState, loadStateMap, parseBriefColumn, computeFading, computeTomorrow, CONFIDENT } from './db-map'
+import { gradeAndApplyProbes, type DelayTestResultRow } from './confirmatory'
 import { writeEngineEvidence } from '@/lib/evidence/writer'
-import { ChatError } from './chat'
+import { ChatError } from './errors'
 import type { EngineEdge, EvidenceItem, FsrsRating, NodeSkillState, Skill } from '@/lib/engine/types'
+import type { SummaryNodeRef } from './db-map'
 
 export interface AppliedGroup {
   nodeId: string
@@ -45,92 +47,12 @@ export interface SessionEndResult {
   rootCaused: string[]
   seeds: SeedProposal[]
   summary: {
-    reinforced: { nodeId: string; skill: Skill; grade: FsrsRating }[]
-    fading: { nodeId: string; skill: Skill }[]
-    delayTestResults: { nodeId: string; passed: boolean }[]
+    reinforced: { nodeId: string; skill: Skill; grade: FsrsRating; title: string | null; glossFa: string | null }[]
+    fading: SummaryNodeRef[]
+    delayTestResults: DelayTestResultRow[]
     seeds: SeedProposal[]
     tomorrow: { reviewsDue: number; newCandidates: string[]; remedial: string[] }
   }
-}
-
-const CONFIDENT = 0.6 // = ENGINE_CONFIG.CONFIDENT_EVIDENCE (import would be fine too)
-
-function rowToItem(row: {
-  id: string
-  nodeId: string
-  skill: string
-  outcome: string
-  errorType: string | null
-  produced: string | null
-  expected: string | null
-  l1Interference: boolean
-  hintUsed: boolean
-  responseLatencyMs: number | null
-  confidence: number
-  propagated: boolean
-  disputed: boolean
-}): EvidenceItem {
-  return {
-    id: row.id,
-    nodeId: row.nodeId,
-    skill: row.skill as Skill,
-    outcome: row.outcome as EvidenceItem['outcome'],
-    errorType: row.errorType,
-    produced: row.produced,
-    expected: row.expected,
-    l1Interference: row.l1Interference,
-    hintUsed: row.hintUsed,
-    responseLatencyMs: row.responseLatencyMs,
-    confidence: row.confidence,
-    propagated: row.propagated,
-    disputed: row.disputed,
-  }
-}
-
-function groupKey(nodeId: string, skill: Skill): string {
-  return `${nodeId}::${skill}`
-}
-
-/** distinct PAST sessions with a confident error for (nodeId, skill) */
-async function priorErrorSessions(userId: string, nodeId: string, skill: Skill, currentSessionId: string): Promise<number> {
-  const rows = await db.evidence.findMany({
-    where: {
-      userId,
-      nodeId,
-      skill,
-      outcome: 'error',
-      confidence: { gte: CONFIDENT },
-      disputed: false,
-      sessionId: { not: currentSessionId },
-    },
-    select: { sessionId: true },
-    distinct: ['sessionId'],
-  })
-  return rows.length
-}
-
-async function persistState(userId: string, s: NodeSkillState): Promise<void> {
-  const data = {
-    stability: s.stability,
-    difficulty: s.difficulty,
-    due: s.due,
-    lastReviewAt: s.lastReviewAt,
-    reps: s.reps,
-    lapses: s.lapses,
-    learningSteps: s.learningSteps,
-    fsrsState: s.fsrsState,
-    displayState: s.displayState,
-    strength: s.strength,
-    pendingDelayTest: s.pendingDelayTest,
-    delayTestEligibleAt: s.delayTestEligibleAt,
-    masteredAt: s.masteredAt,
-    lastAppliedEvidenceId: s.lastAppliedEvidenceId,
-  }
-  await db.userNodeState.upsert({
-    where: { userId_nodeId_skill: { userId, nodeId: s.nodeId, skill: s.skill } },
-    create: { userId, nodeId: s.nodeId, skill: s.skill, ...data },
-    update: data,
-  })
 }
 
 export async function endSession(userId: string, sessionId: string, now: Date = new Date()): Promise<SessionEndResult> {
@@ -138,14 +60,27 @@ export async function endSession(userId: string, sessionId: string, now: Date = 
   if (!session || session.userId !== userId) throw new ChatError('not_found', 'session not found')
   if (session.status === 'ended') throw new ChatError('ended', 'session already ended')
 
+  // confirmatory sessions take the delayed-test ending (docs/03 §A6) — no
+  // §A7 aggregation: the probe outcome IS the rating decision (pass →
+  // mastered, fail → Again); aggregating the same evidence twice would
+  // double-apply FSRS updates
+  if (session.type === 'confirmatory') return endConfirmatory(userId, session, now)
+
   const graph = loadGraph('en')
   const rows = await db.evidence.findMany({ where: { sessionId, disputed: false } })
 
-  // ── group evidence by (nodeId, skill) ──
+  // M8: ride-along probes (docs/00 C2) live in roleplay sessions too — their
+  // (node × skill) groups NEVER enter the standard §A7 aggregation: probe
+  // answers flow exclusively through the delayed-test grading below
+  const { probePlan } = parseBriefColumn(session.brief)
+  const probeKeys = new Set<string>((probePlan?.probes ?? []).map((p) => groupKey(p.nodeId, p.skill)))
+
+  // ── group evidence by (nodeId, skill) — probe groups excluded entirely ──
   const groups = new Map<string, EvidenceItem[]>()
   for (const row of rows) {
     const item = rowToItem(row)
     const key = groupKey(item.nodeId, item.skill)
+    if (probeKeys.has(key)) continue
     const list = groups.get(key) ?? []
     list.push(item)
     groups.set(key, list)
@@ -153,11 +88,7 @@ export async function endSession(userId: string, sessionId: string, now: Date = 
 
   // user states (pre-update snapshot for propagation/root-cause decisions)
   const stateRows = await db.userNodeState.findMany({ where: { userId } })
-  const stateMap = new Map<string, NodeSkillState>()
-  for (const r of stateRows) {
-    const s = rowToState(r)
-    stateMap.set(groupKey(s.nodeId, s.skill), s)
-  }
+  const stateMap = await loadStateMap(userId)
   const prereqStateMap = (nodeId: string, skill: Skill): Map<string, NodeSkillState | null> => {
     const m = new Map<string, NodeSkillState | null>()
     for (const p of prerequisitesOf(nodeId, graph.edges)) {
@@ -399,33 +330,87 @@ export async function endSession(userId: string, sessionId: string, now: Date = 
       .catch(() => {})
   }
 
+  // ── M8: ride-along probe grading (before the summary) ──
+  const delayTestResults: DelayTestResultRow[] = probePlan
+    ? await gradeAndApplyProbes(userId, sessionId, probePlan, now)
+    : []
+
   // ── summary (docs/02 §3.3) + close ──
   const reinforced = applied
     .filter((a) => a.rating === 'Good' || a.rating === 'Easy')
-    .map((a) => ({ nodeId: a.nodeId, skill: a.skill, grade: a.rating as FsrsRating }))
+    .map((a) => {
+      const n = graph.byId.get(a.nodeId)
+      return { nodeId: a.nodeId, skill: a.skill, grade: a.rating as FsrsRating, title: n?.title ?? null, glossFa: n?.glossFa ?? null }
+    })
 
-  const freshStates = await db.userNodeState.findMany({ where: { userId } })
-  const fading = freshStates
-    .filter((r) => computeDisplayState(rowToState(r), now) === 'fading')
-    .map((r) => ({ nodeId: r.nodeId, skill: r.skill as Skill }))
-
-  const dueCount = freshStates.filter((r) => r.due && r.due.getTime() <= now.getTime()).length
-  const knownIds = new Set(freshStates.map((r) => r.nodeId))
-  const frontierIds = graph.nodes
-    .filter((n) => n.lang === 'en' && !knownIds.has(n.id) && prerequisitesOf(n.id, graph.edges).every((p) => knownIds.has(p) || !graph.byId.has(p)))
-    .slice(0, 3)
-    .map((n) => n.id)
+  const fading = await computeFading(userId, now)
+  const tomorrowCounts = await computeTomorrow(userId, now)
   const remedial = [...gapGroups.map((g) => g.nodeId)]
 
-  const summary = { reinforced, fading, delayTestResults: [], seeds, tomorrow: { reviewsDue: dueCount, newCandidates: frontierIds, remedial } }
+  const summary = {
+    reinforced,
+    fading,
+    delayTestResults,
+    seeds,
+    tomorrow: { reviewsDue: tomorrowCounts.reviewsDue, newCandidates: tomorrowCounts.newCandidates, remedial },
+  }
 
   await db.chatSession.update({
     where: { id: sessionId },
     data: { status: 'ended', endedAt: now, summary: JSON.stringify(summary) },
   })
   await db.metricEvent
-    .create({ data: { userId, name: 'session_end', props: JSON.stringify({ sessionId, applied: applied.length, seeds: seeds.length }) } })
+    .create({ data: { userId, name: 'session_end', props: JSON.stringify({ sessionId, applied: applied.length, seeds: seeds.length, probes: delayTestResults.length }) } })
     .catch(() => {})
 
   return { sessionId, applied, propagationEmitted: emitted.length, rootCaused, seeds, summary }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// confirmatory ending (docs/03 §A6) — probes ARE the rating decision
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function endConfirmatory(
+  userId: string,
+  session: { id: string; brief: string | null },
+  now: Date,
+): Promise<SessionEndResult> {
+  const { probePlan } = parseBriefColumn(session.brief)
+  const delayTestResults = probePlan
+    ? await gradeAndApplyProbes(userId, session.id, probePlan, now)
+    : []
+
+  const fading = await computeFading(userId, now)
+  const tomorrowCounts = await computeTomorrow(userId, now)
+
+  const summary = {
+    reinforced: [],
+    fading,
+    delayTestResults,
+    seeds: [],
+    tomorrow: { reviewsDue: tomorrowCounts.reviewsDue, newCandidates: tomorrowCounts.newCandidates, remedial: [] },
+  }
+
+  await db.chatSession.update({
+    where: { id: session.id },
+    data: { status: 'ended', endedAt: now, summary: JSON.stringify(summary) },
+  })
+  await db.metricEvent
+    .create({
+      data: {
+        userId,
+        name: 'session_end',
+        props: JSON.stringify({ sessionId: session.id, type: 'confirmatory', probes: delayTestResults.length }),
+      },
+    })
+    .catch(() => {})
+
+  return {
+    sessionId: session.id,
+    applied: [],
+    propagationEmitted: 0,
+    rootCaused: [],
+    seeds: [],
+    summary,
+  }
 }

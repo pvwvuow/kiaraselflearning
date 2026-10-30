@@ -142,6 +142,17 @@ export default function ChatView() {
     : 0
 
   const canStart = chat.status === 'idle' || chat.status === 'ended'
+  const isConfirmatory = chat.mode === 'confirmatory'
+
+  // current probe position from the LAST tutor turn that asked a context
+  const lastProbe = [...chat.messages].reverse().find((m) => m.role === 'tutor' && m.meta?.probe)?.meta
+    ?.probe ?? null
+  const probeProgress =
+    isConfirmatory && chat.probePlan && lastProbe
+      ? `گره ${faDigits(lastProbe.probeIndex + 1)} از ${faDigits(chat.probePlan.probeCount)} · سؤال ${faDigits(
+          lastProbe.contextIndex + 1,
+        )} از ${faDigits(chat.probePlan.contextsPerProbe)}`
+      : null
 
   return (
     <div className="min-h-dvh flex flex-col bg-gradient-to-b from-background to-muted/40">
@@ -158,12 +169,20 @@ export default function ChatView() {
           </Button>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold truncate">
-              {chat.scenario ? chat.scenario.title : 'گفتگو با مربی'}
+              {isConfirmatory
+                ? 'آزمون تأییدی'
+                : chat.scenario
+                  ? chat.scenario.title
+                  : 'گفتگو با مربی'}
             </p>
-            {chat.scenario && (
-              <p className="text-xs text-muted-foreground truncate" dir="ltr">
-                {chat.scenario.role}
-              </p>
+            {isConfirmatory ? (
+              <p className="text-xs text-muted-foreground truncate">{probeProgress ?? 'سه سؤال برای هر گره — بدون راهنما'}</p>
+            ) : (
+              chat.scenario && (
+                <p className="text-xs text-muted-foreground truncate" dir="ltr">
+                  {chat.scenario.role}
+                </p>
+              )
             )}
           </div>
           {chat.status === 'active' && chat.startedAt && (
@@ -209,12 +228,20 @@ export default function ChatView() {
             <CardHeader className="items-center text-center gap-2">
               <MessageCircle className="size-8 text-primary mx-auto" aria-hidden />
               <CardTitle className="text-lg">
-                {chat.status === 'ended' ? 'جلسه‌ی تمام‌شده' : 'گفتگو با مربی'}
+                {chat.status === 'ended'
+                  ? isConfirmatory
+                    ? 'آزمون تأییدی تمام شد'
+                    : 'جلسه‌ی تمام‌شده'
+                  : isConfirmatory
+                    ? 'آزمون تأییدی'
+                    : 'گفتگو با مربی'}
               </CardTitle>
               <CardDescription className="leading-7">
                 {chat.status === 'ended'
                   ? 'این جلسه پردازش و بسته شد. یک جلسه‌ی تازه شروع کن تا درختت دوباره تغذیه شود.'
-                  : 'مربی در یک موقعیت واقعی با تو انگلیسی حرف می‌زند. هر جمله‌ی تو برای درخت مهارتت شاهد است.'}
+                  : isConfirmatory
+                    ? 'برای هر گره‌ی در آستانه‌ی تسلط سه موقعیت تازه می‌پرسیم — بدون راهنما و بدون تمرین قبلی. پاسخ درست یعنی تسلط واقعی.'
+                    : 'مربی در یک موقعیت واقعی با تو انگلیسی حرف می‌زند. هر جمله‌ی تو برای درخت مهارتت شاهد است.'}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
@@ -385,7 +412,7 @@ export default function ChatView() {
     </div>
   )
 
-  /** compact vs full summary rendering (full pipeline UI lands in M8) */
+  /** full/compact session summary (docs/02 §3.3) — M8 adds delayed results */
   function SessionSummary({ compact = false }: { compact?: boolean }) {
     const s = chat.summary
     if (!s) return null
@@ -396,16 +423,63 @@ export default function ChatView() {
             خلاصه‌ی جلسه
           </CardTitle>
           <CardDescription>
-            {faDigits(chat.turnCount)} پیام تو · {formatDuration(elapsed)} · {faDigits(chat.endStats?.applied ?? 0)} گره به‌روز شد
+            {faDigits(chat.turnCount)} پیام تو · {formatDuration(elapsed)} ·{' '}
+            {faDigits(chat.endStats?.applied ?? 0)} گره به‌روز شد
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm leading-7">
+          {s.delayTestResults.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="font-medium">نتیجه‌ی آزمون تأییدی:</p>
+              <ul className="space-y-1">
+                {s.delayTestResults.map((d) => (
+                  <li key={`${d.nodeId}:${d.skill}`}>
+                    {d.skipped === 'incomplete' ? (
+                      <>
+                        ⏭️ «<span dir="ltr">{d.title ?? d.nodeId}</span>» — ناتمام، بعداً دوباره
+                      </>
+                    ) : d.revoked ? (
+                      <>
+                        ⚠️ «<span dir="ltr">{d.title ?? d.nodeId}</span>» — تسلط لغو شد؛ به حالت یادگیری برگشت
+                      </>
+                    ) : d.mastered ? (
+                      <>
+                        ✅ «<span dir="ltr">{d.title ?? d.nodeId}</span>» — تسلط تأیید شد!
+                      </>
+                    ) : (
+                      <>
+                        ❌ «<span dir="ltr">{d.title ?? d.nodeId}</span>» — تأیید نشد؛ ۷ روز دیگر دوباره
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <ul className="space-y-1.5">
             <li>
               تقویت‌شده: <b>{faDigits(s.reinforced.length)}</b> گره
+              {!compact && s.reinforced.length > 0 && (
+                <span className="text-muted-foreground">
+                  {' '}
+                  ({s.reinforced
+                    .slice(0, 4)
+                    .map((r) => r.title ?? r.nodeId)
+                    .join('، ')})
+                </span>
+              )}
             </li>
             <li>
               کم‌رنگ‌شده: <b>{faDigits(s.fading.length)}</b> گره
+              {!compact && s.fading.length > 0 && (
+                <span className="text-muted-foreground">
+                  {' '}
+                  ({s.fading
+                    .slice(0, 4)
+                    .map((f) => f.title ?? f.nodeId)
+                    .join('، ')})
+                </span>
+              )}
             </li>
             <li>
               مرورهای سررسید فردا: <b>{faDigits(s.tomorrow.reviewsDue)}</b>
@@ -421,9 +495,9 @@ export default function ChatView() {
                   </li>
                 ))}
               </ul>
-              <p className="text-xs text-muted-foreground">
-                صندوق بذرها در مایل‌استون M۷ باز می‌شود.
-              </p>
+              <Button variant="outline" size="sm" onClick={() => setView('seeds')}>
+                دیدن صندوق بذرها
+              </Button>
             </div>
           )}
         </CardContent>

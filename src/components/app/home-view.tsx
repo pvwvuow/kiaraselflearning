@@ -16,12 +16,13 @@ import {
   Loader2,
   Clock,
   Target,
+  ClipboardCheck,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { api, ApiError } from '@/lib/client/api'
-import type { SeedsInboxResponse } from '@/lib/client/api'
+import type { SeedsInboxResponse, DelayedTestStatusResponse } from '@/lib/client/api'
 import { faDigits } from '@/lib/client/format'
 import { useAppStore } from '@/stores/app-store'
 
@@ -41,6 +42,9 @@ export default function HomeView() {
   const [error, setError] = useState<string | null>(null)
   // M7: pending seed proposals for the inbox card (fetched once, silently)
   const [inbox, setInbox] = useState<SeedsInboxResponse | null>(null)
+  // M8: delayed-test readiness for the confirmatory card
+  const [delayStatus, setDelayStatus] = useState<DelayedTestStatusResponse | null>(null)
+  const [confirmatoryBusy, setConfirmatoryBusy] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -52,10 +56,45 @@ export default function HomeView() {
       .catch(() => {
         /* the inbox card just stays neutral on failure */
       })
+    api
+      .delayedTestStatus()
+      .then((r) => {
+        if (alive) setDelayStatus(r)
+      })
+      .catch(() => {
+        /* the confirmatory card just stays neutral on failure */
+      })
     return () => {
       alive = false
     }
   }, [])
+
+  /** M8: start an explicit confirmatory (delayed-test) session and jump into it */
+  const startConfirmatory = async () => {
+    setConfirmatoryBusy(true)
+    setError(null)
+    try {
+      const r = await api.startConfirmatory()
+      if (!r.started || !r.sessionId || !r.opener) {
+        setError(r.messageFa ?? 'الان گره‌ای برای آزمون تأییدی آماده نیست.')
+        return
+      }
+      useAppStore.getState().beginChat({
+        sessionId: r.sessionId,
+        scenario: { id: 'confirmatory', title: 'آزمون تأییدی', role: 'examiner', mustElicit: [] },
+        knownLexicon: { A1: 0, A2: 0, B1: 0 },
+        opener: r.opener.content,
+        openerMeta: r.opener.meta,
+        mode: 'confirmatory',
+        probePlan: r.plan ?? null,
+      })
+      setView('chat')
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : 'شروع آزمون ناموفق بود.')
+    } finally {
+      setConfirmatoryBusy(false)
+    }
+  }
 
   // the chat store keeps an in-flight session; ChatView owns reset semantics
   const goChat = () => setView('chat')
@@ -133,6 +172,45 @@ export default function HomeView() {
             <Button onClick={goChat} size="lg" className="w-full sm:w-auto gap-2">
               <MessageCircle className="size-4" aria-hidden />
               شروع گفتگو
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* delayed tests (M8) — mastery is confirmed, never assumed */}
+        <Card className="border-primary/30" data-testid="delayed-test-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ClipboardCheck className="size-5 text-primary" aria-hidden />
+              آزمون تأییدی
+              {delayStatus && delayStatus.eligible > 0 && (
+                <Badge data-testid="delay-eligible-count" className="gap-1">
+                  {faDigits(delayStatus.eligible)} گره آماده
+                </Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              تسلط فقط با آزمون دیرهنگام تأیید می‌شود: سه موقعیت تازه، بدون راهنما. اگر جواب
+              ندهی، گره صادقانه به حالت یادگیری برمی‌گردد.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => void startConfirmatory()}
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto gap-2"
+              disabled={confirmatoryBusy || (delayStatus !== null && delayStatus.eligible === 0)}
+              data-testid="start-confirmatory"
+            >
+              {confirmatoryBusy && <Loader2 className="size-4 animate-spin" aria-hidden />}
+              <ClipboardCheck className="size-4" aria-hidden />
+              {delayStatus === null
+                ? 'آزمون تأییدی'
+                : delayStatus.eligible > 0
+                  ? `شروع آزمون (${faDigits(Math.min(delayStatus.eligible, delayStatus.maxPerSession))} گره)`
+                  : delayStatus.pending > 0
+                    ? `آماده نیست — ${faDigits(delayStatus.pending)} گره در آستانه‌ی تسلط`
+                    : 'فعلاً گره‌ای در آستانه‌ی تسلط نیست'}
             </Button>
           </CardContent>
         </Card>

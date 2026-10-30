@@ -120,6 +120,8 @@ export interface SessionAggregate {
   totalWeight: number
   /** confident error items this session (confidence ≥ CONFIDENT_EVIDENCE) */
   errorItems: number
+  /** confident hint-free positive items (correct | slip_self_corrected) — Easy gate */
+  positiveItems: number
   /** any error item present */
   hasError: boolean
   /** any hint used */

@@ -20,23 +20,25 @@ import {
   type XaiMessageLite,
 } from '@/lib/llm/prompts'
 import { checkIPlus1 } from '@/lib/engine/iplus1'
+import { probeSlotFor, type StoredProbePlan } from '@/lib/engine/delayed-test'
 import type { SessionBrief } from '@/lib/engine/types'
 import { buildBriefBundle, getKnownLemmas, type BriefUserRow } from './brief-builder'
+import { parseBriefColumn } from './db-map'
+import {
+  probeSpecsFromStates,
+  runConfirmatoryTurn,
+  RIDEALONG_TRANSITION,
+  RIDEALONG_WARMUP_TURNS,
+} from './confirmatory'
+import { ChatError } from './errors'
 import type { PickedScenario } from './scenarios'
+
+export { ChatError }
 
 /** every N user turns the rolling summary refreshes (docs/05 M3) */
 export const ROLLING_SUMMARY_EVERY = 10
 /** assistant/alternating turns fed to the tutor beyond the summary */
 export const HISTORY_WINDOW = 20
-
-export class ChatError extends Error {
-  constructor(
-    public code: 'not_found' | 'ended' | 'empty_content' | 'too_long',
-    message: string,
-  ) {
-    super(message)
-  }
-}
 
 export interface ChatDeps {
   /** injectable for tests (mocked LLM) */
@@ -74,6 +76,8 @@ export interface StartSessionResult {
   brief: SessionBrief
   scenario: PickedScenario
   opener: { content: string; meta: TurnMeta }
+  /** M8 ride-along delayed-test probes planned for this session (ids never sent to the client) */
+  probeCount: number
 }
 
 export async function startSession(
@@ -84,12 +88,26 @@ export async function startSession(
   const chat = deps.chat ?? defaultChat
   const bundle = await buildBriefBundle(user, now)
 
+  // M8 ride-along probes (docs/00 C2): the planner already flipped p≈0.3
+  // inside planSession — the picked states become concrete probe specs with
+  // fresh contexts. Stored on the session row; ids never reach the client.
+  const day = now.toISOString().slice(0, 10)
+  const probeSpecs = probeSpecsFromStates(
+    user.id,
+    day,
+    bundle.plan.delayedTestProbes.map((s) => ({ nodeId: s.nodeId, skill: s.skill })),
+    bundle.scenario.id,
+  )
+  const probePlan: StoredProbePlan | null = probeSpecs.length
+    ? { warmupTurns: RIDEALONG_WARMUP_TURNS, probes: probeSpecs }
+    : null
+
   const session = await db.chatSession.create({
     data: {
       userId: user.id,
       type: 'roleplay_targeted',
       status: 'active',
-      brief: JSON.stringify(bundle.brief),
+      brief: JSON.stringify({ brief: bundle.brief, probePlan }),
       scenario: JSON.stringify(bundle.scenario),
     },
   })
@@ -148,7 +166,12 @@ export async function startSession(
       data: {
         userId: user.id,
         name: 'session_start',
-        props: JSON.stringify({ sessionId: session.id, scenarioId: bundle.scenario.id, briefTokens: bundle.tokenEstimate }),
+        props: JSON.stringify({
+          sessionId: session.id,
+          scenarioId: bundle.scenario.id,
+          briefTokens: bundle.tokenEstimate,
+          probes: probeSpecs.length,
+        }),
       },
     })
     .catch(() => {}) // metrics are write-only best-effort (docs/02)
@@ -158,6 +181,7 @@ export async function startSession(
     brief: bundle.brief,
     scenario: bundle.scenario,
     opener,
+    probeCount: probeSpecs.length,
   }
 }
 
@@ -173,6 +197,12 @@ export interface TurnMeta {
   rewritten?: boolean
   fallback?: boolean
   opener?: boolean
+  /** M8: this tutor turn ASKS the given probe context (grading maps on it) */
+  probe?: { probeIndex: number; contextIndex: number }
+  /** M8: deterministic probe turn — no tutor LLM was involved */
+  probeTurn?: boolean
+  /** M8: ride-along probes finished, back to the roleplay */
+  probesDone?: boolean
 }
 
 export interface TurnResult {
@@ -195,12 +225,21 @@ export async function runTutorTurn(
   if (!session || session.userId !== userId) throw new ChatError('not_found', 'session not found')
   if (session.status !== 'active') throw new ChatError('ended', 'session already ended')
 
+  // confirmatory sessions run the deterministic delayed-test loop (docs/03 §A6)
+  // — no tutor LLM, no roleplay chrome; the route layer stays type-agnostic
+  if (session.type === 'confirmatory') {
+    const r = await runConfirmatoryTurn(userId, sessionId, content, { analyze: deps.analyze }, now)
+    return { tutor: r.tutor, meta: r.meta as TurnMeta, userTurnCount: r.userTurnCount, summaryUpdated: false }
+  }
+
   // persist the learner turn FIRST (source of truth, even if the LLM fails)
   const userTurn = await db.turn.create({
     data: { sessionId, role: 'user', content, createdAt: now },
   })
 
-  const brief = parseJson<SessionBrief | null>(session.brief, null)
+  const stored = parseBriefColumn(session.brief)
+  const brief = stored.brief
+  const probePlan = stored.probePlan
   const scenario = parseJson<PickedScenario | null>(session.scenario, null)
 
   // ── history: rolling summary (if any) + last turns, learner messages wrapped ──
@@ -208,12 +247,54 @@ export async function runTutorTurn(
     where: { sessionId },
     orderBy: { createdAt: 'asc' },
   })
+  const userTurnCount = allTurns.filter((t) => t.role === 'user').length
   const history: XaiMessageLite[] = allTurns
     .slice(-HISTORY_WINDOW)
     .map((t) => ({
       role: t.role === 'user' ? 'user' : 'assistant',
       content: t.role === 'user' ? wrapUserMessage(t.content) : t.content,
     }))
+
+  // ── M8: ride-along probe turn (docs/00 C2) — after the 2-turn warm-up the
+  // plan's contexts replace the tutor LLM for exactly one turn each. The
+  // analyst grades the answer against ONLY the probed node (no contamination
+  // of other groups), and the rolling summary skips this turn. ──
+  const probeSlot = probeSlotFor(probePlan, userTurnCount)
+  if (probeSlot && probePlan) {
+    const probe = probePlan.probes[probeSlot.probeIndex]
+    const contextText = probe.contexts[probeSlot.contextIndex]?.text ?? ''
+    const graph = loadGraph('en')
+    const probeNode = graph.byId.get(probe.nodeId)
+    const analyze = deps.analyze ?? ((input: AnalystInput) => analyzeTurn(input))
+    let analysis: AnalystResult | null = null
+    try {
+      analysis = await analyze({
+        turnId: userTurn.id,
+        tutorContext: contextText,
+        learnerText: content,
+        knownNodes: probeNode
+          ? [{ id: probeNode.id, title: probeNode.title, type: probeNode.type, glossFa: probeNode.glossFa }]
+          : [],
+        targetNodeIds: [probe.nodeId],
+        responseLatencyMs: 0,
+      })
+    } catch {
+      analysis = null
+    }
+    if (analysis) await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
+
+    const nextSlot = probeSlotFor(probePlan, userTurnCount + 1)
+    const meta: TurnMeta = nextSlot
+      ? { probe: { probeIndex: nextSlot.probeIndex, contextIndex: nextSlot.contextIndex }, probeTurn: true }
+      : { probeTurn: true, probesDone: true }
+    const replyText = nextSlot
+      ? `${RIDEALONG_TRANSITION}\n${probePlan.probes[nextSlot.probeIndex].contexts[nextSlot.contextIndex]?.text ?? ''}`
+      : 'Thanks — now, back to our conversation!'
+    await db.turn.create({
+      data: { sessionId, role: 'tutor', content: replyText, meta: JSON.stringify(meta), createdAt: now },
+    })
+    return { tutor: replyText, meta, userTurnCount, summaryUpdated: false }
+  }
 
   const messages: XaiMessageLite[] = [{ role: 'system', content: renderTutorSystemPrompt(
     brief ?? {
@@ -235,16 +316,19 @@ export async function runTutorTurn(
 
   // ── per-turn analyst runs IN PARALLEL with the tutor call (docs/04 §5):
   // it only needs the learner's message + previous tutor context, so the turn
-  // latency does not grow. Failure → metric only, never blocks the chat. ──
+  // latency does not grow. Failure → metric only, never blocks the chat.
+  // M8: probed node ids are SUBTRACTED from the whitelist — probe answers
+  // must flow exclusively through the delayed-test grading (no warm-up). ──
   const analyze = deps.analyze ?? ((input: AnalystInput) => analyzeTurn(input))
+  const probeNodeIds = new Set((probePlan?.probes ?? []).map((p) => p.nodeId))
   const prevTutor = [...allTurns].reverse().find((t) => t.role === 'tutor')
   const latencyMs = prevTutor ? Math.max(0, now.getTime() - prevTutor.createdAt.getTime()) : 0
   const analysisPromise: Promise<AnalystResult | null> = analyze({
     turnId: userTurn.id,
     tutorContext: prevTutor?.content ?? null,
     learnerText: content,
-    knownNodes: await analystKnownNodes(userId, brief, scenario),
-    targetNodeIds: collectTargetIds(brief, scenario),
+    knownNodes: (await analystKnownNodes(userId, brief, scenario)).filter((n) => !probeNodeIds.has(n.id)),
+    targetNodeIds: collectTargetIds(brief, scenario).filter((id) => !probeNodeIds.has(id)),
     responseLatencyMs: latencyMs,
   }).catch(() => null)
 
@@ -297,8 +381,7 @@ export async function runTutorTurn(
     }
   }
 
-  // ── rolling summary every 10 learner turns ──
-  const userTurnCount = allTurns.filter((t) => t.role === 'user').length
+  // ── rolling summary every 10 learner turns (skipped on probe turns above) ──
   let summaryUpdated = false
   if (userTurnCount > 0 && userTurnCount % ROLLING_SUMMARY_EVERY === 0) {
     const prior = parseJson<{ text?: string; upToUserTurn?: number }>(session.summary, {})
@@ -425,6 +508,7 @@ export function toBriefUserRow(u: {
   goal: string
   interests: string
   correctionStyle: string
+  dailyMinutes: number
 }): BriefUserRow {
   return {
     id: u.id,
@@ -433,5 +517,6 @@ export function toBriefUserRow(u: {
     goal: u.goal,
     interests: u.interests,
     correctionStyle: u.correctionStyle,
+    dailyMinutes: u.dailyMinutes,
   }
 }

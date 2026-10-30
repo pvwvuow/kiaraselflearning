@@ -31,6 +31,10 @@ export interface TurnMeta {
   rewritten?: boolean
   fallback?: boolean
   opener?: boolean
+  /** M8: this tutor turn asks the given delayed-test context (no node ids — C2) */
+  probe?: { probeIndex: number; contextIndex: number }
+  probeTurn?: boolean
+  probesDone?: boolean
 }
 
 export interface BriefNodeRefLite {
@@ -71,9 +75,20 @@ export interface TurnResponse {
 }
 
 export interface SessionEndSummary {
-  reinforced: { nodeId: string; skill: string; grade: string }[]
-  fading: { nodeId: string; skill: string }[]
-  delayTestResults: unknown[]
+  reinforced: { nodeId: string; skill: string; grade: string; title: string | null; glossFa: string | null }[]
+  fading: { nodeId: string; skill: string; title: string | null; glossFa: string | null }[]
+  delayTestResults: {
+    nodeId: string
+    skill: string
+    passed: boolean
+    mastered: boolean
+    revoked: boolean
+    title: string | null
+    glossFa: string | null
+    correct: number
+    total: number
+    skipped?: 'incomplete'
+  }[]
   seeds: { seedId: string; nodeId: string | null; score: number; reasonFa: string }[]
   tomorrow: { reviewsDue: number; newCandidates: string[]; remedial: string[] }
 }
@@ -87,6 +102,27 @@ export interface SessionEndResponse {
   rootCaused: string[]
   seeds: { seedId: string; nodeId: string | null; score: number; reasonFa: string }[]
   summary: SessionEndSummary
+}
+
+// ── delayed tests (M8) ──
+
+export interface DelayedTestStatusResponse {
+  ok: true
+  eligible: number
+  pending: number
+  maxPerSession: number
+  contextsPerProbe: number
+}
+
+export interface ConfirmatoryStartResponse {
+  ok: true
+  started: boolean
+  sessionId: string | null
+  opener: { content: string; meta: TurnMeta } | null
+  plan: { probeCount: number; contextsPerProbe: number } | null
+  messageFa: string | null
+  eligible: number | null
+  pendingCount: number | null
 }
 
 // ── placement ──
@@ -109,7 +145,8 @@ export interface PlacementNextResponse {
 
 export interface PlacementAnswerInput {
   nodeId: string
-  band: string
+  /** derived server-side from the stored quiz; optional on the wire */
+  band?: string
   optionIndex: number
 }
 
@@ -286,6 +323,13 @@ export const api = {
     }),
 
   startSession: () => post<StartSessionResponse>('/api/session/start'),
+
+  /** explicit confirmatory (delayed-test) session — docs/05 M8 */
+  startConfirmatory: () =>
+    post<ConfirmatoryStartResponse>('/api/session/start', { type: 'confirmatory' }),
+
+  /** delayed-test readiness counters for the home card */
+  delayedTestStatus: () => jsonFetch<DelayedTestStatusResponse>('/api/delayed-test/status'),
 
   sendTurn: (sessionId: string, content: string) =>
     post<TurnResponse>('/api/session/turn', { sessionId, content }),

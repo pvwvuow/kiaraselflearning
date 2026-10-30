@@ -63,4 +63,4 @@ server.log
 /Caddyfile
 /.git-credentials
 /db/
-agent-notes/
+agent-notes/tool-results

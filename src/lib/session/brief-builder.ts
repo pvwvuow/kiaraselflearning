@@ -9,62 +9,27 @@ import { loadGraph } from '@/lib/graph/load'
 import {
   buildBrief,
   estimateBriefTokens,
+  planSession,
   rankWeakNodes,
 } from '@/lib/engine/brief'
 import { computeAvailability, frontierNodes } from '@/lib/engine/graph'
+import { rngFromSeed } from '@/lib/engine/rng'
 import type {
   BriefNodeRef,
   DisplayState,
   NodeSkillState,
   SessionBrief,
+  SessionPlan,
   Skill,
 } from '@/lib/engine/types'
 import { CEFR_ORDER, pickScenario, type PickedScenario } from './scenarios'
+import { collectDelayedTestStatus, rowToState } from './db-map'
+
+export { rowToState }
 
 export const BRIEF_TOKEN_BUDGET = 1500
 /** error-pattern look-back window for the brief's "trouble spots" */
 export const ERROR_PATTERN_WINDOW_DAYS = 30
-
-/** Prisma row → engine NodeSkillState (enums are strings in SQLite). */
-export function rowToState(row: {
-  userId: string
-  nodeId: string
-  skill: string
-  stability: number
-  difficulty: number
-  due: Date | null
-  lastReviewAt: Date | null
-  reps: number
-  lapses: number
-  learningSteps: number
-  fsrsState: string
-  displayState: string
-  strength: number
-  pendingDelayTest: boolean
-  delayTestEligibleAt: Date | null
-  masteredAt: Date | null
-  lastAppliedEvidenceId: string | null
-}): NodeSkillState {
-  return {
-    userId: row.userId,
-    nodeId: row.nodeId,
-    skill: row.skill as Skill,
-    stability: row.stability,
-    difficulty: row.difficulty,
-    due: row.due,
-    lastReviewAt: row.lastReviewAt,
-    reps: row.reps,
-    lapses: row.lapses,
-    learningSteps: row.learningSteps,
-    fsrsState: row.fsrsState as NodeSkillState['fsrsState'],
-    displayState: row.displayState as DisplayState,
-    strength: row.strength,
-    pendingDelayTest: row.pendingDelayTest,
-    delayTestEligibleAt: row.delayTestEligibleAt,
-    masteredAt: row.masteredAt,
-    lastAppliedEvidenceId: row.lastAppliedEvidenceId,
-  }
-}
 
 const NON_LOCKED: readonly DisplayState[] = ['available', 'learning', 'mastered', 'fading', 'assumed_known']
 
@@ -94,6 +59,8 @@ export interface BriefBundle {
   /** every known word lemma — the i+1 checker's allowlist */
   knownLemmas: string[]
   tokenEstimate: number
+  /** M8: the planner's mix for this session (40:25:20:15 + probes p=0.3) */
+  plan: SessionPlan
 }
 
 export interface BriefUserRow {
@@ -103,6 +70,8 @@ export interface BriefUserRow {
   goal: string
   interests: string
   correctionStyle: string
+  /** onboarding preference; null/undefined → default below (docs/02 User) */
+  dailyMinutes?: number | null
 }
 
 export function parseInterests(json: string): string[] {
@@ -195,13 +164,40 @@ export async function buildBriefBundle(user: BriefUserRow, now: Date): Promise<B
       desc: `${ERROR_TYPE_FA[type] ?? type} (${faDigits(count)} بار اخیر)`,
     }))
 
-  // ── scenario: deterministic per (user, day) ──
+  // ── M8 planner (docs/03 §C): the 40:25:20:15 mix bounds the session's
+  // content and the p≈0.3 probe flip picks ride-along delayed-test nodes.
+  // Probed nodes are then REMOVED from the practice material (weak/frontier/
+  // mustElicit) — never practiced in-session, per docs/03 §A6 no-warm-up. ──
+  const dailyMinutes = user.dailyMinutes ?? 15
+  const dueReviews = states.filter(
+    (s) => !s.masteredAt && s.reps > 0 && s.due !== null && s.due.getTime() <= now.getTime(),
+  )
   const day = now.toISOString().slice(0, 10)
+  const interests = parseInterests(user.interests)
+  const { eligible: probeCandidates } = await collectDelayedTestStatus(user.id, now)
+  const plan = planSession({
+    dueReviews,
+    frontier,
+    remedial: weakNodes,
+    interestFlavor: interests[0] ?? null,
+    dailyMinutes,
+    delayTestCandidates: probeCandidates.map((c) => c.state),
+    rng: rngFromSeed(`${user.id}:${day}:plan`),
+  })
+  const probeIds = new Set(plan.delayedTestProbes.map((s) => s.nodeId))
+  const plannedWeak = weakNodes.filter((w) => !probeIds.has(w.id))
+  const plannedFrontier = frontier.filter((f) => !probeIds.has(f.id))
+
+  // ── scenario: deterministic per (user, day) ──
   const resolveNode = (nodeId: string): BriefNodeRef | null => {
     const n = graph.byId.get(nodeId)
     return n ? { id: n.id, title: n.title, glossFa: n.glossFa } : null
   }
   const scenario = pickScenario(user.goal, `${user.id}:${day}`, resolveNode)
+  const plannedScenario = {
+    ...scenario,
+    mustElicit: scenario.mustElicit.filter((m) => !probeIds.has(m.id)),
+  }
 
   const brief = buildBrief({
     user: {
@@ -213,21 +209,22 @@ export async function buildBriefBundle(user: BriefUserRow, now: Date): Promise<B
     },
     knownBands,
     sampleLemmas,
-    weakNodes,
-    frontierNodes: frontier,
+    weakNodes: plannedWeak,
+    frontierNodes: plannedFrontier,
     activeErrorPatterns,
     scenario: {
-      title: scenario.title,
-      role: scenario.role,
-      mustElicit: scenario.mustElicit,
+      title: plannedScenario.title,
+      role: plannedScenario.role,
+      mustElicit: plannedScenario.mustElicit,
     },
   })
 
   const bundle: BriefBundle = {
     brief,
-    scenario,
+    scenario: plannedScenario,
     knownLemmas: knownWordNodes.map((n) => n.title),
     tokenEstimate: estimateBriefTokens(brief),
+    plan,
   }
   return boundToBudget(bundle)
 }

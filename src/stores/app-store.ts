@@ -21,8 +21,11 @@ export interface ChatMessage {
 
 export type SessionStatus = 'idle' | 'starting' | 'active' | 'ending' | 'ended'
 
+export type ChatMode = 'roleplay' | 'confirmatory'
+
 export interface ChatState {
   sessionId: string | null
+  mode: ChatMode
   scenario: PickedScenarioLite | null
   briefKnownLexicon: { A1: number; A2: number; B1: number } | null
   messages: ChatMessage[]
@@ -33,6 +36,8 @@ export interface ChatState {
   turnCount: number
   summary: SessionEndSummary | null
   endStats: { applied: number; seeds: number } | null
+  /** M8 confirmatory plan (counts only — never the node ids, docs/00 C2) */
+  probePlan: { probeCount: number; contextsPerProbe: number } | null
 }
 
 interface AppState {
@@ -53,6 +58,8 @@ interface AppState {
     knownLexicon: { A1: number; A2: number; B1: number }
     opener: string
     openerMeta: TurnMeta
+    mode?: ChatMode
+    probePlan?: { probeCount: number; contextsPerProbe: number } | null
   }) => void
   /** user message appended instantly; tutor reply arrives later */
   appendUserMessage: (content: string) => string
@@ -64,6 +71,7 @@ interface AppState {
 
 const initialChat: ChatState = {
   sessionId: null,
+  mode: 'roleplay',
   scenario: null,
   briefKnownLexicon: null,
   messages: [],
@@ -73,6 +81,7 @@ const initialChat: ChatState = {
   turnCount: 0,
   summary: null,
   endStats: null,
+  probePlan: null,
 }
 
 let msgSeq = 0
@@ -89,15 +98,17 @@ export const useAppStore = create<AppState>((set) => ({
   setView: (view) => set({ view }),
 
   setChatStatus: (status) => set((s) => ({ chat: { ...s.chat, status } })),
-  beginChat: ({ sessionId, scenario, knownLexicon, opener, openerMeta }) =>
+  beginChat: ({ sessionId, scenario, knownLexicon, opener, openerMeta, mode, probePlan }) =>
     set((s) => ({
       chat: {
         ...initialChat,
         sessionId,
+        mode: mode ?? 'roleplay',
         scenario,
         briefKnownLexicon: knownLexicon,
         status: 'active',
         startedAt: Date.now(),
+        probePlan: probePlan ?? null,
         messages: [
           { id: nextMsgId(), role: 'tutor' as const, content: opener, meta: openerMeta },
         ],
