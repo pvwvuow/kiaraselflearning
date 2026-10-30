@@ -14,7 +14,7 @@ missing while work remains, recreate it with this text (see AGENT_STATE.md §Cro
 ۵) ROADMAP.md و AGENT_STATE.md را به‌روز کن (Snapshot، بخش‌های مرتبط، Blockers).
 ۶) قبل از push بررسی‌ی لو رفتن کلید: `git diff --cached | grep -iE "xai-|ghp_|sk-"` — اگر خروجی داد، abort و فایل را از stage خارج کن.
 ۷) commit با پیام «M<n>: خلاصه» و push به origin main (credential helper از قبل تنظیم است).
-۸) با ابزار cron بررسی کن تسک `kiaraself-continuation` هنوز وجود دارد (action: list). اگر حذف شده و کار مانده، همین prompt (متن این فایل) را با زمان‌بندی `0,10,20,30,40,50 * * * *` و tz Asia/Tehran دوباره بساز.
+۸) با ابزار cron بررسی کن تسک `kiaraself-continuation` هنوز وجود دارد (action: list). اگر حذف شده و کار مانده، همین prompt (متن این فایل) را با زمان‌بندی ۶فیلدی Quartz `0 0,10,20,30,40,50 * * * ?` و tz Asia/Tehran دوباره بساز.
 ۹) اگر همه‌ی مایل‌استون‌های ROADMAP.md تیک خورده‌اند: تسک cron را حذف کن (action: delete)، FINAL_REPORT.md بنویس (چه ساخته شد، تعداد تست‌ها، نحوه‌ی اجرا، پیشنهاد post-MVP)، push کن و خلاصه‌ای برای کاربر بنویس.
 ۱۰) اگر چیزی بیش از ۳۰ دقیقه گیر کرد: مشکل را در AGENT_STATE.md زیر «Blockers» ثبت کن و سراغ قدم بعدیِ ممکن در همان مایل‌استون برو.
 
