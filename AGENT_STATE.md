@@ -13,10 +13,10 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ + M5 ✅ + M6 ✅ DONE → next: M7** |
-| Tests | 182/182 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ + M5 ✅ + M6 ✅ + M7 ✅ DONE → next: M8** |
+| Tests | 191/191 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`) |
-| DB | SQLite at `db/custom.db`, schema pushed (NodePosition += pinned/hidden in M6), 268 graph nodes + 205 edges seeded; demo user has a seeded tree (114 states: learning/fading/mastered/assumed_known via `scripts/seed-demo-tree.ts`); M5 user `sara-m5@test.local` has placement states (B1, 378 assumed_known) |
+| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded (world rows; user-generated plantings add rows on top); demo user has a seeded tree + **M7: 1 pending proposal (`en:word:offer`, score 1.0) + `en:word:bus` planted via the UI** |
 | Dev server | auto-runs on :3000 (restart path after schema pushes: `setsid bash .zscripts/dev.sh … & disown` — see Known issues) |
 
 ## Environment & secrets (CRITICAL RULES)
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0–M6 delivered)
+## Current state of the code (M0–M7 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -223,9 +223,69 @@
   planted user-generated node lands at stable tier prereq+1 and never moves others, pin/hide
   persistence, 400/404). NodePosition rows are DERIVED data — wiping them is safe
   (deterministic re-layout on next GET); positions of real users must never move though.
+- `src/lib/tree/seed-service.ts` — **M7** the seed-inbox wiring layer (docs/03 §B1
+  approval half): `getSeedInbox` (lazy-expires stale proposals §B4, returns ranked proposals
+  score-desc + recently decided + cap meter) · `plantedInWindow` (trailing 7-day count) ·
+  `approveSeed` (weekly cap FIRST — the 4th approval returns `{held:true}` and the seed stays
+  `proposed`, NOTHING planted; then planting: user-generated `error_pattern` GraphNode
+  (`en:err:u-<8hex>`, ownerId) + prerequisite edge source→pattern for track_pattern seeds;
+  UserNodeState reading+writing upsert with `update:{}` — **planting never overwrites
+  practiced state** (error-tracking history survives, node shows `learning` not `available`);
+  NodePosition created only when missing via `plantTierFor` + next-free-slot recovered with
+  `slotOfX` (world nodes keep their M6 layout position); `seed_approved` metric) ·
+  `rejectSeed` (flag-only decision, `seed_rejected` metric).
+- `src/lib/engine/growth.ts` — M7 adds pure `rejectCooldownActive(decidedAt, now)`
+  (14-day math; the muted-node SET is built by the wiring layers).
+- Pipeline pass D (M7 additions): lazy expiry of `proposed` seeds past `expiresAt` →
+  `expired`; 14-day reject cooldown — recent rejected Seeds (decidedAt ≥ now−14d) build
+  `mutedNodeIds` from candidateNodeId + triggerRef.nodeId, candidates matching are skipped
+  (lookup failure never blocks the pipeline).
+- API routes (M7, all live-verified on :3000): `GET /api/seeds` ·
+  `POST /api/seeds/[id]/approve` (200 held | planted, 404 foreign, 409 decided/expired) ·
+  `POST /api/seeds/[id]/reject` (200, 404, 409). All requireUser-guarded.
+- `src/components/app/seed-inbox.tsx` — **M7** the inbox view (client-side `seeds` view):
+  proposal cards = kind chip (کاشت واژه/الگوی خطا) + LTR title + gloss + score badge
+  (۰٫۸۰ style faScore) + 4 breakdown meters (ارتباط با هدف/فراوانی/آمادگی/تازگی, role=meter)
+  + Persian reason + LTR sample (red strikethrough → green) + بکارش در درخت / نه فعلاً;
+  cap meter in header («رشد این هفته: ۰ از ۳»); held-note explains the weekly cap; rejected
+  flash note (۱۴ روز); celebration overlay (data-testid=celebration, CSS confetti burst
+  `kiara-burst` + `kiara-pop` keyframes in globals.css, «درختت رشد کرد!» + دیدن درخت);
+  empty state → chat CTA; recent decisions list.
+- `src/components/app/home-view.tsx` — M7: the M7 placeholder card is now LIVE (fetches
+  inbox once, shows «N پیشنهاد تازه» badge / empty-state cap line); M9 settings card stays
+  placeholder. AppView += 'seeds'; app-root switches it.
+- `scripts/seed-demo-seeds.ts` — demo inbox seeding: picks 2 unplanted goal-relevant
+  prereq-free words (rank ≤5k), writes 2 sessions × 1 confident error each through the REAL
+  writer, ends session 2 through the REAL pipeline → real proposals (offer + bus, score 1.0).
+- **M7 agent-browser-verified live** (demo user): home card shows «۲ پیشنهاد تازه» → inbox
+  renders full breakdowns → approve `bus` → 200 planted → celebration overlay visible →
+  «دیدن درخت» → 268 nodes render, `bus` present with evidence-based why («در حال یادگیری —
+  ۲ خطای مطمئن در ۳۰ روز اخیر»), position (x=7104, tier=1) identical across GETs. Zero
+  console errors.
+- Tests: `tests/engine/growth.test.ts` (+2 M7 acceptance units: 2-sessions→proposal ≥0.45
+  with exact breakdown {1, 0.8, 1, 1}; cooldown 14d boundary) · `tests/api/seeds.test.ts`
+  (7: 401 guards, foreign-seed 404, DB-pipeline acceptance 2-sessions→proposal ≥0.45 +
+  inbox payload shape, approve→plant→tree `learning`-with-history + reading `available` +
+  double-approve 409, weekly cap 4th held with nothing planted, reject→14d cooldown through
+  a REAL re-scan (control node still re-proposes), track_pattern approve → user-generated
+  node + prereq edge + tree appearance). `tests/db/seed-idempotency.test.ts` mirror
+  invariant is WORLD-scoped now (`isUserGenerated:false`) — M7 plantings are a separate
+  intended population, non-world edge endpoints must be existing user-generated nodes.
 
 ## Known issues / gotchas
 
+- **M7 — calling dynamic route handlers directly in tests**: the handler signature is
+  `(req, ctx)` where `ctx.params` is a Promise. Passing the cookie as the 2nd arg (instead
+  of into the Request headers) silently yields 401 (the request lacks the cookie). Use
+  `handler(jsonReq(url, body, cookie), { params: Promise.resolve({ id }) })`.
+- **M7 — planting a node with error-tracking history keeps `learning`**: `approveSeed`
+  uses upsert `update:{}` on purpose (§B5 never overwrites practiced state). Only the
+  skills WITHOUT history get a fresh `available` state. Tests + UI must not expect a node
+  that already produced confident errors to flip to `available`.
+- **M7 — user-generated GraphNodes are NOT FK-owned by users**: `ownerId` is a soft
+  reference; deleting a user does not delete their created nodes (by design — nodes feed
+  the shared world later). Test teardowns must delete them explicitly. The idempotency
+  test's mirror invariant is world-scoped (`isUserGenerated:false`) for the same reason.
 - **M6 — stale Prisma client after `prisma db push`**: a RUNNING dev server keeps the old
   generated client in its require cache → new schema fields (e.g. NodePosition.pinned)
   cause `Unknown argument` 500s even though tests (fresh processes) pass. Fix: restart the

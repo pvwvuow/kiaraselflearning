@@ -26,6 +26,19 @@ async function counts() {
   return { nodes, edges, activeNodes }
 }
 
+/** world-graph rows only — user-generated nodes (M7 plantings) are a separate,
+ *  intended population and never part of the file-graph mirror invariant */
+const WORLD = { isUserGenerated: false } as const
+async function worldCounts() {
+  const [nodes, edges] = await Promise.all([
+    prisma.graphNode.count({ where: WORLD }),
+    prisma.graphEdge.count({
+      where: { fromNode: WORLD, toNode: WORLD },
+    }),
+  ])
+  return { nodes, edges }
+}
+
 afterAll(async () => {
   await prisma.$disconnect()
 })
@@ -54,14 +67,22 @@ describe('seed-graph idempotency (real DB)', () => {
       SELECT fromId, toId, type, COUNT(*) as c FROM GraphEdge GROUP BY fromId, toId, type HAVING c > 1`
     expect(dupEdges).toEqual([])
 
-    const [nodes, edges] = await Promise.all([prisma.graphNode.count(), prisma.graphEdge.count()])
-    expect(nodes).toBe(g.nodes.length)
-    expect(edges).toBe(g.edges.length)
+    const [nodes, edges] = await Promise.all([worldCounts(), Promise.resolve(g)])
+    expect(nodes.nodes).toBe(g.nodes.length)
+    expect(nodes.edges).toBe(g.edges.length)
 
     const allIds = g.nodes.map((n) => n.id)
-    const danglingFrom = await prisma.graphEdge.count({ where: { fromId: { notIn: allIds } } })
-    const danglingTo = await prisma.graphEdge.count({ where: { toId: { notIn: allIds } } })
-    expect(danglingFrom).toBe(0)
-    expect(danglingTo).toBe(0)
+    // non-world endpoints are legitimate since M7 (pattern edges word →
+    // user-generated node) — the invariant is that every edge endpoint is
+    // either a world node or an EXISTING user-generated node (FK guarantees
+    // existence; this catches ghost ids / typos in world data)
+    const badFrom = await prisma.graphEdge.count({
+      where: { fromId: { notIn: allIds }, fromNode: { isUserGenerated: false } },
+    })
+    const badTo = await prisma.graphEdge.count({
+      where: { toId: { notIn: allIds }, toNode: { isUserGenerated: false } },
+    })
+    expect(badFrom).toBe(0)
+    expect(badTo).toBe(0)
   })
 })

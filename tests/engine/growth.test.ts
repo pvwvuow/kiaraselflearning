@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildSeedDraft,
   capAllows,
+  rejectCooldownActive,
   scanRepeatedErrors,
   scoreCandidate,
 } from '@/lib/engine/growth'
@@ -171,6 +172,43 @@ describe('seed draft & cap (docs B3–B5)', () => {
     expect(capAllows(0)).toBe(true)
     expect(capAllows(2)).toBe(true)
     expect(capAllows(3)).toBe(false)
+  })
+
+  // ── M7 acceptance (docs/05) ──
+
+  it('M7 unit: 2 errors across 2 sessions on an unplanted word → proposal with score ≥ 0.45', () => {
+    // docs/03 §B3 real numbers: rank 1987, goal=work, no prereqs, not planted
+    const recommend = node('en:word:recommend', { frequencyRank: 1987, tags: ['work', 'meeting'] })
+    const evidence = [
+      err(recommend.id, 's1', 0.9, { produced: 'I recommend you to go', expected: 'I recommend going' }),
+      err(recommend.id, 's2', 0.8, { produced: 'he recommend it', expected: 'he recommends it' }),
+    ]
+    const candidates = scanRepeatedErrors(evidence, {
+      activeNodeIds: new Set<string>(), // unplanted
+      existingErrorPatternIds: new Set<string>(),
+    })
+    expect(candidates).toHaveLength(1)
+    expect(candidates[0].kind).toBe('plant_existing')
+    const draft = buildSeedDraft(candidates[0], {
+      node: recommend,
+      goal: 'work',
+      prereqStates: [],
+      userHasActiveState: false,
+    }, NOW)
+    expect(draft).not.toBeNull()
+    expect(draft!.score).toBeGreaterThanOrEqual(0.45)
+    expect(draft!.score).toBeCloseTo(0.8, 5) // 1.0 × 0.8 × 1.0 × 1.0
+    expect(draft!.candidateNodeId).toBe(recommend.id)
+    expect(draft!.scoreBreakdown).toEqual({ goalRelevance: 1, frequency: 0.8, readiness: 1, novelty: 1 })
+    expect(draft!.reasonFa).toContain('خطای مستقل')
+  })
+
+  it('M7 unit: reject cooldown is 14 days (docs/03 §B4 / docs/05 M7)', () => {
+    const t0 = new Date('2026-11-01T10:00:00Z')
+    expect(rejectCooldownActive(new Date(t0.getTime() - 13 * 86_400_000), t0)).toBe(true)
+    expect(rejectCooldownActive(new Date(t0.getTime() - 14 * 86_400_000), t0)).toBe(false)
+    expect(rejectCooldownActive(new Date(t0.getTime() - 15 * 86_400_000), t0)).toBe(false)
+    expect(rejectCooldownActive(new Date(t0.getTime() - 1 * 3_600_000), t0)).toBe(true)
   })
 })
 

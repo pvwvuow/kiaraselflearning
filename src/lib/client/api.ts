@@ -169,6 +169,50 @@ export interface TreeNodeFlags {
   hidden: boolean
 }
 
+// ── seeds (M7 — growth inbox) ──
+
+export type SeedStatus = 'proposed' | 'planted' | 'rejected' | 'expired'
+export type SeedKind = 'plant_existing' | 'track_pattern'
+
+export interface SeedBreakdown {
+  goalRelevance: number
+  frequency: number
+  readiness: number
+  novelty: number
+}
+
+export interface SeedEntry {
+  id: string
+  status: SeedStatus
+  kind: SeedKind
+  title: string
+  glossFa: string | null
+  score: number
+  breakdown: SeedBreakdown
+  reasonFa: string | null
+  sample: { produced: string | null; expected: string | null } | null
+  errorCount: number
+  createdAt: string
+  expiresAt: string | null
+  decidedAt: string | null
+  plantedNodeId: string | null
+}
+
+export interface SeedsInboxResponse {
+  ok: true
+  proposals: SeedEntry[]
+  recent: SeedEntry[]
+  cap: { planted: number; limit: number }
+}
+
+export interface ApproveSeedResponse {
+  ok: true
+  held: boolean
+  cap: { planted: number; limit: number }
+  plantedNodeId: string | null
+  entry: SeedEntry | null
+}
+
 // ── errors ──
 
 export class ApiError extends Error {
@@ -265,4 +309,15 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(flags),
     }),
+
+  /** the seed inbox (docs/05 M7): ranked proposals + weekly-cap meter */
+  seeds: () => jsonFetch<SeedsInboxResponse>('/api/seeds'),
+
+  /** approve a proposal — held:true means the weekly cap kept it in queue */
+  approveSeed: (seedId: string) =>
+    post<ApproveSeedResponse>(`/api/seeds/${encodeURIComponent(seedId)}/approve`),
+
+  /** reject a proposal — the node sits out a 14-day cooldown */
+  rejectSeed: (seedId: string) =>
+    post<{ ok: true }>(`/api/seeds/${encodeURIComponent(seedId)}/reject`),
 }

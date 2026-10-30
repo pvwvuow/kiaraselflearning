@@ -13,6 +13,7 @@
  */
 import { db } from '@/lib/db'
 import { loadGraph } from '@/lib/graph/load'
+import { ENGINE_CONFIG } from '@/lib/engine/config'
 import { aggregateSession } from '@/lib/engine/grading'
 import { applySessionReview, computeDisplayState, propagateFromSuccess, rootCauseAttribution } from '@/lib/engine/state'
 import { scanRepeatedErrors, buildSeedDraft } from '@/lib/engine/growth'
@@ -284,6 +285,44 @@ export async function endSession(userId: string, sessionId: string, now: Date = 
 
   // ── pass D: growth scan (docs/03 §B2–B3) ──
   const seeds: SeedProposal[] = []
+
+  // B4 hygiene: proposals older than their expiry leave the queue (over-cap
+  // seeds stay proposed until then — punishing nobody, just aging out).
+  await db.seed
+    .updateMany({
+      where: { userId, status: 'proposed', expiresAt: { lt: now } },
+      data: { status: 'expired' },
+    })
+    .catch(() => {})
+
+  // B4 (M7): a REJECTED proposal mutes its node for 14 days — no re-proposal
+  // of the same node (plant_existing by candidateNodeId, track_pattern by the
+  // triggerRef source node). Rejections must never come back to haunt the user.
+  const mutedNodeIds = new Set<string>()
+  try {
+    const recentRejected = await db.seed.findMany({
+      where: {
+        userId,
+        status: 'rejected',
+        decidedAt: {
+          gte: new Date(now.getTime() - ENGINE_CONFIG.SEED_REJECT_COOLDOWN_DAYS * 86_400_000),
+        },
+      },
+      select: { candidateNodeId: true, triggerRef: true },
+    })
+    for (const r of recentRejected) {
+      if (r.candidateNodeId) mutedNodeIds.add(r.candidateNodeId)
+      try {
+        const ref = JSON.parse(r.triggerRef ?? '{}') as { nodeId?: string }
+        if (ref.nodeId) mutedNodeIds.add(ref.nodeId)
+      } catch {
+        // corrupt row — ignore
+      }
+    }
+  } catch {
+    // defensive: a cooldown lookup failure must never block the pipeline
+  }
+
   const allErrorEvidence = await db.evidence.findMany({
     where: { userId, disputed: false, outcome: 'error', confidence: { gte: CONFIDENT } },
   })
@@ -309,6 +348,7 @@ export async function endSession(userId: string, sessionId: string, now: Date = 
   for (const c of candidates) {
     const node = graph.byId.get(c.nodeId)
     if (!node) continue
+    if (mutedNodeIds.has(c.nodeId)) continue // rejected recently → 14-day cooldown (docs/05 M7)
     const prereqDisplays = prerequisitesOf(node.id, graph.edges).map(
       (p) => stateMap.get(groupKey(p, 'writing'))?.displayState ?? stateMap.get(groupKey(p, 'reading'))?.displayState ?? null,
     )

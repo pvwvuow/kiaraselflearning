@@ -53,11 +53,11 @@
 - [x] Node card: title, gloss, 4-skill rings (listening/speaking "—"), state colors + dashed ring for fading (non-color cue), "why?" tooltip, pin/hide
 - [x] agent-browser: ≥30 nodes readable at 1280px; planted seed appears at stable position
 
-## M7 — Growth engine live + seed inbox
-- [ ] repeated_error trigger wired to real evidence; proposals with score breakdown + `reasonFa`
-- [ ] Inbox UI: approve/reject + celebration on plant; weekly cap enforced (4th held in queue)
-- [ ] Reject → 14-day cooldown on same node
-- [ ] Unit + agent-browser tests per docs/05 M7
+## M7 — Growth engine live + seed inbox ✅ (2026-10-30)
+- [x] repeated_error trigger wired to real evidence; proposals with score breakdown + `reasonFa`
+- [x] Inbox UI: approve/reject + celebration on plant; weekly cap enforced (4th held in queue)
+- [x] Reject → 14-day cooldown on same node
+- [x] Unit + agent-browser tests per docs/05 M7
 
 ## M8 — Delayed tests, mastery & session summary
 - [ ] Confirmatory session mode: samples ≤2 eligible nodes, 3 fresh contexts each, no hints, no warm-up

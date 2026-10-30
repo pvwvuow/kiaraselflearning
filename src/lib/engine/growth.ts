@@ -184,6 +184,15 @@ export function rejectCooldownEnd(now: Date): Date {
   return new Date(now.getTime() + ENGINE_CONFIG.SEED_REJECT_COOLDOWN_DAYS * 86_400_000)
 }
 
+/**
+ * B4 (M7): a rejected proposal mutes its node — no re-proposal for
+ * SEED_REJECT_COOLDOWN_DAYS (14 d). Pure time math; the wiring layer builds
+ * the muted-node set from Seed rows and consults this per candidate.
+ */
+export function rejectCooldownActive(rejectedDecidedAt: Date, now: Date): boolean {
+  return now.getTime() - rejectedDecidedAt.getTime() < ENGINE_CONFIG.SEED_REJECT_COOLDOWN_DAYS * 86_400_000
+}
+
 // ── helpers ──
 
 const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']

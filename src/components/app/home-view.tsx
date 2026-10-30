@@ -5,7 +5,7 @@
  * the tree (M6), seed inbox (M7) and settings (M9), plus logout. Kept light —
  * the product lives in the chat.
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Sprout,
   MessageCircle,
@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { api, ApiError } from '@/lib/client/api'
+import type { SeedsInboxResponse } from '@/lib/client/api'
 import { faDigits } from '@/lib/client/format'
 import { useAppStore } from '@/stores/app-store'
 
@@ -38,6 +39,23 @@ export default function HomeView() {
   const setView = useAppStore((s) => s.setView)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // M7: pending seed proposals for the inbox card (fetched once, silently)
+  const [inbox, setInbox] = useState<SeedsInboxResponse | null>(null)
+
+  useEffect(() => {
+    let alive = true
+    api
+      .seeds()
+      .then((r) => {
+        if (alive) setInbox(r)
+      })
+      .catch(() => {
+        /* the inbox card just stays neutral on failure */
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
 
   // the chat store keeps an in-flight session; ChatView owns reset semantics
   const goChat = () => setView('chat')
@@ -139,27 +157,53 @@ export default function HomeView() {
           </CardContent>
         </Card>
 
-        {/* future views (M7/M9) — honest placeholders, not fake features */}
+        {/* the seed inbox (M7) — growth proposals awaiting the user's verdict */}
+        <Card className="border-primary/30" data-testid="seed-inbox-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Inbox className="size-5 text-primary" aria-hidden />
+              صندوق بذرها
+              {inbox && inbox.proposals.length > 0 && (
+                <Badge data-testid="seed-pending-count" className="gap-1">
+                  <Sprout className="size-3" aria-hidden />
+                  {faDigits(inbox.proposals.length)} پیشنهاد تازه
+                </Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              خطاهایی که دو جلسه‌ی مستقل تکرار می‌شوند، به پیشنهاد رشد تبدیل می‌شوند — تو تصمیم
+              می‌گیری چه چیزی به درختت اضافه شود.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => setView('seeds')}
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto gap-2"
+            >
+              <Inbox className="size-4" aria-hidden />
+              {inbox && inbox.proposals.length > 0
+                ? 'دیدن پیشنهادها'
+                : inbox
+                  ? `صندوق خالی — رشد این هفته: ${faDigits(inbox.cap.planted)} از ${faDigits(inbox.cap.limit)}`
+                  : 'صندوق بذرها'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* future view (M9) — honest placeholder, not a fake feature */}
         <section aria-labelledby="soon" className="space-y-3">
           <h3 id="soon" className="text-sm font-semibold text-muted-foreground">
             به‌زودی
           </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Card className="opacity-70" aria-disabled>
-              <CardContent className="pt-5 space-y-1.5">
-                <Inbox className="size-5 text-muted-foreground" aria-hidden />
-                <p className="text-sm font-medium">صندوق بذرها</p>
-                <p className="text-xs text-muted-foreground leading-6">مایل‌استون M7 — پیشنهادهای رشد</p>
-              </CardContent>
-            </Card>
-            <Card className="opacity-70" aria-disabled>
-              <CardContent className="pt-5 space-y-1.5">
-                <Settings className="size-5 text-muted-foreground" aria-hidden />
-                <p className="text-sm font-medium">تنظیمات</p>
-                <p className="text-xs text-muted-foreground leading-6">مایل‌استون M9 — تنظیمات و خروجی داده</p>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="opacity-70" aria-disabled>
+            <CardContent className="pt-5 space-y-1.5">
+              <Settings className="size-5 text-muted-foreground" aria-hidden />
+              <p className="text-sm font-medium">تنظیمات</p>
+              <p className="text-xs text-muted-foreground leading-6">مایل‌استون M9 — تنظیمات و خروجی داده</p>
+            </CardContent>
+          </Card>
         </section>
 
         {error && (

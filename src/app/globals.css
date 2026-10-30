@@ -121,3 +121,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── M7 seed-inbox celebration (docs/03 §B5.3: planting = the positive moment) ── */
+@keyframes kiara-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.15) rotate(24deg);
+  }
+}
+.kiara-confetti {
+  animation: kiara-burst 1.15s ease-out forwards;
+}
+@keyframes kiara-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.kiara-pop {
+  animation: kiara-pop 0.6s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+}
