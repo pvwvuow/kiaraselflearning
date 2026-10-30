@@ -5,6 +5,7 @@
  * per-turn and end-of-session batch analysis cannot produce duplicates.
  */
 import { db } from '@/lib/db'
+import { recordMetric } from '@/lib/metrics'
 import type { EvidenceItem } from '@/lib/engine/types'
 import type { AnalystResult } from '@/lib/llm/analyst'
 
@@ -54,6 +55,7 @@ export async function writeTurnEvidence(
     })
     ids.push(row.id)
   }
+  await recordMetric(userId, 'evidence_created', { sessionId, turnId, count: ids.length, source: 'turn' })
   return { written: ids.length, skipped: false, ids }
 }
 
@@ -91,6 +93,7 @@ export async function writeEngineEvidence(
     })
     ids.push(row.id)
   }
+  await recordMetric(userId, 'evidence_created', { sessionId, count: ids.length, source: 'engine' })
   return { written: ids.length, skipped: false, ids }
 }
 
@@ -110,5 +113,6 @@ export async function disputeEvidence(
     where: { id: evidenceId },
     data: { disputed: true, disputeReason: reason },
   })
+  await recordMetric(userId, 'evidence_disputed', { evidenceId, withReason: Boolean(reason) })
   return { id: evidenceId, disputed: true }
 }

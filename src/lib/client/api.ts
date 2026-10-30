@@ -250,6 +250,18 @@ export interface ApproveSeedResponse {
   entry: SeedEntry | null
 }
 
+// ── settings (M9) ──
+
+export interface SettingsPatch {
+  displayName?: string
+  cefrSelf?: string
+  goal?: string
+  interests?: string[]
+  dailyMinutes?: number
+  correctionStyle?: string
+  consentLlm?: boolean
+}
+
 // ── errors ──
 
 export class ApiError extends Error {
@@ -364,4 +376,37 @@ export const api = {
   /** reject a proposal — the node sits out a 14-day cooldown */
   rejectSeed: (seedId: string) =>
     post<{ ok: true }>(`/api/seeds/${encodeURIComponent(seedId)}/reject`),
+
+  // ── settings (M9) ──
+
+  /** partial profile update (correction style, level, goal, minutes…) */
+  patchSettings: (data: SettingsPatch) =>
+    jsonFetch<{ ok: true; user: PublicUser }>('/api/settings', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+
+  /** download the user's full data as one JSON file */
+  exportData: async (): Promise<void> => {
+    let res: Response
+    try {
+      res = await fetch('/api/settings/export', { credentials: 'same-origin' })
+    } catch {
+      throw new ApiError(0, 'network_error', 'خطای شبکه — اتصال را بررسی کن.')
+    }
+    if (!res.ok) throw new ApiError(res.status, `http_${res.status}`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kiara-export-${new Date().toISOString().slice(0, 10)}.json`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  },
+
+  /** delete the account + all user data (cascade) — the cookie is cleared */
+  deleteAccount: () =>
+    jsonFetch<{ ok: true; deleted: true }>('/api/settings', { method: 'DELETE' }),
 }

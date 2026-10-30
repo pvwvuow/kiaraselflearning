@@ -33,3 +33,20 @@ export const onboardingSchema = z.object({
 export type RegisterInput = z.infer<typeof registerSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export type OnboardingInput = z.infer<typeof onboardingSchema>
+
+/**
+ * M9 settings — PARTIAL profile update from the settings page. Everything is
+ * optional; only provided keys change. cefrSelf here is the self-reported
+ * level hint — cefrComputed (engine/placement) keeps driving the engine.
+ */
+export const settingsSchema = z.object({
+  displayName: z.string().min(1).max(60).optional(),
+  cefrSelf: z.enum(CEFR_SELF_LEVELS).optional(),
+  goal: z.enum(GOALS).optional(),
+  interests: z.array(z.string().min(1).max(40)).max(12).optional(),
+  dailyMinutes: z.number().int().min(5).max(120).optional(),
+  correctionStyle: z.enum(CORRECTION_STYLES).optional(),
+  consentLlm: z.boolean().optional(),
+})
+
+export type SettingsInput = z.infer<typeof settingsSchema>

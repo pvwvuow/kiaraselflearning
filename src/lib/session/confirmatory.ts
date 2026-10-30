@@ -32,6 +32,9 @@ import { applyDelayedTestOutcome, newState } from '@/lib/engine/state'
 import type { NodeSkillState, Skill } from '@/lib/engine/types'
 import { analyzeTurn, type AnalystInput, type AnalystResult } from '@/lib/llm/analyst'
 import { writeTurnEvidence } from '@/lib/evidence/writer'
+import { recordMetric } from '@/lib/metrics'
+import { BUDGET_MESSAGE_FA, BUDGET_TURN_NOTICE_EN, budgetState, recordLlmCall } from '@/lib/llm/budget'
+import { safetyRedirectMessage, screenUserText } from '@/lib/llm/safety'
 import { pickScenario } from './scenarios'
 import { ChatError } from './errors'
 import {
@@ -182,6 +185,13 @@ export async function startConfirmatorySession(
     })
     .catch(() => {})
 
+  // M9: the delayed test was OFFered (docs/00 §4 metric point)
+  await recordMetric(user.id, 'delay_test_offered', {
+    sessionId: session.id,
+    mode: 'confirmatory',
+    count: probes.length,
+  })
+
   return {
     started: true,
     sessionId: session.id,
@@ -226,6 +236,28 @@ export async function runConfirmatoryTurn(
   const allTurns = await db.turn.findMany({ where: { sessionId }, orderBy: { createdAt: 'asc' } })
   const userTurnCount = allTurns.filter((t) => t.role === 'user').length
 
+  // M9 guardrails BEFORE the analyst (the only LLM in this loop):
+  // safety screen first, then the daily token budget — a flagged/over-cap
+  // answer is left UNGRADED, which the §A6 grading honestly marks `incomplete`
+  // (fair retry — the node is never punished for a guardrail).
+  const safety = screenUserText(content)
+  const budget = safety.flagged ? null : await budgetState(userId, now)
+  if (safety.flagged || budget?.over) {
+    const reply = safety.flagged
+      ? safetyRedirectMessage()
+      : `${BUDGET_TURN_NOTICE_EN}\n${BUDGET_MESSAGE_FA}`
+    const meta = safety.flagged
+      ? { confirmatory: true, safetyBlocked: true, fallback: true }
+      : { confirmatory: true, budgetCapped: true, fallback: true }
+    if (safety.flagged) {
+      await recordMetric(userId, 'safety_blocked', { sessionId, turnId: userTurn.id, category: safety.category ?? null })
+    }
+    await db.turn.create({
+      data: { sessionId, role: 'tutor', content: reply, meta: JSON.stringify(meta), createdAt: now },
+    })
+    return { tutor: reply, meta, userTurnCount }
+  }
+
   // grade THIS answer against the context the previous tutor turn asked
   const answerSlot = probeSlotFor(probePlan, userTurnCount)
   if (answerSlot) {
@@ -245,6 +277,10 @@ export async function runConfirmatoryTurn(
       analysis = null // grading failure must never block the session
     }
     if (analysis) {
+      await recordLlmCall(userId, 'analyst', analysis.promptTokens ?? null, analysis.completionTokens ?? null, {
+        sessionId,
+        stage: 'probe_grading',
+      })
       await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
     }
   }

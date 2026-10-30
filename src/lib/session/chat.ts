@@ -22,6 +22,14 @@ import {
 import { checkIPlus1 } from '@/lib/engine/iplus1'
 import { probeSlotFor, type StoredProbePlan } from '@/lib/engine/delayed-test'
 import type { SessionBrief } from '@/lib/engine/types'
+import { recordMetric } from '@/lib/metrics'
+import {
+  BUDGET_MESSAGE_FA,
+  BUDGET_TURN_NOTICE_EN,
+  budgetState,
+  recordLlmCall,
+} from '@/lib/llm/budget'
+import { safetyRedirectMessage, screenUserText } from '@/lib/llm/safety'
 import { buildBriefBundle, getKnownLemmas, type BriefUserRow } from './brief-builder'
 import { parseBriefColumn } from './db-map'
 import {
@@ -86,6 +94,11 @@ export async function startSession(
   now: Date = new Date(),
 ): Promise<StartSessionResult> {
   const chat = deps.chat ?? defaultChat
+
+  // M9 cost guardrail: an over-cap user starts NO new LLM session today.
+  const budget = await budgetState(user.id, now)
+  if (budget.over) throw new ChatError('budget', BUDGET_MESSAGE_FA)
+
   const bundle = await buildBriefBundle(user, now)
 
   // M8 ride-along probes (docs/00 C2): the planner already flipped p≈0.3
@@ -126,6 +139,12 @@ export async function startSession(
       },
     ]),
   })
+  if (openerReply.ok) {
+    await recordLlmCall(user.id, 'tutor', openerReply.promptTokens, openerReply.completionTokens, {
+      sessionId: session.id,
+      stage: 'opener',
+    })
+  }
 
   let opener: { content: string; meta: TurnMeta }
   if (openerReply.ok) {
@@ -139,7 +158,16 @@ export async function startSession(
       bundle.knownLemmas,
       targets,
       bundle.scenario.role,
+      user.id,
+      session.id,
     )
+    if (enforced.meta.rewritten) {
+      await recordMetric(user.id, 'iplus1_violation', {
+        sessionId: session.id,
+        stage: 'opener',
+        rate: enforced.meta.unknownRate ?? null,
+      })
+    }
     opener = {
       content: enforced.content,
       meta: { ...enforced.meta, latencyMs: openerReply.latencyMs, model: openerReply.model, opener: true },
@@ -176,6 +204,15 @@ export async function startSession(
     })
     .catch(() => {}) // metrics are write-only best-effort (docs/02)
 
+  // M9: probes offered this session (ride-along delayed tests, docs/00 §4)
+  if (probeSpecs.length > 0) {
+    await recordMetric(user.id, 'delay_test_offered', {
+      sessionId: session.id,
+      mode: 'ride_along',
+      count: probeSpecs.length,
+    })
+  }
+
   return {
     sessionId: session.id,
     brief: bundle.brief,
@@ -203,6 +240,10 @@ export interface TurnMeta {
   probeTurn?: boolean
   /** M8: ride-along probes finished, back to the roleplay */
   probesDone?: boolean
+  /** M9: turn answered WITHOUT any LLM — daily token budget exhausted */
+  budgetCapped?: boolean
+  /** M9: turn blocked by the deterministic safety screen (no LLM saw it) */
+  safetyBlocked?: boolean
 }
 
 export interface TurnResult {
@@ -248,6 +289,36 @@ export async function runTutorTurn(
     orderBy: { createdAt: 'asc' },
   })
   const userTurnCount = allTurns.filter((t) => t.role === 'user').length
+
+  // ── M9 guardrails, BEFORE any LLM (tutor, analyst, summary — everything):
+  // 1) deterministic safety screen — flagged text never reaches a model;
+  //    warm redirect, no accusation, `safety_blocked` metric (docs/00 #6/#7).
+  const safety = screenUserText(content)
+  if (safety.flagged) {
+    const meta: TurnMeta = { safetyBlocked: true, fallback: true }
+    await db.turn.create({
+      data: { sessionId, role: 'tutor', content: safetyRedirectMessage(), meta: JSON.stringify(meta), createdAt: now },
+    })
+    await recordMetric(userId, 'safety_blocked', {
+      sessionId,
+      turnId: userTurn.id,
+      category: safety.category ?? null,
+    })
+    return { tutor: safetyRedirectMessage(), meta, userTurnCount, summaryUpdated: false }
+  }
+
+  // 2) daily token budget — over cap: NO LLM call happens today; the turn
+  //    still persists and the conversation keeps flowing (friendly notice).
+  const budget = await budgetState(userId, now)
+  if (budget.over) {
+    const notice = `${BUDGET_TURN_NOTICE_EN}\n${BUDGET_MESSAGE_FA}`
+    const meta: TurnMeta = { budgetCapped: true, fallback: true }
+    await db.turn.create({
+      data: { sessionId, role: 'tutor', content: notice, meta: JSON.stringify(meta), createdAt: now },
+    })
+    return { tutor: notice, meta, userTurnCount, summaryUpdated: false }
+  }
+
   const history: XaiMessageLite[] = allTurns
     .slice(-HISTORY_WINDOW)
     .map((t) => ({
@@ -281,7 +352,13 @@ export async function runTutorTurn(
     } catch {
       analysis = null
     }
-    if (analysis) await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
+    if (analysis) {
+      await recordLlmCall(userId, 'analyst', analysis.promptTokens ?? null, analysis.completionTokens ?? null, {
+        sessionId,
+        stage: 'probe_grading',
+      })
+      await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
+    }
 
     const nextSlot = probeSlotFor(probePlan, userTurnCount + 1)
     const meta: TurnMeta = nextSlot
@@ -334,6 +411,9 @@ export async function runTutorTurn(
 
   // ── tutor call ──
   const reply = await chat({ role: 'tutor', temperature: 0.8, maxTokens: 300, messages: x(messages) })
+  if (reply.ok) {
+    await recordLlmCall(userId, 'tutor', reply.promptTokens, reply.completionTokens, { sessionId, stage: 'turn' })
+  }
 
   // ── i+1 check → rewrite → fallback (docs/04 §4) ──
   const knownLemmas = await getKnownLemmas(userId)
@@ -353,11 +433,20 @@ export async function runTutorTurn(
       knownLemmas,
       targetTitles,
       scenario?.role ?? null,
+      userId,
+      sessionId,
     )
     finalContent = enforced.content
     meta.unknownRate = enforced.meta.unknownRate
     meta.unknownWords = enforced.meta.unknownWords
-    if (enforced.meta.rewritten) meta.rewritten = true
+    if (enforced.meta.rewritten) {
+      meta.rewritten = true
+      await recordMetric(userId, 'iplus1_violation', {
+        sessionId,
+        stage: 'turn',
+        rate: enforced.meta.unknownRate ?? null,
+      })
+    }
     if (enforced.meta.fallback) meta.fallback = true
   }
 
@@ -373,6 +462,10 @@ export async function runTutorTurn(
   // ── collect the analyst result → Evidence rows (append-only, idempotent) ──
   const analysis = await analysisPromise
   if (analysis) {
+    await recordLlmCall(userId, 'analyst', analysis.promptTokens ?? null, analysis.completionTokens ?? null, {
+      sessionId,
+      stage: 'turn',
+    })
     await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
     if (!analysis.ok) {
       await db.metricEvent
@@ -396,6 +489,10 @@ export async function runTutorTurn(
       messages: x(buildRollingSummaryMessages(prior.text ? `Previous summary:\n${prior.text}\n\n${transcript}` : transcript)),
     })
     if (summary.ok) {
+      await recordLlmCall(userId, 'analyst', summary.promptTokens, summary.completionTokens, {
+        sessionId,
+        stage: 'rolling_summary',
+      })
       await db.chatSession.update({
         where: { id: sessionId },
         data: {
@@ -421,6 +518,7 @@ function runIPlus1Sync(
  * Shared i+1 enforcement (docs/04 §4): check → one rewrite pass with the
  * unknown list fed back → deterministic fallback if the rewrite still violates.
  * Used by BOTH the opener and every turn, so meta semantics stay identical.
+ * M9: the rewrite tutor call is recorded for the daily token budget.
  */
 async function enforceIPlus1(
   chat: NonNullable<ChatDeps['chat']>,
@@ -430,6 +528,8 @@ async function enforceIPlus1(
   knownLemmas: string[],
   targets: string[],
   role: string | null,
+  userId?: string,
+  sessionId?: string,
 ): Promise<{ content: string; meta: TurnMeta }> {
   const check = runIPlus1Sync(reply.content, knownLemmas, targets)
   const meta: TurnMeta = { unknownRate: check.rate, unknownWords: check.unknown, rewritten: false, fallback: false }
@@ -444,6 +544,12 @@ async function enforceIPlus1(
     maxTokens: 300,
     messages: x(buildRewriteMessages(systemPrompt, history, reply.content, check.unknown)),
   })
+  if (rewrite.ok && userId) {
+    await recordLlmCall(userId, 'tutor', rewrite.promptTokens, rewrite.completionTokens, {
+      sessionId: sessionId ?? null,
+      stage: 'iplus1_rewrite',
+    })
+  }
   if (!rewrite.ok) {
     // rewrite call failed → keep the original reply (better than nothing)
     return { content: reply.content, meta }

@@ -48,6 +48,10 @@ export async function POST(req: Request) {
     })
   } catch (err) {
     if (err instanceof ChatError) {
+      if (err.code === 'budget') {
+        // M9: friendly daily-cap response — the turn itself never reaches an LLM
+        return Response.json({ ok: false, error: 'budget', errorFa: err.message }, { status: 429 })
+      }
       const status = err.code === 'not_found' ? 404 : err.code === 'ended' ? 409 : 400
       return Response.json({ ok: false, error: err.code }, { status })
     }

@@ -4,7 +4,13 @@
  */
 export class ChatError extends Error {
   constructor(
-    public code: 'not_found' | 'ended' | 'empty_content' | 'too_long' | 'wrong_type',
+    public code:
+      | 'not_found'
+      | 'ended'
+      | 'empty_content'
+      | 'too_long'
+      | 'wrong_type'
+      | 'budget', // M9: daily LLM token budget exhausted (friendly Persian message)
     message: string,
   ) {
     super(message)

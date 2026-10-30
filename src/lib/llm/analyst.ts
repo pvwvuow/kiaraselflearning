@@ -156,6 +156,9 @@ export interface AnalystResult {
   /** how many attempts the LLM needed (1 = clean, 2 = repaired) */
   attempts: number
   error?: string
+  /** M9: total usage across this call's attempts (for the daily token budget) */
+  promptTokens?: number
+  completionTokens?: number
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -277,6 +280,8 @@ export async function analyzeTurn(
   const messages = buildAnalystMessages(input)
   let attempts = 0
   let lastError = 'unreached'
+  let promptTokens = 0
+  let completionTokens = 0
 
   for (let attempt = 0; attempt < 2; attempt++) {
     attempts = attempt + 1
@@ -293,12 +298,15 @@ export async function analyzeTurn(
       lastError = res.error
       continue // transport error → use the single retry on the transport too
     }
+    // M9: accumulate usage across attempts (the budget must see repairs too)
+    promptTokens += res.promptTokens ?? 0
+    completionTokens += res.completionTokens ?? 0
     const v = validateAnalystOutput(res.content, whitelist)
     if (v.ok) {
-      return { ok: true, items: v.items, newUnknownWords: v.newUnknownWords, attempts }
+      return { ok: true, items: v.items, newUnknownWords: v.newUnknownWords, attempts, promptTokens, completionTokens }
     }
     lastError = v.error
   }
 
-  return { ok: false, items: [], newUnknownWords: [], attempts, error: lastError }
+  return { ok: false, items: [], newUnknownWords: [], attempts, error: lastError, promptTokens, completionTokens }
 }

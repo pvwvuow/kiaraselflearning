@@ -6,7 +6,7 @@
  * 401 unauthenticated · 403 LLM consent missing.
  */
 import { requireUser } from '@/lib/auth/session'
-import { startSession, toBriefUserRow } from '@/lib/session/chat'
+import { startSession, ChatError, toBriefUserRow } from '@/lib/session/chat'
 import { startConfirmatorySession } from '@/lib/session/confirmatory'
 
 export async function POST(req: Request) {
@@ -55,6 +55,10 @@ export async function POST(req: Request) {
       opener: result.opener,
     })
   } catch (err) {
+    // M9: over the daily token budget → friendly 429, NOT a 500 (docs/05 M9)
+    if (err instanceof ChatError && err.code === 'budget') {
+      return Response.json({ ok: false, error: 'budget', errorFa: err.message }, { status: 429 })
+    }
     console.error('session/start failed:', err)
     return Response.json(
       { ok: false, error: 'session_start_failed', errorFa: 'شروع جلسه ناموفق بود. دوباره تلاش کنید.' },
