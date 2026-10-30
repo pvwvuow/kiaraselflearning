@@ -48,10 +48,10 @@
 - [x] agent-browser verification: onboarding (incl. live adaptive placement, 378 states lit) → start session → 3 turns with real grok-4.7 → LTR-in-RTL renders without breakage; zero console errors
 - [x] Placement wired into onboarding (M1 gap work): `POST /api/placement` stateless ladder, server-side grading, `assumed_known` upserts + cefrComputed
 
-## M6 — Tree view (simple SVG)
-- [ ] Deterministic layered layout from prerequisites; `NodePosition` persistence (two renders → identical positions)
-- [ ] Node card: title, gloss, 4-skill rings (listening/speaking "—"), state colors + dashed ring for fading (non-color cue), "why?" tooltip, pin/hide
-- [ ] agent-browser: ≥30 nodes readable at 1280px; planted seed appears at stable position
+## M6 — Tree view (simple SVG) ✅ (2026-10-30)
+- [x] Deterministic layered layout from prerequisites; `NodePosition` persistence (two renders → identical positions)
+- [x] Node card: title, gloss, 4-skill rings (listening/speaking "—"), state colors + dashed ring for fading (non-color cue), "why?" tooltip, pin/hide
+- [x] agent-browser: ≥30 nodes readable at 1280px; planted seed appears at stable position
 
 ## M7 — Growth engine live + seed inbox
 - [ ] repeated_error trigger wired to real evidence; proposals with score breakdown + `reasonFa`

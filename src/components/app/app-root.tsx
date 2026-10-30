@@ -14,6 +14,7 @@ import AuthView from './auth-view'
 import OnboardingView from './onboarding-view'
 import HomeView from './home-view'
 import ChatView from './chat-view'
+import TreeView from './tree-view'
 
 export default function AppRoot() {
   const booted = useAppStore((s) => s.booted)
@@ -66,6 +67,8 @@ export default function AppRoot() {
       return <HomeView />
     case 'chat':
       return <ChatView />
+    case 'tree':
+      return <TreeView />
     case 'landing':
     default:
       return <LandingView />

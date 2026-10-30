@@ -222,6 +222,9 @@ model NodePosition {
   x      Float
   y      Float
   tier   Int // depth layer for layout stability
+  // per-user view flags (M6): pin = keep in focus, hide = remove from render
+  pinned Boolean @default(false)
+  hidden Boolean @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

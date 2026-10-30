@@ -110,6 +110,15 @@ export const ENGINE_CONFIG = {
   PLACEMENT_STRENGTH: 0.5,
   /** placement writes states for these skills (MVP: written evidence only) */
   PLACEMENT_SKILLS: ['reading', 'writing'] as const,
+
+  // ── tree layout (docs/05 M6) — SVG units, all positions deterministic ──
+  /** node card size on the tree canvas */
+  TREE_NODE_W: 132,
+  TREE_NODE_H: 76,
+  /** horizontal distance between adjacent slots within a tier (slot = integer index) */
+  TREE_GAP_X: 148,
+  /** vertical distance between layout tiers (y = tier × this) — card 76 + 54 breathing room */
+  TREE_TIER_GAP_Y: 130,
 } as const
 
 export type EngineConfig = typeof ENGINE_CONFIG

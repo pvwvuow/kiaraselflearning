@@ -13,11 +13,11 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ + M5 ✅ DONE → next: M6** |
-| Tests | 164/164 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ + M5 ✅ + M6 ✅ DONE → next: M7** |
+| Tests | 182/182 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`) |
-| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready; M5 browser-test user `sara-m5@test.local` has placement states (B1, 378 assumed_known) |
-| Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
+| DB | SQLite at `db/custom.db`, schema pushed (NodePosition += pinned/hidden in M6), 268 graph nodes + 205 edges seeded; demo user has a seeded tree (114 states: learning/fading/mastered/assumed_known via `scripts/seed-demo-tree.ts`); M5 user `sara-m5@test.local` has placement states (B1, 378 assumed_known) |
+| Dev server | auto-runs on :3000 (restart path after schema pushes: `setsid bash .zscripts/dev.sh … & disown` — see Known issues) |
 
 ## Environment & secrets (CRITICAL RULES)
 
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0–M5 delivered)
+## Current state of the code (M0–M6 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -182,7 +182,68 @@
   Shift+Enter newline, Radix dialog focus trap, chips tap-fill composer (verified via
   `__kiaraStore` injection). Contrast: `--muted-foreground` darkened 0.556→0.44 (≈7.8:1).
 
+- `src/lib/engine/tree-layout.ts` — **M6**: PURE deterministic layered layout.
+  `buildLayoutTiers` = longest prerequisite depth, raised to `cluster tier + 1` for `part_of`
+  members (own DFS with cycle guard — do NOT pass a pre-seeded memo into `nodeTier`, it
+  short-circuits). `computeTreeLayout` = saved positions pass through UNTOUCHED; fresh nodes
+  placed per tier at the NEXT FREE SLOT (docs/03 §B5), ordered by (cluster, typeGroup,
+  frequencyRank, id); x always integer slot × TREE_GAP_X, y = tier × TREE_TIER_GAP_Y — both
+  exactly recoverable from a saved row. `plantTierFor` = 1 + max(prereq tiers) for M7 planting.
+  Config: TREE_NODE_W 132 · TREE_NODE_H 76 · TREE_GAP_X 148 · TREE_TIER_GAP_Y 130.
+- `src/lib/tree/tree-service.ts` — **M6** wiring layer: `getTreeView(userId, now)` merges
+  world graph (files) ∪ user-generated nodes (DB) + states + saved positions → layout →
+  persists only `newIds` (createMany, P2002-tolerant) → recomputes display state ON READ
+  (`computeDisplayState`) → node state = strongest across skills with priority
+  fading > learning > mastered > assumed_known > available > locked → evidence aggregates
+  (last 2000 non-disputed rows: lastOutcome + confident errors/30d) → Persian `why` per node
+  (`buildWhy`: locked names blocking prereq titles, fading/learning cite evidence) →
+  prerequisite-only edge list + stats + bounds. `setTreeNodeFlags` = pin/hide on the
+  NodePosition row (creates the row with a deterministic position when missing).
+- API routes (M6, live-verified on :3000): `GET /api/tree` (requireUser; first call lays out
+  and persists ALL positions, later calls keep them — the semi-fixed contract) ·
+  `PATCH /api/tree/[nodeId]` (zod pinned/hidden, 401/400/404; returns `{ ok, id, pinned,
+  hidden }` — the client expects `id`, keep them in sync).
+- `src/components/app/tree-view.tsx` — **M6** the tree view (client-side `tree` view in the
+  `/` shell): SVG canvas `absolute inset-0` (h-full on a flex child collapses to the 150px
+  SVG default — do not regress), pointer-drag pan, zoom buttons 0.45–2.5 (default 0.72),
+  «نمایش ناحیه‌ی من» recenter on the user's lit region, state colors + DOUBLE dashed ring for
+  fading (non-color cue), 4 skill mini-rings (stroke-dasharray = strength; listening/speaking
+  render "—"), pinned = green border + 📌 badge, selected-node panel = the "why?" tooltip with
+  pin/hide actions, legend, Esc/keyboard support (`role=button` nodes). Home view's tree card
+  is live; M7/M9 cards remain placeholders.
+- **M6 agent-browser-verified live** (demo user, 114 states): 268 nodes render; 32 readable
+  at 1280px after one zoom-out (26 at default 0.72); positions identical across reload
+  (268/268 within ±1px); pin persists across reload; fading card shows dashed rings + why;
+  zero console errors. `scripts/seed-demo-tree.ts` seeds the demo user's spread
+  (learning/fading/mastered/assumed_known).
+- `tests/engine/tree-layout.test.ts` (11: tier math, two-render identity, exact preservation
+  + next-free-slot, collision-freedom, stale rows, cluster-hug ordering, plantTierFor) ·
+  `tests/api/tree.test.ts` (7: 401 guards, persist-then-identical GETs + availability wiring
+  (fresh user MUST see >50 `available`), per-skill payload + read-time fading, locked-why,
+  planted user-generated node lands at stable tier prereq+1 and never moves others, pin/hide
+  persistence, 400/404). NodePosition rows are DERIVED data — wiping them is safe
+  (deterministic re-layout on next GET); positions of real users must never move though.
+
 ## Known issues / gotchas
+
+- **M6 — stale Prisma client after `prisma db push`**: a RUNNING dev server keeps the old
+  generated client in its require cache → new schema fields (e.g. NodePosition.pinned)
+  cause `Unknown argument` 500s even though tests (fresh processes) pass. Fix: restart the
+  dev server via `setsid bash .zscripts/dev.sh > /tmp/devsh.log 2>&1 < /dev/null & disown`
+  (the harness's own entry: bun install → db:push → bun run dev → disown). Plain `nohup bun
+  run dev &` does NOT survive between tool calls. Check `dev.log` + `curl :3000` after.
+- **M6 — SVG height trap**: `h-full` on an `<svg>` inside a flex-grown div resolves to the
+  150px replaced-element default (percentage against an indefinite height). The tree canvas
+  svg must stay `absolute inset-0` inside the `relative overflow-hidden` canvas div.
+- **M6 — panel vs. canvas pointer handlers**: the panel lives inside the pointer-drag
+  container; `onPointerDown` must ignore events from `[data-testid=node-panel]` and
+  background-deselect must be skipped when the press started on a node — otherwise panel
+  buttons unmount before their onClick fires.
+- **M6 — node ids contain colons** (`en:word:flight`) — never `split(':')` on composite
+  "id:value" fingerprints; use `lastIndexOf(':')`.
+- **M6 — availability map key**: `computeAvailability` returns `{ node: EngineNode, ... }`
+  — the per-id map must key on `a.node.id` (TS won't catch `a.nodeId` under esbuild/vitest,
+  which strip types without checking).
 
 - ts-fsrs v6 API: `new FSRS(generatorParameters())`, `f.repeat(card, now)[Rating.X].card`,
   `f.retrievability(card, now)`; Rating/State are plain objects (no reverse map).

@@ -119,19 +119,32 @@ export default function HomeView() {
           </CardContent>
         </Card>
 
-        {/* future views (M6/M7/M9) — honest placeholders, not fake features */}
+        {/* the personal skill tree (M6) */}
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <GitBranch className="size-5 text-primary" aria-hidden />
+              درخت مهارت
+            </CardTitle>
+            <CardDescription>
+              نقشه‌ی زنده‌ی یادگیریت: گره‌های روشن، مرزِ رشد و گره‌هایی که در حال فراموشی‌اند —
+              همه در یک نگاه.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setView('tree')} variant="outline" size="lg" className="w-full sm:w-auto gap-2">
+              <GitBranch className="size-4" aria-hidden />
+              دیدن درخت
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* future views (M7/M9) — honest placeholders, not fake features */}
         <section aria-labelledby="soon" className="space-y-3">
           <h3 id="soon" className="text-sm font-semibold text-muted-foreground">
             به‌زودی
           </h3>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Card className="opacity-70" aria-disabled>
-              <CardContent className="pt-5 space-y-1.5">
-                <GitBranch className="size-5 text-muted-foreground" aria-hidden />
-                <p className="text-sm font-medium">درخت مهارت</p>
-                <p className="text-xs text-muted-foreground leading-6">مایل‌استون M6 — نمای SVG گره‌ها</p>
-              </CardContent>
-            </Card>
+          <div className="grid gap-3 sm:grid-cols-2">
             <Card className="opacity-70" aria-disabled>
               <CardContent className="pt-5 space-y-1.5">
                 <Inbox className="size-5 text-muted-foreground" aria-hidden />

@@ -113,6 +113,62 @@ export interface PlacementAnswerInput {
   optionIndex: number
 }
 
+// ── tree (M6) ──
+
+export type TreeDisplayState =
+  | 'locked'
+  | 'available'
+  | 'learning'
+  | 'mastered'
+  | 'fading'
+  | 'assumed_known'
+
+export interface TreeSkillView {
+  state: TreeDisplayState
+  strength: number
+  reps: number
+  due: string | null
+}
+
+export interface TreeNodeView {
+  id: string
+  type: string
+  cefr: string | null
+  rank: number | null
+  title: string
+  glossFa: string | null
+  x: number
+  y: number
+  tier: number
+  state: TreeDisplayState
+  /** MVP: listening/speaking always null (UI renders "—") */
+  skills: {
+    listening: TreeSkillView | null
+    speaking: TreeSkillView | null
+    reading: TreeSkillView | null
+    writing: TreeSkillView | null
+  }
+  pinned: boolean
+  hidden: boolean
+  why: string
+  userGenerated: boolean
+}
+
+export interface TreeResponse {
+  ok: true
+  lang: string
+  nodes: TreeNodeView[]
+  edges: { from: string; to: string }[]
+  stats: { total: number; hidden: number; byState: Record<string, number> }
+  bounds: { minX: number; maxX: number; minY: number; maxY: number }
+}
+
+export interface TreeNodeFlags {
+  id: string
+  pinned: boolean
+  hidden: boolean
+}
+
 // ── errors ──
 
 export class ApiError extends Error {
@@ -199,4 +255,14 @@ export const api = {
   /** persist the result: writes assumed_known states + cefrComputed */
   placementFinish: (selfBand: string, answers: PlacementAnswerInput[]) =>
     post<PlacementNextResponse>('/api/placement', { selfBand, answers, finish: true }),
+
+  /** the personal skill tree (semi-fixed layout, persistent positions) */
+  tree: () => jsonFetch<TreeResponse>('/api/tree'),
+
+  /** pin/hide a tree node (docs/05 M6 node card actions) */
+  treeNodeFlags: (nodeId: string, flags: { pinned?: boolean; hidden?: boolean }) =>
+    jsonFetch<TreeNodeFlags>(`/api/tree/${encodeURIComponent(nodeId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(flags),
+    }),
 }
