@@ -7,7 +7,10 @@
  * docs/04 §4) and is recorded in the Turn meta for observability.
  */
 import { db } from '@/lib/db'
+import { loadGraph } from '@/lib/graph/load'
 import { xaiChat, type XaiMessage, type XaiResult } from '@/lib/llm/xai'
+import { analyzeTurn, type AnalystInput, type AnalystResult, type AnalystNodeRef } from '@/lib/llm/analyst'
+import { writeTurnEvidence } from '@/lib/evidence/writer'
 import {
   buildFallbackReply,
   buildRewriteMessages,
@@ -43,6 +46,8 @@ export interface ChatDeps {
     temperature?: number
     maxTokens?: number
   }) => Promise<XaiResult>
+  /** injectable per-turn analyst (tests mock the whole module) */
+  analyze?: (input: AnalystInput) => Promise<AnalystResult>
 }
 
 const defaultChat = (opts: Parameters<NonNullable<ChatDeps['chat']>>[0]) => xaiChat(opts)
@@ -191,7 +196,7 @@ export async function runTutorTurn(
   if (session.status !== 'active') throw new ChatError('ended', 'session already ended')
 
   // persist the learner turn FIRST (source of truth, even if the LLM fails)
-  await db.turn.create({
+  const userTurn = await db.turn.create({
     data: { sessionId, role: 'user', content, createdAt: now },
   })
 
@@ -227,6 +232,21 @@ export async function runTutorTurn(
     }
   }
   messages.push(...history)
+
+  // ── per-turn analyst runs IN PARALLEL with the tutor call (docs/04 §5):
+  // it only needs the learner's message + previous tutor context, so the turn
+  // latency does not grow. Failure → metric only, never blocks the chat. ──
+  const analyze = deps.analyze ?? ((input: AnalystInput) => analyzeTurn(input))
+  const prevTutor = [...allTurns].reverse().find((t) => t.role === 'tutor')
+  const latencyMs = prevTutor ? Math.max(0, now.getTime() - prevTutor.createdAt.getTime()) : 0
+  const analysisPromise: Promise<AnalystResult | null> = analyze({
+    turnId: userTurn.id,
+    tutorContext: prevTutor?.content ?? null,
+    learnerText: content,
+    knownNodes: await analystKnownNodes(userId, brief, scenario),
+    targetNodeIds: collectTargetIds(brief, scenario),
+    responseLatencyMs: latencyMs,
+  }).catch(() => null)
 
   // ── tutor call ──
   const reply = await chat({ role: 'tutor', temperature: 0.8, maxTokens: 300, messages: x(messages) })
@@ -265,6 +285,17 @@ export async function runTutorTurn(
       meta: JSON.stringify(meta),
     },
   })
+
+  // ── collect the analyst result → Evidence rows (append-only, idempotent) ──
+  const analysis = await analysisPromise
+  if (analysis) {
+    await writeTurnEvidence(userId, sessionId, userTurn.id, analysis)
+    if (!analysis.ok) {
+      await db.metricEvent
+        .create({ data: { userId, name: 'analyst_parse_fail', props: JSON.stringify({ sessionId, turnId: userTurn.id, error: analysis.error }) } })
+        .catch(() => {})
+    }
+  }
 
   // ── rolling summary every 10 learner turns ──
   const userTurnCount = allTurns.filter((t) => t.role === 'user').length
@@ -354,6 +385,36 @@ function collectTargets(brief: SessionBrief | null, scenario: PickedScenario | n
   for (const n of brief?.scenario.mustElicit ?? []) out.push(n.title)
   for (const n of scenario?.mustElicit ?? []) out.push(n.title)
   return out
+}
+
+/** analyst whitelist = graph nodes the user has touched + this session's targets */
+async function analystKnownNodes(
+  userId: string,
+  brief: SessionBrief | null,
+  scenario: PickedScenario | null,
+): Promise<AnalystNodeRef[]> {
+  const graph = loadGraph('en')
+  const touched = await db.userNodeState.findMany({
+    where: { userId, displayState: { in: ['available', 'learning', 'mastered', 'fading', 'assumed_known'] } },
+    select: { nodeId: true },
+  })
+  const ids = new Set(touched.map((t) => t.nodeId))
+  for (const n of brief?.scenario.mustElicit ?? []) ids.add(n.id)
+  for (const n of brief?.frontierNodes ?? []) ids.add(n.id)
+  for (const n of scenario?.mustElicit ?? []) ids.add(n.id)
+  return [...ids]
+    .map((id) => graph.byId.get(id))
+    .filter((n): n is NonNullable<typeof n> => Boolean(n))
+    .map((n) => ({ id: n.id, title: n.title, type: n.type, glossFa: n.glossFa }))
+}
+
+/** target NODE ids for the analyst prompt (higher prior) */
+function collectTargetIds(brief: SessionBrief | null, scenario: PickedScenario | null): string[] {
+  const out: string[] = []
+  for (const n of brief?.scenario.mustElicit ?? []) out.push(n.id)
+  for (const n of brief?.frontierNodes ?? []) out.push(n.id)
+  for (const n of scenario?.mustElicit ?? []) out.push(n.id)
+  return [...new Set(out)]
 }
 
 /** convenience for the routes: normalize a User row into BriefUserRow fields */

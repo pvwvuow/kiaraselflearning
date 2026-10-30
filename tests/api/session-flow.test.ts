@@ -26,6 +26,12 @@ vi.mock('@/lib/llm/xai', () => ({
   }),
 }))
 
+// M4: the per-turn analyst is mocked out here — its own suite covers it
+// (tests/llm/analyst-*.test.ts, tests/api/session-end.test.ts)
+vi.mock('@/lib/llm/analyst', () => ({
+  analyzeTurn: vi.fn(async () => ({ ok: true, items: [], newUnknownWords: [], attempts: 1 })),
+}))
+
 import { POST as start } from '@/app/api/session/start/route'
 import { POST as turn } from '@/app/api/session/turn/route'
 import { POST as register } from '@/app/api/auth/register/route'

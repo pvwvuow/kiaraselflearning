@@ -191,6 +191,10 @@ export interface SeedDraft {
     sessionIds: string[]
     sampleProduced: string | null
     sampleExpected: string | null
+    /** source node of the error group (for dedupe) */
+    nodeId?: string
+    /** stable dedupe key "nodeId::errorType" (pipeline dedupes proposals on it) */
+    dedupeKey?: string
   }
   candidateNodeId: string | null
   candidatePayload: { type: NodeType; title: string; cefr: string | null } | null

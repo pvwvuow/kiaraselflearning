@@ -1,0 +1,1135 @@
+{
+  "$comment": "M4 acceptance — analyst golden set (docs/05 M4): ≥20 labeled turns, ≥85% attribution accuracy measured by tests/llm/analyst-golden.test.ts. All node ids verified against data/graph-en. Turns g03/g21 carry deliberately hallucinated node ids (the pipeline must drop them into new_unknown_words); g22 arrives markdown-fenced (the parser must strip fences).",
+  "turns": [
+    {
+      "id": "g01",
+      "tutorContext": "The receptionist asks about the learner's day.",
+      "learnerText": "Yesterday I go to the mall and I bought a shoes for my sister.",
+      "knownNodes": [
+        "en:grammar:past-simple-irregular",
+        "en:word:mall",
+        "en:word:sister",
+        "en:grammar:countable-uncountable"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:past-simple-irregular",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:mall",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:sister",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:grammar:countable-uncountable",
+          "outcome": "error"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g01",
+        "items": [
+          {
+            "node_id": "en:grammar:past-simple-irregular",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "I go to the mall",
+            "expected": "I went to the mall",
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 9100,
+            "confidence": 0.95
+          },
+          {
+            "node_id": "en:word:mall",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 9100,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:sister",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 9100,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:grammar:countable-uncountable",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "a shoes",
+            "expected": "shoes / a pair of shoes",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 9100,
+            "confidence": 0.85
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g02",
+      "tutorContext": "Tutor recast: \"Could you tell me the price?\"",
+      "learnerText": "Could you telling me the price?",
+      "knownNodes": [
+        "en:chunk:could-you"
+      ],
+      "targetNodes": [
+        "en:chunk:could-you"
+      ],
+      "expected": [
+        {
+          "nodeId": "en:chunk:could-you",
+          "outcome": "used_with_hint"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g02",
+        "items": [
+          {
+            "node_id": "en:chunk:could-you",
+            "skill": "writing",
+            "outcome": "used_with_hint",
+            "error_type": "form",
+            "produced": "Could you telling me",
+            "expected": "Could you tell me",
+            "l1_interference": false,
+            "hint_used": true,
+            "response_latency_ms": 15300,
+            "confidence": 0.7
+          }
+        ],
+        "new_unknown_words": [
+          "price"
+        ]
+      }
+    },
+    {
+      "id": "g03",
+      "tutorContext": "Free conversation about opinions.",
+      "learnerText": "I am agree with you.",
+      "knownNodes": [
+        "en:word:want",
+        "en:word:go",
+        "en:word:time"
+      ],
+      "targetNodes": [],
+      "expected": [],
+      "analystJson": {
+        "turn_id": "g03",
+        "items": [
+          {
+            "node_id": "en:word:agree",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "usage",
+            "produced": "I am agree",
+            "expected": "I agree",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 6200,
+            "confidence": 0.45
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g04",
+      "tutorContext": "The scenario asks the learner to check a detail.",
+      "learnerText": "Ok no problem I do it.",
+      "knownNodes": [
+        "en:chunk:make-sure",
+        "en:word:want"
+      ],
+      "targetNodes": [
+        "en:chunk:make-sure"
+      ],
+      "expected": [
+        {
+          "nodeId": "en:chunk:make-sure",
+          "outcome": "avoided"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g04",
+        "items": [
+          {
+            "node_id": "en:chunk:make-sure",
+            "skill": "writing",
+            "outcome": "avoided",
+            "error_type": null,
+            "produced": "I do it",
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 4100,
+            "confidence": 0.55
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g05",
+      "tutorContext": "Tutor asks: \"What's the weather like today?\"",
+      "learnerText": "Is raining today.",
+      "knownNodes": [
+        "en:err:l1-prodrop",
+        "en:grammar:present-continuous"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-prodrop",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:grammar:present-continuous",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g05",
+        "items": [
+          {
+            "node_id": "en:err:l1-prodrop",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "Is raining",
+            "expected": "It is raining",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 5200,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:grammar:present-continuous",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5200,
+            "confidence": 0.8
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g06",
+      "tutorContext": "The shop assistant asks how many bags the learner has.",
+      "learnerText": "How much books do you have?",
+      "knownNodes": [
+        "en:err:l1-much-many",
+        "en:word:buy"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-much-many",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:buy",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g06",
+        "items": [
+          {
+            "node_id": "en:err:l1-much-many",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "word_choice",
+            "produced": "How much books",
+            "expected": "How many books",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 6400,
+            "confidence": 0.92
+          },
+          {
+            "node_id": "en:word:buy",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6400,
+            "confidence": 0.7
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g07",
+      "tutorContext": "The learner describes their family.",
+      "learnerText": "I have three book about cooking.",
+      "knownNodes": [
+        "en:err:l1-plural-after-number",
+        "en:word:food"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-plural-after-number",
+          "outcome": "error"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g07",
+        "items": [
+          {
+            "node_id": "en:err:l1-plural-after-number",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "three book",
+            "expected": "three books",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 7200,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": [
+          "cooking"
+        ]
+      }
+    },
+    {
+      "id": "g08",
+      "tutorContext": "The learner introduces their friend.",
+      "learnerText": "My friend live in this house since two years.",
+      "knownNodes": [
+        "en:err:l1-since-for",
+        "en:err:l1-3rd-s",
+        "en:word:friend",
+        "en:word:house"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-since-for",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:err:l1-3rd-s",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:friend",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:house",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g08",
+        "items": [
+          {
+            "node_id": "en:err:l1-since-for",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "usage",
+            "produced": "since two years",
+            "expected": "for two years",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 8800,
+            "confidence": 0.88
+          },
+          {
+            "node_id": "en:err:l1-3rd-s",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "friend live",
+            "expected": "friend lives",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 8800,
+            "confidence": 0.85
+          },
+          {
+            "node_id": "en:word:friend",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 8800,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:house",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 8800,
+            "confidence": 0.85
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g09",
+      "tutorContext": "At the photo studio.",
+      "learnerText": "Can you make a photo of us?",
+      "knownNodes": [
+        "en:err:l1-make-do"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-make-do",
+          "outcome": "error"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g09",
+        "items": [
+          {
+            "node_id": "en:err:l1-make-do",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "word_choice",
+            "produced": "make a photo",
+            "expected": "take a photo",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 5900,
+            "confidence": 0.87
+          }
+        ],
+        "new_unknown_words": [
+          "photo"
+        ]
+      }
+    },
+    {
+      "id": "g10",
+      "tutorContext": "The learner talks about their family's jobs.",
+      "learnerText": "My mother is teacher.",
+      "knownNodes": [
+        "en:err:l1-no-article",
+        "en:word:family"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-no-article",
+          "outcome": "error"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g10",
+        "items": [
+          {
+            "node_id": "en:err:l1-no-article",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "is teacher",
+            "expected": "is a teacher",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 4700,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:family",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 4700,
+            "confidence": 0.85
+          }
+        ],
+        "new_unknown_words": [
+          "teacher"
+        ]
+      }
+    },
+    {
+      "id": "g11",
+      "tutorContext": "The learner describes their city.",
+      "learnerText": "I very like this city.",
+      "knownNodes": [
+        "en:err:l1-svo",
+        "en:word:city"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-svo",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:city",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g11",
+        "items": [
+          {
+            "node_id": "en:err:l1-svo",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "word_order",
+            "produced": "I very like",
+            "expected": "I like … very much",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 5300,
+            "confidence": 0.86
+          },
+          {
+            "node_id": "en:word:city",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5300,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g12",
+      "tutorContext": "Planning the trip at the hotel desk.",
+      "learnerText": "I will arrive in Monday at eight.",
+      "knownNodes": [
+        "en:err:l1-prepositions-time",
+        "en:word:arrive",
+        "en:grammar:future-will"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-prepositions-time",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:arrive",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:grammar:future-will",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g12",
+        "items": [
+          {
+            "node_id": "en:err:l1-prepositions-time",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "usage",
+            "produced": "in Monday",
+            "expected": "on Monday",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 6100,
+            "confidence": 0.91
+          },
+          {
+            "node_id": "en:word:arrive",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6100,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:grammar:future-will",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6100,
+            "confidence": 0.85
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g13",
+      "tutorContext": "The learner talks about last week.",
+      "learnerText": "I have seen my friend yesterday.",
+      "knownNodes": [
+        "en:err:l1-past-vs-present-perfect",
+        "en:word:friend"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-past-vs-present-perfect",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:friend",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g13",
+        "items": [
+          {
+            "node_id": "en:err:l1-past-vs-present-perfect",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "usage",
+            "produced": "have seen … yesterday",
+            "expected": "saw … yesterday",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 7000,
+            "confidence": 0.88
+          },
+          {
+            "node_id": "en:word:friend",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 7000,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g14",
+      "tutorContext": "Planning free time.",
+      "learnerText": "I want going to the park.",
+      "knownNodes": [
+        "en:err:l1-infinitive-gerund",
+        "en:word:want"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:err:l1-infinitive-gerund",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:want",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g14",
+        "items": [
+          {
+            "node_id": "en:err:l1-infinitive-gerund",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "want going",
+            "expected": "want to go",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 6600,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:want",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6600,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g15",
+      "tutorContext": "Small talk about routines.",
+      "learnerText": "I buy food every day.",
+      "knownNodes": [
+        "en:word:buy",
+        "en:word:food",
+        "en:grammar:frequency-adverbs"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:word:buy",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:food",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:grammar:frequency-adverbs",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g15",
+        "items": [
+          {
+            "node_id": "en:word:buy",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 3900,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:food",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 3900,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:grammar:frequency-adverbs",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 3900,
+            "confidence": 0.75
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g16",
+      "tutorContext": "The learner shows a photo of relatives.",
+      "learnerText": "This is my sister car.",
+      "knownNodes": [
+        "en:grammar:possessives",
+        "en:word:sister"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:possessives",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:sister",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g16",
+        "items": [
+          {
+            "node_id": "en:grammar:possessives",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "sister car",
+            "expected": "sister's car",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 5800,
+            "confidence": 0.87
+          },
+          {
+            "node_id": "en:word:sister",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5800,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": [
+          "car"
+        ]
+      }
+    },
+    {
+      "id": "g17",
+      "tutorContext": "At the airline information desk.",
+      "learnerText": "I need some informations about the flight.",
+      "knownNodes": [
+        "en:grammar:countable-uncountable",
+        "en:word:flight",
+        "en:chunk:i-need"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:countable-uncountable",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:flight",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:chunk:i-need",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g17",
+        "items": [
+          {
+            "node_id": "en:grammar:countable-uncountable",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "informations",
+            "expected": "information",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 7400,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:flight",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 7400,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:chunk:i-need",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 7400,
+            "confidence": 0.85
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g18",
+      "tutorContext": "Comparing two hotels.",
+      "learnerText": "This hotel is more cheap than that one.",
+      "knownNodes": [
+        "en:grammar:comparatives",
+        "en:word:hotel",
+        "en:word:cheap"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:comparatives",
+          "outcome": "error"
+        },
+        {
+          "nodeId": "en:word:hotel",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:cheap",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g18",
+        "items": [
+          {
+            "node_id": "en:grammar:comparatives",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "more cheap",
+            "expected": "cheaper",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 6900,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:hotel",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6900,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:cheap",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 6900,
+            "confidence": 0.8
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g19",
+      "tutorContext": "Getting to know each other.",
+      "learnerText": "Where you live?",
+      "knownNodes": [
+        "en:grammar:questions-do-support"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:questions-do-support",
+          "outcome": "error"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g19",
+        "items": [
+          {
+            "node_id": "en:grammar:questions-do-support",
+            "skill": "writing",
+            "outcome": "error",
+            "error_type": "form",
+            "produced": "Where you live",
+            "expected": "Where do you live",
+            "l1_interference": true,
+            "hint_used": false,
+            "response_latency_ms": 4400,
+            "confidence": 0.9
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g20",
+      "tutorContext": "The learner tells a story about yesterday.",
+      "learnerText": "I go — I mean I went to the bazaar with my brother.",
+      "knownNodes": [
+        "en:grammar:past-simple-irregular",
+        "en:word:friend"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:grammar:past-simple-irregular",
+          "outcome": "slip_self_corrected"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g20",
+        "items": [
+          {
+            "node_id": "en:grammar:past-simple-irregular",
+            "skill": "writing",
+            "outcome": "slip_self_corrected",
+            "error_type": "form",
+            "produced": "I go",
+            "expected": "I went",
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 9800,
+            "confidence": 0.8
+          }
+        ],
+        "new_unknown_words": [
+          "bazaar",
+          "brother"
+        ]
+      }
+    },
+    {
+      "id": "g21",
+      "tutorContext": "Booking online at the hotel desk.",
+      "learnerText": "I booked the flight ticket online.",
+      "knownNodes": [
+        "en:word:buy",
+        "en:word:flight",
+        "en:word:ticket"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:word:buy",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:flight",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:ticket",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": {
+        "turn_id": "g21",
+        "items": [
+          {
+            "node_id": "en:word:buy",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5100,
+            "confidence": 0.85
+          },
+          {
+            "node_id": "en:word:flight",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5100,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:ticket",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5100,
+            "confidence": 0.9
+          },
+          {
+            "node_id": "en:word:online",
+            "skill": "writing",
+            "outcome": "correct",
+            "error_type": null,
+            "produced": null,
+            "expected": null,
+            "l1_interference": false,
+            "hint_used": false,
+            "response_latency_ms": 5100,
+            "confidence": 0.7
+          }
+        ],
+        "new_unknown_words": []
+      }
+    },
+    {
+      "id": "g22",
+      "tutorContext": "The learner complains about the bus.",
+      "learnerText": "The bus is late today.",
+      "knownNodes": [
+        "en:word:bus",
+        "en:word:late"
+      ],
+      "targetNodes": [],
+      "expected": [
+        {
+          "nodeId": "en:word:bus",
+          "outcome": "correct"
+        },
+        {
+          "nodeId": "en:word:late",
+          "outcome": "correct"
+        }
+      ],
+      "analystJson": "```json\n{\"turn_id\":\"g22\",\"items\":[{\"node_id\":\"en:word:bus\",\"skill\":\"writing\",\"outcome\":\"correct\",\"error_type\":null,\"produced\":null,\"expected\":null,\"l1_interference\":false,\"hint_used\":false,\"response_latency_ms\":4800,\"confidence\":0.9},{\"node_id\":\"en:word:late\",\"skill\":\"writing\",\"outcome\":\"correct\",\"error_type\":null,\"produced\":null,\"expected\":null,\"l1_interference\":false,\"hint_used\":false,\"response_latency_ms\":4800,\"confidence\":0.85}],\"new_unknown_words\":[]}\n```"
+    }
+  ]
+}

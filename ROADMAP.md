@@ -35,12 +35,12 @@
 - [x] Rolling summary every 10 turns
 - [x] Unit tests: brief content/bounds, i+1 checker math, rewrite path (mocked LLM); live smoke behind env flag
 
-## M4 — Analyst & evidence wiring
-- [ ] Analyst module: per-turn async + end-of-session batch; zod + whitelist + 1 repair retry
-- [ ] Evidence writer (append-only, disputed flag) + `POST /api/evidence/:id/dispute`
-- [ ] Session-end pipeline (docs/03 §A7): aggregation → FSRS update → display recompute → propagation → root-cause → growth scan
-- [ ] Analyst golden set ≥20 labeled turns, ≥85% attribution accuracy (offline harness)
-- [ ] E2E (DB, mocked LLM): fake evidence reproduces the S1–S8 table transitions
+## M4 — Analyst & evidence wiring ✅ (2026-10-30)
+- [x] Analyst module: per-turn async + end-of-session batch; zod + whitelist + 1 repair retry
+- [x] Evidence writer (append-only, disputed flag) + `POST /api/evidence/:id/dispute`
+- [x] Session-end pipeline (docs/03 §A7): aggregation → FSRS update → display recompute → propagation → root-cause → growth scan
+- [x] Analyst golden set ≥20 labeled turns, ≥85% attribution accuracy (offline harness)
+- [x] E2E (DB, mocked LLM): fake evidence reproduces the S1–S8 table transitions
 
 ## M5 — Chat UI (RTL, single route)
 - [ ] Chat view inside `/` (view-switching via zustand): scenario card, messages, typing state, correction chips, unknown-rate hint, session timer, end-session

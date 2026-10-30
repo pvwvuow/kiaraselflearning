@@ -13,8 +13,8 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ DONE → next: M4** |
-| Tests | 125/125 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ DONE → next: M5** |
+| Tests | 156/156 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`) |
 | DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready |
 | Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0+M1+M2+M3 delivered)
+## Current state of the code (M0–M4 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -90,6 +90,14 @@
   `tests/api/session-flow.test.ts` (8: start/turn/guards/rewrite/fallback/summary — mocked LLM
   via `vi.mock('@/lib/llm/xai')`) · `tests/llm/live-smoke.test.ts` (1, runs only with
   `KIARA_LIVE_SMOKE=1` — real grok-4.7 in-character check).
+  + **M4**: `tests/llm/analyst-validate.test.ts` (10: schema/clamp/hallucination/fences/repair) ·
+  `tests/llm/analyst-golden.test.ts` (4: ≥20 turns, ids real, accuracy ≥85% = 100%) ·
+  `tests/db/session-pipeline.test.ts` (6: S1–S8 through the REAL DB incl. disputed-exclusion,
+  propagation boost, root-cause routing, flight seed proposal + dedupe, summary shape) ·
+  `tests/api/evidence-dispute.test.ts` (4: flag+reason, append-only, exclusion → no state,
+  undisputed control) · `tests/api/session-end.test.ts` (6: guards, summary persistence,
+  409 idempotency, per-turn evidence wiring, analyst_parse_fail metric) ·
+  `tests/engine/growth.test.ts` (+1 BUGFIX regression: track_pattern novelty).
 - `scripts/fsrs-probe.ts` — produces the REAL numeric tables used in docs/03.
 - `src/lib/engine/iplus1.ts` — **M3**: pure i+1 checker (tokenizer, light lemmatizer,
   irregular map, function/discourse-word exemptions, proper-noun & number exemption,
@@ -117,6 +125,32 @@
   i+1 violation triggers rewrite (meta.rewritten=true); LLM flakiness degrades to original/
   fallback replies without 500s.
 - Landing page `/` — Persian RTL status page (browser-verified, no console errors).
+- `src/lib/llm/analyst.ts` — **M4**: docs/04 §2 analyst prompt VERBATIM + few-shot;
+  zod schema (confidence CLAMPED not rejected); `validateAnalystOutput` = parse → zod →
+  node whitelist (hallucinated id → item dropped, last id segment feeds new_unknown_words)
+  → skill whitelist → clamp; `analyzeTurn` = ONE repair retry (validation error appended,
+  docs/04 §3) then give-up with `ok:false` (chat never blocked); markdown fences stripped.
+- `src/lib/evidence/writer.ts` — **M4**: `writeTurnEvidence` (append-only, idempotent per
+  (sessionId, turnId), persists `disputed` when present) · `writeEngineEvidence`
+  (propagation/root-cause rows, `turnId='engine'`, NO per-turn guard — the session status
+  guard already makes the run once-only) · `disputeEvidence` (flag-only, never delete).
+- `src/lib/session/pipeline.ts` — **M4**: `endSession` = docs/03 §A7 exactly:
+  pass A propagation emits (pre-update states) → persisted via writeEngineEvidence → merged
+  into groups → pass B per-group aggregate (ENGINE aggregateSession) → rating → FSRS →
+  persist → metrics; pass C root-cause re-attribution for confirmed gaps (routed error
+  becomes real evidence + applied to the weak prereq immediately); pass D growth scan
+  (`scanRepeatedErrors` + `buildSeedDraft`, dedupe by candidateNodeId / payload title /
+  triggerRef dedupeKey) → Seed rows; summary (reinforced/fading/delayTestResults/seeds/
+  tomorrow) stored on ChatSession + status ended (409 on second call).
+- API routes (M4, all live-verified): `POST /api/session/end` (401/400/404/409) ·
+  `POST /api/evidence/[id]/dispute` (owner-checked, 200/404/401, append-only flag).
+- Per-turn analyst wired into `runTutorTurn`: runs IN PARALLEL with the tutor call (needs
+  only the learner message + previous tutor context → zero added latency); whitelist =
+  user's touched nodes + session targets; failure → `analyst_parse_fail` metric only.
+- `data/analyst-golden.json` — **M4**: 22 labeled turns (docs/04 examples + L1 patterns +
+  hallucinated-id + fenced-output cases), all ids verified against the graph.
+- Live-verified M4 loop (real grok-4.20 analyst): learner message → evidence rows →
+  `POST /api/session/end` → FSRS state rows + summary + metrics in one shot (200, 210ms).
 
 ## Known issues / gotchas
 
@@ -140,6 +174,19 @@
   unknown → openers/turns burn a rewrite call and often degrade to the deterministic fallback.
   This is data-honest (docs: mastery/assumption only via placement), not a bug. Wiring
   placement → assumed_known into onboarding would soften it (candidate for M4/M5 gap work).
+- **BUGFIX (M4) — track_pattern scoring**: `scoreCandidate` scored the error SOURCE node with
+  novelty=0 (it always has a state), so error-pattern seed proposals could never reach the
+  0.45 bar — contradicted docs/03 §B3's own example (0.72). Fixed: track_pattern candidates
+  use ERROR_PATTERN_RELEVANCE/FREQUENCY and novelty=1 (the pattern node is new). Regression
+  test added (`tests/engine/growth.test.ts`).
+- **Semantics decision (M4)** — "active UserNodeState" for the growth trigger (docs/03 §B2):
+  = planted-but-unpracticed (available/assumed_known) OR strength > 0. States created purely
+  by error evidence (reps ≥ 1, strength 0) are error-tracking, NOT adoption — otherwise
+  plant_existing could never fire (any analyzed error auto-creates a state).
+- **BUGFIX (M4) — engine-generated evidence persistence**: propagation emits were merged
+  into aggregates but never written to Evidence; `writeEngineEvidence` now appends them
+  (turnId='engine', propagated=true) OUTSIDE the per-turn idempotency guard (which would
+  wrongly block the second engine batch of the same run).
 - DB contains the M0 sample nodes TOO (seed.sample.json): e.g. en:word:airport/hotel/recommend
   exist ONLY there — when authoring content, check `loadGraph()` (all files) not just words.*.json.
 - xAI latency is real-world slow (opener ~2.5–7 s; a turn + rewrite can hit ~60 s when the

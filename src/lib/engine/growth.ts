@@ -99,10 +99,17 @@ export function scoreCandidate(
     userHasActiveState: boolean
   },
 ): { score: number; breakdown: SeedScoreBreakdown } {
-  const goalRel = goalRelevance(ctx.node, ctx.goal)
-  const freq = frequencyFactor(ctx.node)
+  // BUGFIX (M4, found while wiring the pipeline): track_pattern candidates
+  // propose a NEW error_pattern node — the docs/03 §B3 example (en:err:l1-3rd-s
+  // → 0.9 × 0.8 × 1 × 1 = 0.72) scores the PATTERN, not the source node, and
+  // the pattern node never has a state yet. The previous code scored the source
+  // node with novelty=0 (it always has a state), so pattern proposals could
+  // never reach the 0.45 bar.
+  const trackPattern = candidate.kind === 'track_pattern'
+  const goalRel = trackPattern ? ENGINE_CONFIG.ERROR_PATTERN_RELEVANCE : goalRelevance(ctx.node, ctx.goal)
+  const freq = trackPattern ? ENGINE_CONFIG.ERROR_PATTERN_FREQUENCY : frequencyFactor(ctx.node)
   const ready = readinessFactor(ctx.prereqStates)
-  const novelty = ctx.userHasActiveState ? 0.0 : 1.0
+  const novelty = trackPattern ? 1.0 : ctx.userHasActiveState ? 0.0 : 1.0
   const score = goalRel * freq * ready * novelty
   return { score, breakdown: { goalRelevance: goalRel, frequency: freq, readiness: ready, novelty } }
 }
@@ -139,6 +146,8 @@ export function buildSeedDraft(
       sessionIds: g.sessionIds,
       sampleProduced: sample?.produced ?? null,
       sampleExpected: sample?.expected ?? null,
+      nodeId: g.nodeId,
+      dedupeKey: `${g.nodeId}::${g.errorType ?? ''}`,
     },
     candidateNodeId: candidate.kind === 'plant_existing' ? candidate.nodeId : null,
     candidatePayload:

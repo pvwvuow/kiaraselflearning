@@ -111,6 +111,18 @@ describe('scoring (docs B3 numeric examples)', () => {
     expect(score).toBeCloseTo(0.72, 5)
   })
 
+  it('BUGFIX M4: track_pattern scores the NEW pattern node (novelty 1) even when the source node already has a state', () => {
+    // before the fix the source node's state forced novelty=0 → pattern seeds
+    // could never reach the 0.45 bar (docs/03 §B3 example scored 0.72)
+    const source = node('en:grammar:superlatives', { type: 'grammar_pattern', frequencyRank: null })
+    const { score, breakdown } = scoreCandidate(
+      { kind: 'track_pattern', nodeId: source.id, group: {} as never, requiresNodeCreation: true },
+      { node: source, goal: 'travel', prereqStates: [], userHasActiveState: true },
+    )
+    expect(breakdown).toEqual({ goalRelevance: 0.9, frequency: 0.8, readiness: 1, novelty: 1 })
+    expect(score).toBeCloseTo(0.72, 5)
+  })
+
   it('already-planted node → novelty 0 → skip', () => {
     const { score } = scoreCandidate(
       { kind: 'plant_existing', nodeId: recommend.id, group: {} as never, requiresNodeCreation: false },
