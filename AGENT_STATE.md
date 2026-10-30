@@ -13,10 +13,10 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ DONE → next: M2** |
-| Tests | 81/81 green (`bun run test`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ DONE → next: M3** |
+| Tests | 90/90 green (`bun run test`) |
 | Lint | clean (`bun run lint`) |
-| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded |
+| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready |
 | Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
 
 ## Environment & secrets (CRITICAL RULES)
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0 delivered)
+## Current state of the code (M0+M1+M2 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -73,8 +73,17 @@
   endpoints, dupes, DAG, quiz-ability → writes JSON). `scripts/seed-graph.ts` — idempotent,
   two-pass (all nodes → all edges) inside one transaction.
 - `src/app/api/graph/stats/route.ts` — GET counts by type/cefr (live-verified on :3000).
+- `src/lib/auth/` — **M2**: `password.ts` (bcryptjs cost 10) · `session.ts` (30-day cookie
+  sessions on `UserSession`; framework-free `Request`/`Response` — NO `next/headers`, so routes
+  are directly unit-testable; `requireUser` guard; `toPublicUser` never leaks passwordHash) ·
+  `schemas.ts` (zod v4: register/login/onboarding; consentLlm boolean → `consentLlmAt` timestamp).
+- API routes (all live-verified on :3000): `POST /api/auth/register|login|logout`, `GET /api/auth/me`,
+  `GET|PATCH /api/onboarding` (guarded, 401). `GET /api/graph/stats` stays PUBLIC (world metadata,
+  no user data). New user-scoped routes MUST use `requireUser` (M3 chat/tree included).
+- `scripts/seed-demo-user.ts` — dev demo login `demo@kiara.app` / `kiara-demo-1234` (dev-only).
 - Tests: `tests/engine/` (53) + `tests/graph/integrity.test.ts` (9) + `tests/api/graph-stats.test.ts`
-  + `tests/db/seed-idempotency.test.ts` (runs the real seeder twice against SQLite).
+  + `tests/db/seed-idempotency.test.ts` (runs the real seeder twice against SQLite)
+  + `tests/api/auth-roundtrip.test.ts` (9: round-trip, consent timestamp, guards, 400/401/409).
 - `scripts/fsrs-probe.ts` — produces the REAL numeric tables used in docs/03.
 - Landing page `/` — Persian RTL status page (browser-verified, no console errors).
 
@@ -90,6 +99,8 @@
   test pins this); null → light NOTHING (absolute beginner, C2a ultra-light register).
 - `.gitignore` excludes `download/ upload/ skills/ tests/*.sh examples/ mini-services/ .zscripts/
   Caddyfile db/ .env* .git-credentials` — real tests under `tests/**/*.test.ts` ARE tracked. Keep it that way.
+- Auth routes avoid `next/headers` on purpose (plain Request/Response → unit-testable). Keep
+  this pattern; read cookies via `req.headers.get('cookie')`, set via `set-cookie` header.
 - `package.json` name is still `nextjs_tailwind_shadcn_ts` — fine to rename in M9 polish.
 - The route `src/app/api/route.ts` is a template leftover health endpoint — replace in M3.
 

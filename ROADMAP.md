@@ -21,11 +21,11 @@
 - [x] `GET /api/graph/stats` returns counts by type/cefr
 - [x] Seeder still idempotent (rerun test) — fixed to two-pass (all nodes → all edges) inside one transaction (cross-file FK order bug)
 
-## M2 — Auth-lite & onboarding
-- [ ] Email+password (bcrypt) + httpOnly cookie sessions (`UserSession`)
-- [ ] Onboarding wizard: level self-report, goal, interests, daily minutes, correction style, xAI consent (timestamped)
-- [ ] Guarded API routes (401 when unauthenticated); demo user seed for dev
-- [ ] Auth round-trip API test
+## M2 — Auth-lite & onboarding ✅ (2026-10-30)
+- [x] Email+password (bcryptjs) + httpOnly cookie sessions (`UserSession`) — framework-free Request/Response handlers
+- [x] Onboarding API (`GET`/`PATCH /api/onboarding`): level self-report, goal, interests, daily minutes, correction style, xAI consent (timestamped `consentLlmAt`) — wizard UI lands with the `/` view-switching work (M5)
+- [x] Guarded API routes (401 when unauthenticated) via `requireUser`; demo user seed (`scripts/seed-demo-user.ts`, demo@kiara.app)
+- [x] Auth round-trip API test (register → login → me → logout) + 400/401/409 cases (9 tests)
 
 ## M3 — Tutor chat loop
 - [ ] xAI client (fetch, timeout 30s, 1 retry) reading `.env` models
