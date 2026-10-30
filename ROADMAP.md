@@ -1,0 +1,77 @@
+# ROADMAP — machine-readable checklist (do in strict order)
+
+> Definition of done per milestone: every acceptance test in `docs/05-roadmap.md` passes,
+> `bun run test` + `bun run lint` green, AGENT_STATE.md updated, committed & pushed.
+> Never check a box that isn't really done. Never weaken tests.
+
+## M0 — Foundation ✅ (2026-10-30)
+- [x] Environment, secrets (env-only), git remote, ts-fsrs + vitest installed
+- [x] Design docs 00–05 + README (bilingual)
+- [x] Full Prisma schema pushed (GraphNode/Edge/UserNodeState/Evidence/ChatSession/Turn/Seed/NodePosition/MetricEvent/User/UserSession)
+- [x] Deterministic engine core (types/config/grading/fsrs/state/growth/brief/planner/graph) — PURE
+- [x] 53 vitest tests green (S1–S8 lifecycle fixture, propagation bounds, mastery/revocation, fading, seed scoring, cap, purity)
+- [x] Sample graph (46 nodes / 23 edges) + idempotent seeder + in-memory loader/whitelist
+- [x] Persian RTL landing page (Vazirmatn local, browser-verified)
+- [x] Pushed to GitHub with zero secrets
+
+## M1 — Graph data & placement
+- [ ] Expand `data/graph-en/` to ≥250 nodes (words with fa glosses + frequency ranks, ~25 chunks, ~20 grammar patterns, ~15 pragmatic skills, ~12 fa→en error patterns, clusters) + meaningful edges
+- [ ] Graph integrity test: all edge endpoints exist & active; frontier roots = nodes without prereqs
+- [ ] Placement: adaptive band quiz (2-up/1-down ladder, ~12 items) → `assumed_known` states (NEVER mastered)
+- [ ] `GET /api/graph/stats` returns counts by type/cefr
+- [ ] Seeder still idempotent (rerun test)
+
+## M2 — Auth-lite & onboarding
+- [ ] Email+password (bcrypt) + httpOnly cookie sessions (`UserSession`)
+- [ ] Onboarding wizard: level self-report, goal, interests, daily minutes, correction style, xAI consent (timestamped)
+- [ ] Guarded API routes (401 when unauthenticated); demo user seed for dev
+- [ ] Auth round-trip API test
+
+## M3 — Tutor chat loop
+- [ ] xAI client (fetch, timeout 30s, 1 retry) reading `.env` models
+- [ ] Prompts module verbatim from `docs/04` (tutor system prompt + user-message wrapping)
+- [ ] Brief builder wired to real state (weak/frontier/error-patterns/scenario) — bounded ≤1.5k tokens
+- [ ] `POST /api/session/start` (brief snapshot + scenario pick) · `POST /api/session/turn` (tutor + i+1 check + rewrite-on-violation + Turn persistence)
+- [ ] Rolling summary every 10 turns
+- [ ] Unit tests: brief content/bounds, i+1 checker math, rewrite path (mocked LLM); live smoke behind env flag
+
+## M4 — Analyst & evidence wiring
+- [ ] Analyst module: per-turn async + end-of-session batch; zod + whitelist + 1 repair retry
+- [ ] Evidence writer (append-only, disputed flag) + `POST /api/evidence/:id/dispute`
+- [ ] Session-end pipeline (docs/03 §A7): aggregation → FSRS update → display recompute → propagation → root-cause → growth scan
+- [ ] Analyst golden set ≥20 labeled turns, ≥85% attribution accuracy (offline harness)
+- [ ] E2E (DB, mocked LLM): fake evidence reproduces the S1–S8 table transitions
+
+## M5 — Chat UI (RTL, single route)
+- [ ] Chat view inside `/` (view-switching via zustand): scenario card, messages, typing state, correction chips, unknown-rate hint, session timer, end-session
+- [ ] Mobile-first responsive; keyboard navigable; contrast ≥4.5:1; LTR bubbles for English text
+- [ ] agent-browser verification: 3-turn conversation renders without console errors
+
+## M6 — Tree view (simple SVG)
+- [ ] Deterministic layered layout from prerequisites; `NodePosition` persistence (two renders → identical positions)
+- [ ] Node card: title, gloss, 4-skill rings (listening/speaking "—"), state colors + dashed ring for fading (non-color cue), "why?" tooltip, pin/hide
+- [ ] agent-browser: ≥30 nodes readable at 1280px; planted seed appears at stable position
+
+## M7 — Growth engine live + seed inbox
+- [ ] repeated_error trigger wired to real evidence; proposals with score breakdown + `reasonFa`
+- [ ] Inbox UI: approve/reject + celebration on plant; weekly cap enforced (4th held in queue)
+- [ ] Reject → 14-day cooldown on same node
+- [ ] Unit + agent-browser tests per docs/05 M7
+
+## M8 — Delayed tests, mastery & session summary
+- [ ] Confirmatory session mode: samples ≤2 eligible nodes, 3 fresh contexts each, no hints, no warm-up
+- [ ] Pass → mastered; fail → Again + 7d retry; double-fail post-mastery → revoked
+- [ ] Session summary (reinforced/seeds/fading/delay results/tomorrow) rendered at session end
+- [ ] Planner mix 40:25:20:15 + probes p=0.3
+- [ ] **E2E: full MVP loop (chat → evidence → tree update → next brief reflects it → delayed test → mastery) — the success criterion**
+
+## M9 — Metrics, guardrails, cost caps, polish
+- [ ] MetricEvent emission at all documented points; metrics test
+- [ ] Daily LLM token budget with friendly cap message
+- [ ] Content-safety hardening; settings page (correction style, level, export/delete data)
+- [ ] Empty/error/loading states; README run instructions accurate
+- [ ] Final agent-browser golden-path pass; rename package to `kiara`
+
+## Post-MVP queue (NOT scheduled — do not start without user)
+voice (listening/speaking) → interests & content import → language-pack framework →
+Postgres migration → per-user FSRS optimization → A/B infra → social/leagues

@@ -1,0 +1,242 @@
+// Kiara — skill-tree language learning app
+// Full data model per docs/02-data-model.md
+// SQLite: no native enums -> String columns + TS unions + zod validation (src/lib/engine/types.ts)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────── users & auth ───────────────────────────
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  displayName     String?
+  l1              String    @default("fa")
+  targetLang      String    @default("en")
+  cefrSelf        String? // A1..C2 from onboarding
+  cefrComputed    String? // engine-computed; overrides self over time
+  goal            String    @default("general") // travel|work|exam|daily|general
+  interests       String    @default("[]") // JSON string[]
+  dailyMinutes    Int       @default(15)
+  correctionStyle String    @default("immediate") // immediate|end_of_session
+  consentLlmAt    DateTime? // explicit consent for xAI processing
+  dataRetentionDays Int     @default(180)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessions   UserSession[]
+  chatSessions ChatSession[]
+  states     UserNodeState[]
+  evidences  Evidence[]
+  seeds      Seed[]
+  positions  NodePosition[]
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────── world graph ───────────────────────────
+
+model GraphNode {
+  id              String   @id // stable slug "{lang}:{type}:{key}"
+  type            String // word|chunk|grammar_pattern|pragmatic_skill|error_pattern|topic_cluster|sound_letter
+  lang            String   @default("en")
+  cefr            String? // A1..C2
+  frequencyRank   Int?
+  title           String // surface form / pattern name (target language)
+  glossFa         String? // one-line Persian gloss
+  explanationFa   String? // short Persian explanation (teach moment)
+  examples        String   @default("[]") // JSON [{text, source, license}]
+  tags            String   @default("[]") // JSON string[]
+  version         Int      @default(1)
+  status          String   @default("active") // active|deprecated
+  supersededBy    String? // migration pointer — never delete
+  isUserGenerated Boolean  @default(false)
+  ownerId         String? // set when user-generated
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  states    UserNodeState[]
+  fromEdges GraphEdge[]     @relation("fromNode")
+  toEdges   GraphEdge[]     @relation("toNode")
+
+  @@index([lang, type, status])
+  @@index([status])
+}
+
+model GraphEdge {
+  id       String @id @default(cuid())
+  fromId   String
+  toId     String
+  type     String // prerequisite|related|confusable|part_of
+  weight   Float  @default(1)
+
+  fromNode GraphNode @relation("fromNode", fields: [fromId], references: [id], onDelete: Cascade)
+  toNode   GraphNode @relation("toNode", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@unique([fromId, toId, type])
+  @@index([toId, type])
+}
+
+// ─────────────────────────── user state (per node × skill) ───────────────────────────
+
+model UserNodeState {
+  id        String    @id @default(cuid())
+  userId    String
+  nodeId    String
+  skill     String // reading|writing (MVP); listening|speaking later
+
+  // FSRS materialized view — rebuildable from Evidence + grades
+  stability Float     @default(0)
+  difficulty Float    @default(0)
+  due       DateTime?
+  lastReviewAt DateTime?
+  reps      Int       @default(0)
+  lapses    Int       @default(0)
+  learningSteps Int   @default(0) // ts-fsrs v6 learning_steps (short-term scheduling)
+  fsrsState String    @default("New") // New|Learning|Review|Relearning
+
+  // display / engine
+  displayState    String  @default("locked") // locked|available|learning|mastered|fading|assumed_known
+  strength        Float   @default(0) // soft 0..1 signal for propagation & UI
+  pendingDelayTest Boolean @default(false)
+  delayTestEligibleAt DateTime?
+  masteredAt      DateTime?
+  lastAppliedEvidenceId String? // idempotency for offline replay
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  node GraphNode  @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, nodeId, skill])
+  @@index([userId, displayState])
+  @@index([userId, due])
+}
+
+// ─────────────────────────── evidence (append-only) ───────────────────────────
+
+model Evidence {
+  id                String   @id @default(cuid())
+  userId            String
+  sessionId         String
+  turnId            String
+  nodeId            String // whitelist-checked against GraphNode
+  skill             String // reading|writing
+  outcome           String // correct|error|slip_self_corrected|avoided|used_with_hint|unknown
+  errorType         String? // form|usage|word_choice|spelling|register|word_order|pronunciation...
+  produced          String?
+  expected          String?
+  l1Interference    Boolean  @default(false)
+  hintUsed          Boolean  @default(false)
+  responseLatencyMs Int?
+  confidence        Float // 0..1 from analyst
+  propagated        Boolean  @default(false) // generated by mastery propagation
+  disputed          Boolean  @default(false) // user rejected it
+  disputeReason     String?
+  createdAt         DateTime @default(now())
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, nodeId, skill, createdAt])
+  @@index([sessionId])
+  @@index([userId, disputed])
+}
+
+// ─────────────────────────── chat sessions & turns ───────────────────────────
+
+model ChatSession {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String // roleplay_targeted|confirmatory (MVP); diagnostic|free later
+  status    String    @default("active") // active|ended
+  brief     String? // JSON snapshot of SessionBrief used
+  scenario  String? // JSON {title, role, mustElicit[]}
+  summary   String? // JSON SessionSummary written at end
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  turns     Turn[]
+  evidences Evidence[]
+
+  @@index([userId, status])
+}
+
+model Turn {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String // user|tutor
+  content   String
+  meta      String? // JSON {latencyMs, unknownRate, corrections[], tokenEstimate}
+  createdAt DateTime @default(now())
+
+  session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+// ─────────────────────────── growth pipeline ───────────────────────────
+
+model Seed {
+  id               String    @id @default(cuid())
+  userId           String
+  triggerType      String // repeated_error (MVP); interest|goal|imported|l1_error later
+  triggerRef       String? // JSON {errorCount, sessionIds[], sampleProduced, sampleExpected}
+  candidateNodeId  String? // existing GraphNode id
+  candidatePayload String? // JSON to CREATE a user-generated node
+  score            Float
+  scoreBreakdown   String // JSON {goalRelevance, frequency, readiness, novelty}
+  status           String    @default("proposed") // proposed|approved|planted|rejected|expired|merged
+  reasonFa         String? // human-readable "why" (Persian)
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+  decidedAt        DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, candidateNodeId, status])
+}
+
+// ─────────────────────────── tree layout (semi-fixed) ───────────────────────────
+
+model NodePosition {
+  userId String
+  nodeId String
+  x      Float
+  y      Float
+  tier   Int // depth layer for layout stability
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, nodeId])
+}
+
+// ─────────────────────────── metrics (write-only) ───────────────────────────
+
+model MetricEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  name      String // session_start|session_end|evidence_created|evidence_applied|seed_proposed|...
+  props     String? // JSON
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
+  @@index([userId, name])
+}
