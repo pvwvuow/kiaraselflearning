@@ -1,0 +1,338 @@
+{
+ "$comment": "Kiara grammar patterns (new in M1) — hand-authored, CC0.",
+ "nodes": [
+  {
+   "id": "en:grammar:present-continuous",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Present Continuous",
+   "glossFa": "حال استمراری",
+   "explanationFa": "am/is/are + فعل+ing برای الان: I am studying now.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:past-continuous",
+   "type": "grammar_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Past Continuous",
+   "glossFa": "گذشته استمراری",
+   "explanationFa": "was/were + ing برای کاری در جریان: I was cooking when you called.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:future-will",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Future with will",
+   "glossFa": "آینده با will",
+   "explanationFa": "تصمیم لحظه‌ای/پیش‌بینی: I'll call you later. It will rain.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:future-going-to",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Future with going to",
+   "glossFa": "آینده با going to",
+   "explanationFa": "برنامه/نیت قبلی یا نشانه‌ی روشن: We're going to travel in spring.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:comparatives",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Comparatives",
+   "glossFa": "صفت تفضیلی",
+   "explanationFa": "-er / more + than: cheaper than, more expensive than.",
+   "tags": [
+    "daily",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:superlatives",
+   "type": "grammar_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Superlatives",
+   "glossFa": "صفت عالی",
+   "explanationFa": "the + -est / the most: the cheapest, the most famous.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:countable-uncountable",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Countable vs uncountable nouns",
+   "glossFa": "اسم قابل‌شمارش و غیرقابل‌شمارش",
+   "explanationFa": "water/money/information غیرقابل‌شمارش‌اند: a water غلط است — a glass of water.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:quantifiers",
+   "type": "grammar_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Quantifiers: some/any/much/many",
+   "glossFa": "کمیت‌نماها",
+   "explanationFa": "some در مثبت، any در منفی/سؤال؛ much با غیرقابل‌شمارش، many با قابل‌شمارش.",
+   "tags": [
+    "daily",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:modals-advice-should",
+   "type": "grammar_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Should (advice)",
+   "glossFa": "should برای نصیحت",
+   "explanationFa": "should/shouldn't: You should book early. You shouldn't worry.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:modals-obligation",
+   "type": "grammar_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Must / have to (obligation)",
+   "glossFa": "الزام: must و have to",
+   "explanationFa": "must الزامِ قوی از خود گوینده؛ have to از قواعد بیرونی: I have to wear a uniform.",
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:frequency-adverbs",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Adverbs of frequency",
+   "glossFa": "قیدهای تکرار",
+   "explanationFa": "always/usually/often/sometimes/never — قبل از فعل اصلی، بعد از be.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:prepositions-time-place",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Prepositions of time & place",
+   "glossFa": "in / on / at برای زمان و مکان",
+   "explanationFa": "in شهر/ماه/سال، on روز/تاریخ، at ساعت/مکان مشخص: in Shiraz, on Monday, at 5.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:possessives",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Possessives (my / 's)",
+   "glossFa": "ملکیت: my و ’s",
+   "explanationFa": "my/your/his… + اسم‌ها با ’s: my sister’s car.",
+   "tags": [
+    "daily",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:grammar:questions-do-support",
+   "type": "grammar_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Questions with do/does",
+   "glossFa": "سؤال ساختن با do/does",
+   "explanationFa": "در سؤال و منفیِ حال ساده do/does می‌آید: Do you like tea? — She doesn't work here.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:present-continuous",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-continuous",
+   "to": "en:grammar:future-going-to",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:past-simple",
+   "to": "en:grammar:past-continuous",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:comparatives",
+   "to": "en:grammar:superlatives",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:countable-uncountable",
+   "to": "en:grammar:quantifiers",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:countable-uncountable",
+   "to": "en:grammar:plural-count-nouns",
+   "type": "related"
+  },
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:future-will",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:modals-advice-should",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:modals-obligation",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:frequency-adverbs",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-simple",
+   "to": "en:grammar:questions-do-support",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:future-will",
+   "to": "en:grammar:future-going-to",
+   "type": "confusable"
+  }
+ ]
+}

@@ -1,0 +1,1255 @@
+{
+ "$comment": "Kiara A2 words (new in M1) — hand-authored, CC0. frequencyRank values are approximate COCA-style bands.",
+ "nodes": [
+  {
+   "id": "en:word:arrive",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1500,
+   "title": "arrive",
+   "glossFa": "رسیدن",
+   "explanationFa": "arrive in + شهر/کشور، arrive at + مکان کوچک: arrive in Istanbul / arrive at the airport.",
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:depart",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 3200,
+   "title": "depart",
+   "glossFa": "حرکت کردن، برخاستن",
+   "explanationFa": "رسمی؛ در فرودگاه: departures = پروازهای خروجی.",
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:leave",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 400,
+   "title": "leave",
+   "glossFa": "ترک کردن، جا گذاشتن",
+   "explanationFa": "دو معنی: leave home (خانه را ترک کردن) و leave something (جایی جا گذاشتن).",
+   "tags": [
+    "travel",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:stay",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 700,
+   "title": "stay",
+   "glossFa": "ماندن، اقامت کردن",
+   "explanationFa": "stay at + هتل: We stayed at a small hotel.",
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:visit",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 800,
+   "title": "visit",
+   "glossFa": "ملاقات کردن، بازدید کردن",
+   "explanationFa": null,
+   "tags": [
+    "travel",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:travel",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "travel",
+   "glossFa": "سفر کردن",
+   "explanationFa": "فعل است؛ به‌عنوان اسمِ uncountable: Travel broadens the mind.",
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:trip",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1200,
+   "title": "trip",
+   "glossFa": "سفر (کوتاه، رفت‌وبرگشت)",
+   "explanationFa": "سفر کوتاه trip است؛ سفر طولانی‌مدت journey.",
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:reserve",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 3500,
+   "title": "reserve",
+   "glossFa": "رزرو کردن",
+   "explanationFa": "reserve = book (رزرو کردن)؛ برای میز/اتاق/بلیت.",
+   "tags": [
+    "travel",
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:prefer",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1400,
+   "title": "prefer",
+   "glossFa": "ترجیح دادن",
+   "explanationFa": "prefer A to B: I prefer tea to coffee (نه than).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:enjoy",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1000,
+   "title": "enjoy",
+   "glossFa": "لذت بردن",
+   "explanationFa": "بعد از enjoy فعل با ing می‌آید: enjoy watching films.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:decide",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1100,
+   "title": "decide",
+   "glossFa": "تصمیم گرفتن",
+   "explanationFa": "decide to + فعل: We decided to stay home.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:explain",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1300,
+   "title": "explain",
+   "glossFa": "توضیح دادن",
+   "explanationFa": "explain something to someone (نه explain me it).",
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:describe",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1800,
+   "title": "describe",
+   "glossFa": "توصیف کردن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:suggest",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1600,
+   "title": "suggest",
+   "glossFa": "پیشنهاد دادن",
+   "explanationFa": "suggest going / suggest that… (نه suggest me to go).",
+   "tags": [
+    "work",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:invite",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1900,
+   "title": "invite",
+   "glossFa": "دعوت کردن",
+   "explanationFa": null,
+   "tags": [
+    "family",
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:order",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1400,
+   "title": "order",
+   "glossFa": "سفارش دادن",
+   "explanationFa": null,
+   "tags": [
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:pay",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "pay",
+   "glossFa": "پرداخت کردن",
+   "explanationFa": "pay for something: pay for the ticket (نه pay the ticket).",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:spend",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 800,
+   "title": "spend",
+   "glossFa": "خرج کردن، گذراندن",
+   "explanationFa": "پول: spend money؛ زمان: spend time — هر دو با ing: spending time with family.",
+   "tags": [
+    "shopping",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:cost",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1000,
+   "title": "cost",
+   "glossFa": "هزینه داشتن؛ هزینه",
+   "explanationFa": "چیز هزینه دارد (فعل بی‌فاعل مجهول): The ticket costs $50.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:cheap",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1400,
+   "title": "cheap",
+   "glossFa": "ارزان",
+   "explanationFa": null,
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:expensive",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1600,
+   "title": "expensive",
+   "glossFa": "گران",
+   "explanationFa": null,
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:open",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 450,
+   "title": "open",
+   "glossFa": "باز کردن؛ باز",
+   "explanationFa": "هم فعل است هم صفت: open the window / The shop is open.",
+   "tags": [
+    "daily",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:close",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 500,
+   "title": "close",
+   "glossFa": "بستن؛ نزدیک",
+   "explanationFa": "فعل close بستن است؛ صفتِ نزدیکی near است: close to the station.",
+   "tags": [
+    "daily",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:start",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 350,
+   "title": "start",
+   "glossFa": "شروع کردن",
+   "explanationFa": null,
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:finish",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 700,
+   "title": "finish",
+   "glossFa": "تمام کردن",
+   "explanationFa": "بعد از finish فعل با ing می‌آید: finish cleaning.",
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:early",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 600,
+   "title": "early",
+   "glossFa": "زود، اولِ وقت",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:late",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 450,
+   "title": "late",
+   "glossFa": "دیر، تأخیر",
+   "explanationFa": "late for چیزی: I'm late for class.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:fast",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 800,
+   "title": "fast",
+   "glossFa": "سریع",
+   "explanationFa": "هم صفت است هم قید: a fast train / He runs fast (نه fastly).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:slow",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1100,
+   "title": "slow",
+   "glossFa": "آهسته",
+   "explanationFa": "صفت است؛ قیدش slowly: Drive slowly.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:easy",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 700,
+   "title": "easy",
+   "glossFa": "آسان",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:difficult",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "difficult",
+   "glossFa": "سخت، دشوار",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:interesting",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 800,
+   "title": "interesting",
+   "glossFa": "جالب",
+   "explanationFa": "interesting = جالب (صفتِ چیز)؛ interested = علاقه‌مند (حالت آدم): interested in.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:boring",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1300,
+   "title": "boring",
+   "glossFa": "کسل‌کننده",
+   "explanationFa": "boring = کسل‌کننده (چیز)؛ bored = حوصله‌سررفته (آدم): I'm bored.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:weather",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1000,
+   "title": "weather",
+   "glossFa": "هوا (آب‌وهوا)",
+   "explanationFa": "غیرقابل‌شمارش: a weather غلط است.",
+   "tags": [
+    "daily",
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:rain",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1100,
+   "title": "rain",
+   "glossFa": "باران؛ باران باریدن",
+   "explanationFa": "با فاعل قائم‌الجاه it: It rains a lot in spring.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:snow",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1600,
+   "title": "snow",
+   "glossFa": "برف؛ برف باریدن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:wind",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1700,
+   "title": "wind",
+   "glossFa": "باد",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:doctor",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 600,
+   "title": "doctor",
+   "glossFa": "دکتر، پزشک",
+   "explanationFa": null,
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:hospital",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "hospital",
+   "glossFa": "بیمارستان",
+   "explanationFa": null,
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:medicine",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1500,
+   "title": "medicine",
+   "glossFa": "دارو",
+   "explanationFa": "در معنای کلی uncountable است: take medicine.",
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:sick",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1200,
+   "title": "sick",
+   "glossFa": "مریض، حال‌بد",
+   "explanationFa": "feel sick دو معنی: حال‌به‌هم‌خوردن یا مریض.",
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:healthy",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1600,
+   "title": "healthy",
+   "glossFa": "سالم",
+   "explanationFa": null,
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:exercise",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1400,
+   "title": "exercise",
+   "glossFa": "ورزش؛ تمرین",
+   "explanationFa": "ورزشِ عمومی uncountable: do exercise.",
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:hungry",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1600,
+   "title": "hungry",
+   "glossFa": "گرسنه",
+   "explanationFa": null,
+   "tags": [
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:thirsty",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 3200,
+   "title": "thirsty",
+   "glossFa": "تشنه",
+   "explanationFa": null,
+   "tags": [
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:together",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "together",
+   "glossFa": "با هم",
+   "explanationFa": null,
+   "tags": [
+    "daily",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:alone",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 1400,
+   "title": "alone",
+   "glossFa": "تنها",
+   "explanationFa": "alone حالت است، lonely حس تنهایی است.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:again",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 350,
+   "title": "again",
+   "glossFa": "دوباره",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:always",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 300,
+   "title": "always",
+   "glossFa": "همیشه",
+   "explanationFa": "قبل از فعل اصلی و بعد از be می‌آید: I always drink tea / She is always late.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:never",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 400,
+   "title": "never",
+   "glossFa": "هرگز",
+   "explanationFa": "خودش منفی است؛ فعل مثبت می‌آید: I never smoke (نه I don't never).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:sometimes",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 500,
+   "title": "sometimes",
+   "glossFa": "گاهی",
+   "explanationFa": "می‌تواند اول جمله بیاید: Sometimes I study at night.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:usually",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 450,
+   "title": "usually",
+   "glossFa": "معمولاً",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:already",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 900,
+   "title": "already",
+   "glossFa": "قبلاً، از قبل",
+   "explanationFa": "با حال کامل رایج است: I have already eaten.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:maybe",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 400,
+   "title": "maybe",
+   "glossFa": "شاید",
+   "explanationFa": "قید است و اول جمله می‌آید؛ may be دو کلمه فعل است.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:problem",
+   "type": "word",
+   "cefr": "A2",
+   "frequencyRank": 550,
+   "title": "problem",
+   "glossFa": "مشکل",
+   "explanationFa": "no problem = اشکالی ندارد / خواهش می‌کنم.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:word:arrive",
+   "to": "en:word:leave",
+   "type": "related"
+  },
+  {
+   "from": "en:word:cheap",
+   "to": "en:word:expensive",
+   "type": "related"
+  },
+  {
+   "from": "en:word:fast",
+   "to": "en:word:slow",
+   "type": "related"
+  },
+  {
+   "from": "en:word:open",
+   "to": "en:word:close",
+   "type": "related"
+  },
+  {
+   "from": "en:word:early",
+   "to": "en:word:late",
+   "type": "related"
+  },
+  {
+   "from": "en:word:travel",
+   "to": "en:word:trip",
+   "type": "confusable"
+  },
+  {
+   "from": "en:word:trip",
+   "to": "en:word:journey",
+   "type": "confusable"
+  },
+  {
+   "from": "en:word:spend",
+   "to": "en:word:cost",
+   "type": "related"
+  },
+  {
+   "from": "en:word:suggest",
+   "to": "en:word:recommend",
+   "type": "related"
+  },
+  {
+   "from": "en:word:sick",
+   "to": "en:word:healthy",
+   "type": "related"
+  },
+  {
+   "from": "en:word:interesting",
+   "to": "en:word:boring",
+   "type": "related"
+  },
+  {
+   "from": "en:word:easy",
+   "to": "en:word:difficult",
+   "type": "related"
+  },
+  {
+   "from": "en:word:already",
+   "to": "en:grammar:present-perfect",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:always",
+   "to": "en:grammar:frequency-adverbs",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:never",
+   "to": "en:grammar:frequency-adverbs",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:usually",
+   "to": "en:grammar:frequency-adverbs",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:sometimes",
+   "to": "en:grammar:frequency-adverbs",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:arrive",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:depart",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:stay",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:visit",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:reserve",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:trip",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:order",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:hungry",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:thirsty",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:pay",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:spend",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:cost",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:cheap",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:expensive",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:weather",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:maybe",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:invite",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:alone",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:together",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:doctor",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:problem",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  }
+ ]
+}

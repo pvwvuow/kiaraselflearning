@@ -13,10 +13,10 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ DONE → next: M1** |
-| Tests | 53/53 green (`bun run test`) |
+| Current milestone | **M0 ✅ + M1 ✅ DONE → next: M2** |
+| Tests | 81/81 green (`bun run test`) |
 | Lint | clean (`bun run lint`) |
-| DB | SQLite at `db/custom.db`, schema pushed, 46 graph nodes + 23 edges seeded |
+| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded |
 | Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
 
 ## Environment & secrets (CRITICAL RULES)
@@ -59,15 +59,22 @@
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
   ChatSession, Turn, Seed, NodePosition, MetricEvent, User, UserSession).
-- `src/lib/engine/` — pure deterministic core, 53 tests:
-  `types.ts` (all unions/contracts) · `config.ts` (every constant, documented) ·
-  `grading.ts` (evidence→aggregate→FSRS rating; gap vs slip) · `fsrs.ts` (ts-fsrs v6 wrapper) ·
-  `state.ts` (applySessionReview, display states, propagation, root-cause, mastery/revocation,
-  fading) · `growth.ts` (repeated_error trigger, scoring, cap) · `brief.ts` (session brief +
-  planner mix + i+1 budget) · `graph.ts` (availability/frontier/tier).
+- `src/lib/engine/` — pure deterministic core, 81 tests total:
+  `types.ts` (all unions/contracts + CefrBand + placement contracts) · `config.ts` (every constant,
+  documented) · `grading.ts` (evidence→aggregate→FSRS rating; gap vs slip) · `fsrs.ts` (ts-fsrs v6
+  wrapper) · `state.ts` (applySessionReview, display states, propagation, root-cause,
+  mastery/revocation, fading) · `growth.ts` (repeated_error trigger, scoring, cap) · `brief.ts`
+  (session brief + planner mix + i+1 budget) · `graph.ts` (availability/frontier/tier) ·
+  `placement.ts` (M1: seeded quiz pools, 2-up/1-down ladder, assumed_known writer — never mastered).
 - `src/lib/graph/load.ts` — in-memory graph cache + node-id whitelist.
-- `data/graph-en/seed.sample.json` — 46-node sample graph (words/chunks/grammar/pragmatic/
-  error-patterns/clusters + edges). `scripts/seed-graph.ts` — idempotent seeder (ran twice ✅).
+- `data/graph-en/` — **M1: 268 nodes / 205 edges** (189 words A1–B1 with fa glosses + freq ranks,
+  25 chunks, 21 grammar patterns, 15 pragmatic skills, 12 fa→en error patterns, 6 clusters).
+  Content authored via `scripts/graph_data_*.py` → `scripts/build-graph-data.py` (validates ids,
+  endpoints, dupes, DAG, quiz-ability → writes JSON). `scripts/seed-graph.ts` — idempotent,
+  two-pass (all nodes → all edges) inside one transaction.
+- `src/app/api/graph/stats/route.ts` — GET counts by type/cefr (live-verified on :3000).
+- Tests: `tests/engine/` (53) + `tests/graph/integrity.test.ts` (9) + `tests/api/graph-stats.test.ts`
+  + `tests/db/seed-idempotency.test.ts` (runs the real seeder twice against SQLite).
 - `scripts/fsrs-probe.ts` — produces the REAL numeric tables used in docs/03.
 - Landing page `/` — Persian RTL status page (browser-verified, no console errors).
 
@@ -77,8 +84,12 @@
   `f.retrievability(card, now)`; Rating/State are plain objects (no reverse map).
 - Prisma on SQLite: no enums — strings + zod. `UserNodeState.learningSteps` persists
   `card.learning_steps` (needed for correct round-trips).
-- `.gitignore` excludes `download/ upload/ skills/ tests/ examples/ mini-services/ .zscripts/
-  Caddyfile db/ .env* .git-credentials` — keep it that way (sandbox internals must not ship).
+- **Seeder must insert ALL nodes before ANY edges** (FK order): fixed in M1 by two-pass +
+  `$transaction`; do not regress this.
+- Placement final band = highest band with positive correct/wrong majority (docs/05 M1 unit
+  test pins this); null → light NOTHING (absolute beginner, C2a ultra-light register).
+- `.gitignore` excludes `download/ upload/ skills/ tests/*.sh examples/ mini-services/ .zscripts/
+  Caddyfile db/ .env* .git-credentials` — real tests under `tests/**/*.test.ts` ARE tracked. Keep it that way.
 - `package.json` name is still `nextjs_tailwind_shadcn_ts` — fine to rename in M9 polish.
 - The route `src/app/api/route.ts` is a template leftover health endpoint — replace in M3.
 

@@ -1,0 +1,224 @@
+{
+ "$comment": "Kiara fa→en error patterns (new in M1) — hand-authored, CC0.",
+ "nodes": [
+  {
+   "id": "en:err:l1-prodrop",
+   "type": "error_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Dropping the subject (L1)",
+   "glossFa": "حذف فاعل",
+   "explanationFa": "فارسی فاعل را می‌اندازد («باران می‌بارد»)؛ انگلیسی فاعل قائم‌الجاه می‌خواهد: It is raining.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-make-do",
+   "type": "error_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "make/do swap (L1)",
+   "glossFa": "جابجایی make و do",
+   "explanationFa": "فارسی «کردن» برای هر دو: ✗ do a mistake ✓ make a mistake؛ ✗ make homework ✓ do homework.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-much-many",
+   "type": "error_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "much/many confusion (L1)",
+   "glossFa": "اشتباه much و many",
+   "explanationFa": "فارسی تفکیک نمی‌کند: much با غیرقابل‌شمارش، many با قابل‌شمارش.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-countable-misuse",
+   "type": "error_pattern",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Pluralizing uncountables (L1)",
+   "glossFa": "جمع‌بستن اسم غیرقابل‌شمارش",
+   "explanationFa": "✗ informations / advices / furnitures ✓ information / advice / furniture.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-since-for",
+   "type": "error_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "since/for confusion (L1)",
+   "glossFa": "اشتباه since و for",
+   "explanationFa": "فارسی «از» برای هر دو: since + نقطه‌ی شروع (since 2020)، for + مدت (for two years).",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-prepositions-time",
+   "type": "error_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "in/on/at for time (L1)",
+   "glossFa": "حرف اضافه‌ی زمان",
+   "explanationFa": "فارسی یک «در» دارد: on روز، in ماه/سال، at ساعت: on Monday, in July, at 5 o'clock.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-infinitive-gerund",
+   "type": "error_pattern",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "to+verb after ing-verbs (L1)",
+   "glossFa": "مصدر به‌جای ing",
+   "explanationFa": "بعد از enjoy/suggest/avoid/finish فعل با ing می‌آید: ✗ I enjoy to watch ✓ I enjoy watching.",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:err:l1-past-vs-present-perfect",
+   "type": "error_pattern",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "Past simple for experiences (L1)",
+   "glossFa": "گذشته‌ی ساده به‌جای حال کامل",
+   "explanationFa": "برای تجربه بدون زمانِ مشخص، حال کامل: ✗ Did you ever see snow? ✓ Have you ever seen snow?",
+   "tags": [
+    "fa-l1"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:err:l1-prodrop",
+   "to": "en:grammar:present-simple",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-prodrop",
+   "to": "en:grammar:present-continuous",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-make-do",
+   "to": "en:word:make",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-make-do",
+   "to": "en:word:do",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-much-many",
+   "to": "en:grammar:quantifiers",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-much-many",
+   "to": "en:chunk:how-much",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-countable-misuse",
+   "to": "en:grammar:countable-uncountable",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-countable-misuse",
+   "to": "en:word:luggage",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-since-for",
+   "to": "en:grammar:present-perfect",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-prepositions-time",
+   "to": "en:grammar:prepositions-time-place",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-infinitive-gerund",
+   "to": "en:grammar:questions-do-support",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-past-vs-present-perfect",
+   "to": "en:grammar:present-perfect",
+   "type": "related"
+  },
+  {
+   "from": "en:err:l1-past-vs-present-perfect",
+   "to": "en:grammar:past-simple",
+   "type": "confusable"
+  }
+ ]
+}

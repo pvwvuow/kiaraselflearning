@@ -1,0 +1,477 @@
+{
+ "$comment": "Kiara chunks (new in M1) — hand-authored, CC0.",
+ "nodes": [
+  {
+   "id": "en:chunk:how-many",
+   "type": "chunk",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "How many…?",
+   "glossFa": "چندتا؟ (برای قابل‌شمارش)",
+   "explanationFa": "برای اسم قابل‌شمارش: How many bags? — غیرقابل‌شمارش با How much است.",
+   "tags": [
+    "shopping",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:there-is-there-are",
+   "type": "chunk",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "There is / There are",
+   "glossFa": "هست، وجود دارد",
+   "explanationFa": "there is + مفرد، there are + جمع: There are two flights on Friday.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:i-need",
+   "type": "chunk",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "I need…",
+   "glossFa": "احتیاج دارم",
+   "explanationFa": "need + اسم یا to + فعل: I need to leave early.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:can-i-have",
+   "type": "chunk",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Can I have…?",
+   "glossFa": "میشه … داشته باشم؟ (درخواست مؤدبانه)",
+   "explanationFa": "در سفارش/درخواست روزمره: Can I have the menu, please?",
+   "tags": [
+    "food",
+    "polite"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:on-the-left",
+   "type": "chunk",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "on the left / on the right",
+   "glossFa": "سمت چپ / سمت راست",
+   "explanationFa": "برای جهت‌دهی: The bank is on the left.",
+   "tags": [
+    "travel",
+    "directions"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:have-to",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "have to + verb",
+   "glossFa": "مجبور بودن",
+   "explanationFa": "الزامِ بیرونی: I have to leave now. گذشته: had to.",
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:going-to",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "be going to + verb",
+   "glossFa": "قرار است… (برنامه/نیت)",
+   "explanationFa": "برنامه‌ی قبلی: We're going to visit Shiraz in spring.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:a-bit",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "a bit + adjective",
+   "glossFa": "کمی، یک‌ذره",
+   "explanationFa": "تعدیل‌گر صفت: a bit expensive / a bit tired.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:on-time",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "on time",
+   "glossFa": "به‌موقع",
+   "explanationFa": "on time = سرِ وقت مقرر؛ in time = قبل از اینکه دیر شود.",
+   "tags": [
+    "travel",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:by-the-way",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "by the way",
+   "glossFa": "راستی…",
+   "explanationFa": "برای تغییر موضوع حین گفتگو.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:how-about",
+   "type": "chunk",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "How about…?",
+   "glossFa": "…چطور؟ (پیشنهاد)",
+   "explanationFa": "بعد از آن فعل با ing می‌آید: How about going on Friday?",
+   "tags": [
+    "smalltalk",
+    "plans"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:at-least",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "at least",
+   "glossFa": "حداقل",
+   "explanationFa": "Stay at least two nights / at least ten minutes.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:it-depends",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "It depends (on…)",
+   "glossFa": "بستگی دارد",
+   "explanationFa": "It depends on the weather — روی on تأکید کنید؛ بدون مکمل هم درست است.",
+   "tags": [
+    "daily",
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:i-was-wondering",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "I was wondering if…",
+   "glossFa": "می‌خواستم بپرسم که… (خیلی مؤدبانه)",
+   "explanationFa": "گذشته استمراری برای درخواستِ خیلی مؤدبانه: I was wondering if you could help me.",
+   "tags": [
+    "polite",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:the-thing-is",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "The thing is…",
+   "glossFa": "مسئله این است که…",
+   "explanationFa": "برای توضیح دلیل یا مانع واقعی.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:im-afraid",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "I'm afraid…",
+   "glossFa": "متأسفانه… (رد/خبَرمؤدبانه)",
+   "explanationFa": "برای خبر بد یا رد کردنِ مؤدبانه: I'm afraid we're fully booked.",
+   "tags": [
+    "polite",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:look-forward-to",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "look forward to + ing",
+   "glossFa": "بی‌صبرانه منتظر بودن",
+   "explanationFa": "بعد از to فعل با ing می‌آید: I look forward to hearing from you.",
+   "tags": [
+    "work",
+    "email"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:make-sure",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "make sure (that)…",
+   "glossFa": "مطمئن شو که…",
+   "explanationFa": "Make sure you have your passport.",
+   "tags": [
+    "travel",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:keep-in-touch",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "keep in touch",
+   "glossFa": "در تماس بودن",
+   "explanationFa": "Let's keep in touch = شماره‌مان نرود.",
+   "tags": [
+    "smalltalk",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:chunk:would-rather",
+   "type": "chunk",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "would rather + verb",
+   "glossFa": "ترجیح می‌دهم",
+   "explanationFa": "بعد از آن فعلِ ساده می‌آید: I'd rather stay home tonight.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:chunk:how-many",
+   "to": "en:grammar:countable-uncountable",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:how-many",
+   "to": "en:chunk:how-much",
+   "type": "confusable"
+  },
+  {
+   "from": "en:chunk:there-is-there-are",
+   "to": "en:grammar:plural-count-nouns",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:i-need",
+   "to": "en:grammar:present-simple",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:can-i-have",
+   "to": "en:word:can",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:have-to",
+   "to": "en:grammar:modals-obligation",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:going-to",
+   "to": "en:grammar:future-going-to",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:on-time",
+   "to": "en:grammar:prepositions-time-place",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:it-depends",
+   "to": "en:word:depend",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:i-was-wondering",
+   "to": "en:grammar:past-continuous",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:look-forward-to",
+   "to": "en:grammar:prepositions-time-place",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:make-sure",
+   "to": "en:word:make",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:would-rather",
+   "to": "en:word:prefer",
+   "type": "related"
+  },
+  {
+   "from": "en:chunk:on-the-left",
+   "to": "en:pragmatic:asking-directions",
+   "type": "related"
+  },
+  {
+   "from": "en:chunk:how-about",
+   "to": "en:pragmatic:making-plans",
+   "type": "related"
+  }
+ ]
+}

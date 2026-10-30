@@ -1,0 +1,1246 @@
+{
+ "$comment": "Kiara A1 words (new in M1) — hand-authored, CC0. frequencyRank values are approximate COCA-style bands.",
+ "nodes": [
+  {
+   "id": "en:word:time",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 250,
+   "title": "time",
+   "glossFa": "زمان",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:day",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 120,
+   "title": "day",
+   "glossFa": "روز",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:people",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 90,
+   "title": "people",
+   "glossFa": "مردم، آدم‌ها",
+   "explanationFa": "جمعِ person است و خودش جمع می‌باشد: two people.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:family",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 300,
+   "title": "family",
+   "glossFa": "خانواده",
+   "explanationFa": null,
+   "tags": [
+    "family",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:friend",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 280,
+   "title": "friend",
+   "glossFa": "دوست",
+   "explanationFa": null,
+   "tags": [
+    "family",
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:house",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 350,
+   "title": "house",
+   "glossFa": "خانه (ساختمان)",
+   "explanationFa": "house ساختمان است؛ home حسِ «خانه بودن» می‌دهد.",
+   "tags": [
+    "home"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:home",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 320,
+   "title": "home",
+   "glossFa": "خانه (جای آدم‌ها)",
+   "explanationFa": null,
+   "tags": [
+    "home",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:car",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 400,
+   "title": "car",
+   "glossFa": "ماشین",
+   "explanationFa": null,
+   "tags": [
+    "travel",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:bus",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 700,
+   "title": "bus",
+   "glossFa": "اتوبوس",
+   "explanationFa": null,
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:train",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 900,
+   "title": "train",
+   "glossFa": "قطار",
+   "explanationFa": null,
+   "tags": [
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:ticket",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 1100,
+   "title": "ticket",
+   "glossFa": "بلیت",
+   "explanationFa": null,
+   "tags": [
+    "travel",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:city",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 450,
+   "title": "city",
+   "glossFa": "شهر",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:street",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 600,
+   "title": "street",
+   "glossFa": "خیابان",
+   "explanationFa": "در خیابان: in the street (نه on the street به معنای بریتانیایی).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:shop",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 800,
+   "title": "shop",
+   "glossFa": "مغازه؛ خرید کردن",
+   "explanationFa": "هم اسم است هم فعل: a small shop / I shop on Fridays.",
+   "tags": [
+    "shopping",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:work",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 130,
+   "title": "work",
+   "glossFa": "کار؛ کار کردن",
+   "explanationFa": "هم اسم است هم فعل: I go to work / I work in a bank.",
+   "tags": [
+    "work",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:money",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 380,
+   "title": "money",
+   "glossFa": "پول",
+   "explanationFa": "غیرقابل‌شمارش است: much money, نه many money.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:book",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 420,
+   "title": "book",
+   "glossFa": "کتاب؛ رزرو کردن",
+   "explanationFa": "به‌عنوان فعل یعنی رزرو کردن: book a hotel / book a table.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:phone",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 500,
+   "title": "phone",
+   "glossFa": "تلفن، موبایل",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:name",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 350,
+   "title": "name",
+   "glossFa": "اسم",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:morning",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 650,
+   "title": "morning",
+   "glossFa": "صبح",
+   "explanationFa": "با حرف اضافه‌ی in می‌آید: in the morning.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:night",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 700,
+   "title": "night",
+   "glossFa": "شب",
+   "explanationFa": "in the night نادر است؛ at night درست است.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:week",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 300,
+   "title": "week",
+   "glossFa": "هفته",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:month",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 550,
+   "title": "month",
+   "glossFa": "ماه (تقویمی)",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:year",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 200,
+   "title": "year",
+   "glossFa": "سال",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:today",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 350,
+   "title": "today",
+   "glossFa": "امروز",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:tomorrow",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 600,
+   "title": "tomorrow",
+   "glossFa": "فردا",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:yesterday",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 700,
+   "title": "yesterday",
+   "glossFa": "دیروز",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:eat",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 550,
+   "title": "eat",
+   "glossFa": "خوردن",
+   "explanationFa": "گذشته‌ی نامنظم: eat → ate → eaten.",
+   "tags": [
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:drink",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 700,
+   "title": "drink",
+   "glossFa": "نوشیدن",
+   "explanationFa": "گذشته‌ی نامنظم: drink → drank → drunk.",
+   "tags": [
+    "food"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:sleep",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 900,
+   "title": "sleep",
+   "glossFa": "خوابیدن",
+   "explanationFa": null,
+   "tags": [
+    "daily",
+    "home"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:walk",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 800,
+   "title": "walk",
+   "glossFa": "پیاده‌روی کردن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:run",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 850,
+   "title": "run",
+   "glossFa": "دویدن",
+   "explanationFa": "گذشته‌ی نامنظم: run → ran → run.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:read",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 600,
+   "title": "read",
+   "glossFa": "خواندن",
+   "explanationFa": "نوشتار یکسان، تلفظ گذشته فرق دارد: read (riːd) → read (red).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:write",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 650,
+   "title": "write",
+   "glossFa": "نوشتن",
+   "explanationFa": "گذشته‌ی نامنظم: write → wrote → written.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:speak",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 750,
+   "title": "speak",
+   "glossFa": "صحبت کردن",
+   "explanationFa": "گذشته: spoke. speak رسمی‌تر از talk است.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:say",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 150,
+   "title": "say",
+   "glossFa": "گفتن",
+   "explanationFa": "say چیزی را می‌گوید؛ tell به کسی چیزی می‌گوید: tell me the story.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:see",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 100,
+   "title": "see",
+   "glossFa": "دیدن",
+   "explanationFa": "see دیدنِ اتفاقی/توانایی است؛ look نگاهِ عمدی: Look at the board.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:look",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 160,
+   "title": "look",
+   "glossFa": "نگاه کردن",
+   "explanationFa": "همیشه با at می‌آید: look at this photo.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:come",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 140,
+   "title": "come",
+   "glossFa": "آمدن",
+   "explanationFa": "گذشته: came. برعکسِ go (رفتن).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:give",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 180,
+   "title": "give",
+   "glossFa": "دادن",
+   "explanationFa": "give me the pen یا give the pen to me — هر دو درست‌اند.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:take",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 120,
+   "title": "take",
+   "glossFa": "گرفتن، بردن",
+   "explanationFa": "برای زمان هم به‌کار می‌رود: It takes 20 minutes.",
+   "tags": [
+    "daily",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:know",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 90,
+   "title": "know",
+   "glossFa": "دانستن، شناختن",
+   "explanationFa": "know حال است؛ «می‌دانستم» = I knew، نه I knowed.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:think",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 110,
+   "title": "think",
+   "glossFa": "فکر کردن",
+   "explanationFa": "گذشته: thought. think about/of چیزی.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:like",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 130,
+   "title": "like",
+   "glossFa": "دوست داشتن",
+   "explanationFa": "بعد از like فعل با ing یا to هر دو رایج‌اند: I like reading.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:love",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 260,
+   "title": "love",
+   "glossFa": "عشق؛ خیلی دوست داشتن",
+   "explanationFa": null,
+   "tags": [
+    "daily",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:big",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 400,
+   "title": "big",
+   "glossFa": "بزرگ",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:small",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 550,
+   "title": "small",
+   "glossFa": "کوچک",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:good",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 60,
+   "title": "good",
+   "glossFa": "خوب",
+   "explanationFa": "قیدش well است: a good player / She plays well.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:bad",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 300,
+   "title": "bad",
+   "glossFa": "بد",
+   "explanationFa": "تفضیلی و عالی نامنظم: worse, worst.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:new",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 150,
+   "title": "new",
+   "glossFa": "نو، جدید",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:old",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 180,
+   "title": "old",
+   "glossFa": "پیر، قدیمی",
+   "explanationFa": "برای سن: How old are you?",
+   "tags": [
+    "daily",
+    "family"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:hot",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 500,
+   "title": "hot",
+   "glossFa": "داغ، گرم",
+   "explanationFa": null,
+   "tags": [
+    "food",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:cold",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 550,
+   "title": "cold",
+   "glossFa": "سرد",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:happy",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 700,
+   "title": "happy",
+   "glossFa": "خوشحال",
+   "explanationFa": "happy about/with چیزی.",
+   "tags": [
+    "daily",
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:tired",
+   "type": "word",
+   "cefr": "A1",
+   "frequencyRank": 900,
+   "title": "tired",
+   "glossFa": "خسته",
+   "explanationFa": "tired of چیزی = از چیزی خسته شدن.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:word:see",
+   "to": "en:word:look",
+   "type": "confusable"
+  },
+  {
+   "from": "en:word:say",
+   "to": "en:word:speak",
+   "type": "related"
+  },
+  {
+   "from": "en:word:big",
+   "to": "en:word:small",
+   "type": "related"
+  },
+  {
+   "from": "en:word:hot",
+   "to": "en:word:cold",
+   "type": "related"
+  },
+  {
+   "from": "en:word:good",
+   "to": "en:word:bad",
+   "type": "related"
+  },
+  {
+   "from": "en:word:new",
+   "to": "en:word:old",
+   "type": "related"
+  },
+  {
+   "from": "en:word:come",
+   "to": "en:word:go",
+   "type": "related"
+  },
+  {
+   "from": "en:word:eat",
+   "to": "en:word:drink",
+   "type": "related"
+  },
+  {
+   "from": "en:word:house",
+   "to": "en:word:home",
+   "type": "related"
+  },
+  {
+   "from": "en:word:eat",
+   "to": "en:grammar:past-simple-irregular",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:drink",
+   "to": "en:grammar:past-simple-irregular",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:write",
+   "to": "en:grammar:past-simple-irregular",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:know",
+   "to": "en:grammar:past-simple-irregular",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:eat",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:drink",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:hot",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:work",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:money",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:shop",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:ticket",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:friend",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:happy",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:love",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:time",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:day",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:today",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:tomorrow",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:yesterday",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:house",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:home",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:morning",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:night",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:week",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:car",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:bus",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:train",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  }
+ ]
+}

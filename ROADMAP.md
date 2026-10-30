@@ -14,12 +14,12 @@
 - [x] Persian RTL landing page (Vazirmatn local, browser-verified)
 - [x] Pushed to GitHub with zero secrets
 
-## M1 — Graph data & placement
-- [ ] Expand `data/graph-en/` to ≥250 nodes (words with fa glosses + frequency ranks, ~25 chunks, ~20 grammar patterns, ~15 pragmatic skills, ~12 fa→en error patterns, clusters) + meaningful edges
-- [ ] Graph integrity test: all edge endpoints exist & active; frontier roots = nodes without prereqs
-- [ ] Placement: adaptive band quiz (2-up/1-down ladder, ~12 items) → `assumed_known` states (NEVER mastered)
-- [ ] `GET /api/graph/stats` returns counts by type/cefr
-- [ ] Seeder still idempotent (rerun test)
+## M1 — Graph data & placement ✅ (2026-10-30)
+- [x] Expand `data/graph-en/` to ≥250 nodes (268 nodes / 205 edges: 189 words with fa glosses + frequency ranks, 25 chunks, 21 grammar patterns, 15 pragmatic skills, 12 fa→en error patterns, 6 clusters)
+- [x] Graph integrity test: all edge endpoints exist & active; prereq DAG + no islands (frontier roots = nodes without prereqs)
+- [x] Placement: adaptive band quiz (2-up/1-down ladder, ~12 items) → `assumed_known` states (NEVER mastered) — pure `src/lib/engine/placement.ts`
+- [x] `GET /api/graph/stats` returns counts by type/cefr
+- [x] Seeder still idempotent (rerun test) — fixed to two-pass (all nodes → all edges) inside one transaction (cross-file FK order bug)
 
 ## M2 — Auth-lite & onboarding
 - [ ] Email+password (bcrypt) + httpOnly cookie sessions (`UserSession`)

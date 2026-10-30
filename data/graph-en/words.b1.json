@@ -1,0 +1,1227 @@
+{
+ "$comment": "Kiara B1 words (new in M1) — hand-authored, CC0. frequencyRank values are approximate COCA-style bands.",
+ "nodes": [
+  {
+   "id": "en:word:achieve",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3500,
+   "title": "achieve",
+   "glossFa": "به دست آوردن، محقق کردن",
+   "explanationFa": "هدف/موفقیت achieve می‌شود: achieve a goal.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:afford",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3800,
+   "title": "afford",
+   "glossFa": "(پول/وقت) توانِ داشتن برای",
+   "explanationFa": "معمولاً با can/can't می‌آید: I can't afford it.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:announce",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 4200,
+   "title": "announce",
+   "glossFa": "اعلام کردن",
+   "explanationFa": null,
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:apologize",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 5500,
+   "title": "apologize",
+   "glossFa": "عذرخواهی کردن",
+   "explanationFa": "apologize to someone for something.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:appear",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1500,
+   "title": "appear",
+   "glossFa": "ظاهر شدن؛ به نظر رسیدن",
+   "explanationFa": "It appears that… = به نظر می‌رسد که…",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:apply",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2400,
+   "title": "apply",
+   "glossFa": "درخواست دادن",
+   "explanationFa": "apply for + کار/ویزا، apply to + سازمان: apply for a job / apply to a university.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:argue",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2000,
+   "title": "argue",
+   "glossFa": "بحث کردن، دعوا کردن",
+   "explanationFa": "argue with someone about something.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:arrange",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2800,
+   "title": "arrange",
+   "glossFa": "ترتیب دادن، هماهنگ کردن",
+   "explanationFa": null,
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:avoid",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2200,
+   "title": "avoid",
+   "glossFa": "اجتناب کردن",
+   "explanationFa": "بعد از avoid فعل با ing می‌آید: avoid parking here.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:aware",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2600,
+   "title": "aware",
+   "glossFa": "آگاه، مطلع",
+   "explanationFa": "صفت است و با be می‌آید: be aware of the risks.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:behave",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3400,
+   "title": "behave",
+   "glossFa": "رفتار کردن",
+   "explanationFa": null,
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:believe",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 450,
+   "title": "believe",
+   "glossFa": "باور داشتن",
+   "explanationFa": "I believe (that) you can do it.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:belong",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3000,
+   "title": "belong",
+   "glossFa": "تعلق داشتن، مالِ کسی بودن",
+   "explanationFa": "belong to: This book belongs to Sara.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:benefit",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1900,
+   "title": "benefit",
+   "glossFa": "مزیت؛ سود بردن",
+   "explanationFa": "اسم: a big benefit؛ فعل: benefit from something.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:blame",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3600,
+   "title": "blame",
+   "glossFa": "مقصر دانستن",
+   "explanationFa": "blame someone for something / blame something on someone.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:cancel",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2500,
+   "title": "cancel",
+   "glossFa": "لغو کردن",
+   "explanationFa": "گذشته با دو l: cancelled.",
+   "tags": [
+    "travel",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:capable",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 4500,
+   "title": "capable",
+   "glossFa": "توانا، دارای توانایی",
+   "explanationFa": "be capable of + ing: capable of leading the team.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:charge",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2100,
+   "title": "charge",
+   "glossFa": "هزینه گرفتن؛ شارژ کردن",
+   "explanationFa": "charge someone for something: They charge for delivery.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:complain",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2300,
+   "title": "complain",
+   "glossFa": "شکایت کردن",
+   "explanationFa": "complain about چیزی، complain to کسی.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:concentrate",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3200,
+   "title": "concentrate",
+   "glossFa": "تمرکز کردن",
+   "explanationFa": "concentrate on something: Concentrate on your writing.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:confident",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2700,
+   "title": "confident",
+   "glossFa": "خودباور، مطمئن",
+   "explanationFa": "confident about/of something.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:confuse",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2400,
+   "title": "confuse",
+   "glossFa": "گیج کردن",
+   "explanationFa": "confused = گیج (آدم)؛ confusing = گیج‌کننده (چیز).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:consider",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 900,
+   "title": "consider",
+   "glossFa": "در نظر گرفتن؛ فکر کردن به",
+   "explanationFa": "consider + ing: We're considering moving.",
+   "tags": [
+    "work",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:convince",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3000,
+   "title": "convince",
+   "glossFa": "متقاعد کردن",
+   "explanationFa": "convince someone to do something / that…",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:deal",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1300,
+   "title": "deal with",
+   "glossFa": "رسیدگی کردن به",
+   "explanationFa": "deal with مشکل/موضوع: I'll deal with the emails.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:depend",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1000,
+   "title": "depend",
+   "glossFa": "بستگی داشتن",
+   "explanationFa": "depend on: It depends on the weather.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:deserve",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3800,
+   "title": "deserve",
+   "glossFa": "لیاقت داشتن",
+   "explanationFa": null,
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:develop",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 800,
+   "title": "develop",
+   "glossFa": "توسعه دادن؛ رشد کردن",
+   "explanationFa": null,
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:discover",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1600,
+   "title": "discover",
+   "glossFa": "کشف کردن، پی بردن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:discuss",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1200,
+   "title": "discuss",
+   "glossFa": "بحث و گفتگو کردن",
+   "explanationFa": "discuss something (بدون about): discuss the plan.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:earn",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1700,
+   "title": "earn",
+   "glossFa": "درآمد داشتن؛ کسب کردن",
+   "explanationFa": "earn money / earn respect.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:encourage",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 3100,
+   "title": "encourage",
+   "glossFa": "تشویق کردن",
+   "explanationFa": "encourage someone to do something.",
+   "tags": [
+    "smalltalk",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:expect",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 600,
+   "title": "expect",
+   "glossFa": "انتظار داشتن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:experience",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 700,
+   "title": "experience",
+   "glossFa": "تجربه",
+   "explanationFa": "معنای کلی uncountable است (تجربه‌ی کاری)؛ رویداد مشخص countable: a new experience.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:familiar",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2800,
+   "title": "familiar",
+   "glossFa": "آشنا",
+   "explanationFa": "be familiar with something: I'm familiar with the software.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:improve",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 900,
+   "title": "improve",
+   "glossFa": "بهبود دادن؛ بهتر شدن",
+   "explanationFa": "هم گذری است هم ناگذری: improve my English / My English improved.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:include",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 800,
+   "title": "include",
+   "glossFa": "شامل بودن، دربر گرفتن",
+   "explanationFa": "صفت‌شده: included — Breakfast is included.",
+   "tags": [
+    "travel",
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:increase",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1100,
+   "title": "increase",
+   "glossFa": "افزایش دادن/یافتن",
+   "explanationFa": "اسمش stress روی اول است: an INcrease.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:manage",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 950,
+   "title": "manage",
+   "glossFa": "مدیریت کردن؛ از پس برآمدن",
+   "explanationFa": "manage to do = بالاخره توانستن: managed to book a seat.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:mention",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1400,
+   "title": "mention",
+   "glossFa": "اشاره کردن، گفتن",
+   "explanationFa": "Don't mention it = خواهش می‌کنم.",
+   "tags": [
+    "daily",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:offer",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 650,
+   "title": "offer",
+   "glossFa": "پیشنهاد دادن؛ پیشنهاد",
+   "explanationFa": "offer someone something: They offered me a better room.",
+   "tags": [
+    "work",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:organize",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2200,
+   "title": "organize",
+   "glossFa": "سازماندهی کردن",
+   "explanationFa": null,
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:prepare",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1000,
+   "title": "prepare",
+   "glossFa": "آماده کردن",
+   "explanationFa": "prepare for چیزی: prepare for the trip / the exam.",
+   "tags": [
+    "exam",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:prevent",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2400,
+   "title": "prevent",
+   "glossFa": "جلوگیری کردن",
+   "explanationFa": "prevent someone/something from doing.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:promise",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1100,
+   "title": "promise",
+   "glossFa": "قول دادن؛ قول",
+   "explanationFa": "promise to do / I promise I'll call.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:realize",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 850,
+   "title": "realize",
+   "glossFa": "پی بردن، آگاه شدن",
+   "explanationFa": "realize (that)…: I realized that I was wrong.",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:recognize",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1900,
+   "title": "recognize",
+   "glossFa": "شناختن، تشخیص دادن",
+   "explanationFa": null,
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:reduce",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1600,
+   "title": "reduce",
+   "glossFa": "کاهش دادن",
+   "explanationFa": null,
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:refuse",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2000,
+   "title": "refuse",
+   "glossFa": "امتناع کردن، رد کردن",
+   "explanationFa": "refuse to do something.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:remind",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1700,
+   "title": "remind",
+   "glossFa": "یادآوری کردن",
+   "explanationFa": "remind someone to do / remind me of someone (شبیه کسی بودن).",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:require",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 750,
+   "title": "require",
+   "glossFa": "لازم داشتن، نیازمند بودن",
+   "explanationFa": "The job requires good English.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:seem",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 220,
+   "title": "seem",
+   "glossFa": "به نظر رسیدن",
+   "explanationFa": "seem + صفت: It seems difficult. (بدون to be در حال ساده)",
+   "tags": [
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:solve",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 2300,
+   "title": "solve",
+   "glossFa": "حل کردن",
+   "explanationFa": "solve a problem / a puzzle.",
+   "tags": [
+    "exam",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:succeed",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1900,
+   "title": "succeed",
+   "glossFa": "موفق شدن",
+   "explanationFa": "succeed in + ing: succeeded in passing the test.",
+   "tags": [
+    "exam",
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:word:worth",
+   "type": "word",
+   "cefr": "B1",
+   "frequencyRank": 1600,
+   "title": "worth",
+   "glossFa": "ارزش داشتن",
+   "explanationFa": "صفت است و بعدش اسم/ing می‌آید: worth visiting / worth the price.",
+   "tags": [
+    "travel",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:word:complain",
+   "to": "en:word:apologize",
+   "type": "related"
+  },
+  {
+   "from": "en:word:promise",
+   "to": "en:word:remind",
+   "type": "related"
+  },
+  {
+   "from": "en:word:reduce",
+   "to": "en:word:increase",
+   "type": "related"
+  },
+  {
+   "from": "en:word:improve",
+   "to": "en:word:increase",
+   "type": "related"
+  },
+  {
+   "from": "en:word:achieve",
+   "to": "en:word:succeed",
+   "type": "related"
+  },
+  {
+   "from": "en:word:avoid",
+   "to": "en:word:prefer",
+   "type": "related"
+  },
+  {
+   "from": "en:word:consider",
+   "to": "en:word:decide",
+   "type": "related"
+  },
+  {
+   "from": "en:word:avoid",
+   "to": "en:err:l1-infinitive-gerund",
+   "type": "related"
+  },
+  {
+   "from": "en:word:suggest",
+   "to": "en:err:l1-infinitive-gerund",
+   "type": "related"
+  },
+  {
+   "from": "en:word:enjoy",
+   "to": "en:err:l1-infinitive-gerund",
+   "type": "related"
+  },
+  {
+   "from": "en:word:depend",
+   "to": "en:err:l1-prepositions-time",
+   "type": "related"
+  },
+  {
+   "from": "en:word:cancel",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:include",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:afford",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:charge",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:apply",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:arrange",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:concentrate",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:confident",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:discuss",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:earn",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:manage",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:prepare",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:require",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:experience",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:apologize",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:argue",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:blame",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:promise",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:refuse",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:deserve",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:worth",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  }
+ ]
+}

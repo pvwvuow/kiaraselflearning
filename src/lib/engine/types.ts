@@ -20,6 +20,10 @@ export type NodeType =
 
 export type EdgeType = 'prerequisite' | 'related' | 'confusable' | 'part_of'
 
+/** CEFR bands present in the MVP graph (docs/05 M1: A1–B1 world) */
+export type CefrBand = 'A1' | 'A2' | 'B1'
+export const CEFR_BANDS: readonly CefrBand[] = ['A1', 'A2', 'B1']
+
 export type Outcome =
   | 'correct'
   | 'error'
@@ -193,6 +197,39 @@ export interface SeedDraft {
   score: number
   scoreBreakdown: SeedScoreBreakdown
   reasonFa: string
+}
+
+// ── placement (docs/00 C1 + R10, docs/05 M1) ──
+
+export interface PlacementItem {
+  /** the probed word node (also the stable item id) */
+  nodeId: string
+  band: CefrBand
+  /** English surface form shown to the user */
+  word: string
+  /** Persian gloss options (includes the correct one) */
+  options: string[]
+  correctIndex: number
+}
+
+export interface PlacementQuiz {
+  startBand: CefrBand
+  /** items per band, drawn once (deterministic for a seed) */
+  pools: Record<CefrBand, PlacementItem[]>
+}
+
+export interface PlacementAnswer {
+  /** the item's own band (what the ladder targeted when it was issued) */
+  band: CefrBand
+  correct: boolean
+}
+
+export interface PlacementLadderResult {
+  /** highest band with a positive correct/wrong balance; null => lit nothing */
+  finalBand: CefrBand | null
+  /** highest band the ladder ever walked into */
+  reachedBand: CefrBand
+  perBand: Record<CefrBand, { correct: number; wrong: number }>
 }
 
 // ── brief & planner (C) ──

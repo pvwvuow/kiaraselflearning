@@ -1,0 +1,382 @@
+{
+ "$comment": "Kiara pragmatic skills (new in M1) — hand-authored, CC0.",
+ "nodes": [
+  {
+   "id": "en:pragmatic:shopping-paying",
+   "type": "pragmatic_skill",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Shopping & paying",
+   "glossFa": "خرید و پرداخت",
+   "explanationFa": "الگوها: How much is this? / Can I pay by card? / I'll take it.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:small-talk-weather",
+   "type": "pragmatic_skill",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Small talk: weather",
+   "glossFa": "گپ کوچک درباره‌ی هوا",
+   "explanationFa": "شروع‌کننده‌ی گفتگو: Nice day, isn't it? / It's raining again!",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:asking-for-help",
+   "type": "pragmatic_skill",
+   "cefr": "A1",
+   "frequencyRank": null,
+   "title": "Asking for help",
+   "glossFa": "کمک خواستن",
+   "explanationFa": "Could you help me, please? / Sorry, I don't understand.",
+   "tags": [
+    "polite",
+    "daily"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:making-plans",
+   "type": "pragmatic_skill",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Making plans with others",
+   "glossFa": "برنامه‌ریزی با دیگران",
+   "explanationFa": "How about…? / Are you free on Friday? / Let's meet at six.",
+   "tags": [
+    "smalltalk",
+    "plans"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:restaurant-reservation",
+   "type": "pragmatic_skill",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Restaurant reservation",
+   "glossFa": "رزرو رستوران",
+   "explanationFa": "I'd like to book a table for two at eight, under Ahmadi.",
+   "tags": [
+    "food",
+    "polite"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:giving-directions",
+   "type": "pragmatic_skill",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "Giving directions",
+   "glossFa": "مسیر دادن",
+   "explanationFa": "Go straight / turn left at the corner / it's next to the bank.",
+   "tags": [
+    "travel",
+    "directions"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:at-the-pharmacy",
+   "type": "pragmatic_skill",
+   "cefr": "A2",
+   "frequencyRank": null,
+   "title": "At the pharmacy",
+   "glossFa": "داروخانه",
+   "explanationFa": "I need something for a headache. / How often should I take it?",
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:doctor-appointment",
+   "type": "pragmatic_skill",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "Doctor appointment",
+   "glossFa": "وقت دکتر",
+   "explanationFa": "I'd like to make an appointment. / I've had a fever since Monday.",
+   "tags": [
+    "health"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:job-interview-basics",
+   "type": "pragmatic_skill",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "Job interview basics",
+   "glossFa": "مصاحبه‌ی کاری (مقدماتی)",
+   "explanationFa": "I work well in a team. / My strength is solving problems.",
+   "tags": [
+    "work"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:email-writing-basics",
+   "type": "pragmatic_skill",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "Email writing basics",
+   "glossFa": "نگارش ایمیل",
+   "explanationFa": "Dear Mr Ahmadi, / I'm writing to ask about… / Best regards.",
+   "tags": [
+    "work",
+    "email"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  },
+  {
+   "id": "en:pragmatic:complaining-politely",
+   "type": "pragmatic_skill",
+   "cefr": "B1",
+   "frequencyRank": null,
+   "title": "Complaining politely",
+   "glossFa": "شکایت مؤدبانه",
+   "explanationFa": "Excuse me, there's a problem with my order. / Would you mind…?",
+   "tags": [
+    "polite",
+    "travel"
+   ],
+   "examples": [
+    {
+     "text": "hand-authored",
+     "source": "kiara-content",
+     "license": "CC0"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:chunk:how-much",
+   "to": "en:pragmatic:shopping-paying",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:pay",
+   "to": "en:pragmatic:shopping-paying",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:can-i-have",
+   "to": "en:pragmatic:shopping-paying",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:weather",
+   "to": "en:pragmatic:small-talk-weather",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:rain",
+   "to": "en:pragmatic:small-talk-weather",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:could-you",
+   "to": "en:pragmatic:asking-for-help",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:help",
+   "to": "en:pragmatic:asking-for-help",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:how-about",
+   "to": "en:pragmatic:making-plans",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:going-to",
+   "to": "en:pragmatic:making-plans",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:i-would-like",
+   "to": "en:pragmatic:restaurant-reservation",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:reserve",
+   "to": "en:pragmatic:restaurant-reservation",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:on-the-left",
+   "to": "en:pragmatic:giving-directions",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:prepositions-time-place",
+   "to": "en:pragmatic:giving-directions",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:medicine",
+   "to": "en:pragmatic:at-the-pharmacy",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:sick",
+   "to": "en:pragmatic:at-the-pharmacy",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:grammar:present-perfect",
+   "to": "en:pragmatic:doctor-appointment",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:medicine",
+   "to": "en:pragmatic:doctor-appointment",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:experience",
+   "to": "en:pragmatic:job-interview-basics",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:confident",
+   "to": "en:pragmatic:job-interview-basics",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:look-forward-to",
+   "to": "en:pragmatic:email-writing-basics",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:word:arrange",
+   "to": "en:pragmatic:email-writing-basics",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:would-you-mind",
+   "to": "en:pragmatic:complaining-politely",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:chunk:im-afraid",
+   "to": "en:pragmatic:complaining-politely",
+   "type": "prerequisite"
+  },
+  {
+   "from": "en:pragmatic:shopping-paying",
+   "to": "en:cluster:shopping-money",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:small-talk-weather",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:making-plans",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:restaurant-reservation",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:job-interview-basics",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:email-writing-basics",
+   "to": "en:cluster:work-study",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:complaining-politely",
+   "to": "en:cluster:social-smalltalk",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:giving-directions",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:asking-for-help",
+   "to": "en:cluster:daily-life",
+   "type": "part_of"
+  }
+ ]
+}

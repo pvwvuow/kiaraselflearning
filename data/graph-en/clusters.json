@@ -1,0 +1,81 @@
+{
+ "$comment": "Kiara topic clusters (new in M1) — hand-authored, CC0.",
+ "nodes": [
+  {
+   "id": "en:cluster:food-dining",
+   "type": "topic_cluster",
+   "cefr": null,
+   "frequencyRank": null,
+   "title": "Food & dining",
+   "glossFa": "خوشه‌ی غذا و رستوران",
+   "explanationFa": "واژه‌ها، قالب‌ها و مهارت‌های غذا خوردن و سفارش دادن.",
+   "tags": [
+    "food",
+    "restaurant"
+   ],
+   "examples": []
+  },
+  {
+   "id": "en:cluster:work-study",
+   "type": "topic_cluster",
+   "cefr": null,
+   "frequencyRank": null,
+   "title": "Work & study",
+   "glossFa": "خوشه‌ی کار و درس",
+   "explanationFa": "واژه‌ها و مهارت‌های محیط کار و تحصیل.",
+   "tags": [
+    "work",
+    "exam"
+   ],
+   "examples": []
+  },
+  {
+   "id": "en:cluster:shopping-money",
+   "type": "topic_cluster",
+   "cefr": null,
+   "frequencyRank": null,
+   "title": "Shopping & money",
+   "glossFa": "خوشه‌ی خرید و پول",
+   "explanationFa": "خرید، قیمت، پرداخت.",
+   "tags": [
+    "shopping"
+   ],
+   "examples": []
+  },
+  {
+   "id": "en:cluster:social-smalltalk",
+   "type": "topic_cluster",
+   "cefr": null,
+   "frequencyRank": null,
+   "title": "Social & small talk",
+   "glossFa": "خوشه‌ی گفتگوی اجتماعی",
+   "explanationFa": "گپ کوچک، احوال‌پرسی، برنامه‌ریزی دوستانه.",
+   "tags": [
+    "smalltalk"
+   ],
+   "examples": []
+  }
+ ],
+ "edges": [
+  {
+   "from": "en:word:journey",
+   "to": "en:cluster:travel-core",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:recommend",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:word:water",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  },
+  {
+   "from": "en:pragmatic:ordering-food",
+   "to": "en:cluster:food-dining",
+   "type": "part_of"
+  }
+ ]
+}

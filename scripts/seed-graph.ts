@@ -1,6 +1,8 @@
 /**
  * Idempotent graph seeder: data/graph-en/*.json → Prisma (GraphNode/GraphEdge).
  * Safe to run repeatedly (upsert by stable ids). Never deletes (deprecation only).
+ * Two passes inside one transaction: ALL nodes first, then ALL edges — otherwise
+ * cross-file edges hit the FK before their endpoint rows exist.
  * Run: bunx tsx scripts/seed-graph.ts
  */
 import { readFileSync, readdirSync } from 'node:fs'
@@ -12,6 +14,8 @@ const DATA_DIR = path.resolve(process.cwd(), 'data/graph-en')
 
 async function main() {
   const files = readdirSync(DATA_DIR).filter((f) => f.endsWith('.json')).sort()
+  const nodeOps: ReturnType<typeof prisma.graphNode.upsert>[] = []
+  const edgeOps: ReturnType<typeof prisma.graphEdge.upsert>[] = []
   let nodeCount = 0
   let edgeCount = 0
 
@@ -22,46 +26,52 @@ async function main() {
     }
 
     for (const n of raw.nodes ?? []) {
-      await prisma.graphNode.upsert({
-        where: { id: String(n.id) },
-        create: {
-          id: String(n.id),
-          type: String(n.type),
-          lang: (n.lang as string) ?? 'en',
-          cefr: (n.cefr as string) ?? null,
-          frequencyRank: (n.frequencyRank as number) ?? null,
-          title: String(n.title),
-          glossFa: (n.glossFa as string) ?? null,
-          explanationFa: (n.explanationFa as string) ?? null,
-          examples: JSON.stringify(n.examples ?? []),
-          tags: JSON.stringify(n.tags ?? []),
-        },
-        update: {
-          type: String(n.type),
-          cefr: (n.cefr as string) ?? null,
-          frequencyRank: (n.frequencyRank as number) ?? null,
-          title: String(n.title),
-          glossFa: (n.glossFa as string) ?? null,
-          explanationFa: (n.explanationFa as string) ?? null,
-          examples: JSON.stringify(n.examples ?? []),
-          tags: JSON.stringify(n.tags ?? []),
-          version: { increment: 1 },
-        },
-      })
+      nodeOps.push(
+        prisma.graphNode.upsert({
+          where: { id: String(n.id) },
+          create: {
+            id: String(n.id),
+            type: String(n.type),
+            lang: (n.lang as string) ?? 'en',
+            cefr: (n.cefr as string) ?? null,
+            frequencyRank: (n.frequencyRank as number) ?? null,
+            title: String(n.title),
+            glossFa: (n.glossFa as string) ?? null,
+            explanationFa: (n.explanationFa as string) ?? null,
+            examples: JSON.stringify(n.examples ?? []),
+            tags: JSON.stringify(n.tags ?? []),
+          },
+          update: {
+            type: String(n.type),
+            cefr: (n.cefr as string) ?? null,
+            frequencyRank: (n.frequencyRank as number) ?? null,
+            title: String(n.title),
+            glossFa: (n.glossFa as string) ?? null,
+            explanationFa: (n.explanationFa as string) ?? null,
+            examples: JSON.stringify(n.examples ?? []),
+            tags: JSON.stringify(n.tags ?? []),
+            version: { increment: 1 },
+          },
+        }),
+      )
       nodeCount++
     }
 
     for (const e of raw.edges ?? []) {
-      await prisma.graphEdge.upsert({
-        where: {
-          fromId_toId_type: { fromId: e.from, toId: e.to, type: e.type },
-        },
-        create: { fromId: e.from, toId: e.to, type: e.type },
-        update: {},
-      })
+      edgeOps.push(
+        prisma.graphEdge.upsert({
+          where: {
+            fromId_toId_type: { fromId: e.from, toId: e.to, type: e.type },
+          },
+          create: { fromId: e.from, toId: e.to, type: e.type },
+          update: {},
+        }),
+      )
       edgeCount++
     }
   }
+
+  await prisma.$transaction([...nodeOps, ...edgeOps])
 
   const totals = {
     nodes: await prisma.graphNode.count(),

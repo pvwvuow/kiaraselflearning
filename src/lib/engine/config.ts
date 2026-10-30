@@ -94,6 +94,22 @@ export const ENGINE_CONFIG = {
     daily: ['daily', 'smalltalk', 'family', 'food', 'home', 'friends'],
     general: [],
   } as Record<string, readonly string[]>,
+
+  // ── placement (docs/00 C1 + R10, docs/05 M1) ──
+  /** items drawn per band → 3 bands × 4 = 12 items (the documented ~12) */
+  PLACEMENT_POOL_PER_BAND: 4,
+  /** multiple-choice options per item (1 correct + 3 distractors) */
+  PLACEMENT_OPTIONS: 4,
+  /** consecutive correct answers needed before the ladder steps UP one band */
+  PLACEMENT_LADDER_UP_STREAK: 2,
+  /** one wrong answer steps the ladder DOWN this many bands (1-down) */
+  PLACEMENT_LADDER_DOWN_STEPS: 1,
+  /** candidate words per band considered before the seeded shuffle (top-frequency slice) */
+  PLACEMENT_CANDIDATES_PER_BAND: 12,
+  /** strength of a placement-created state (soft, unverified — delayed test will verify) */
+  PLACEMENT_STRENGTH: 0.5,
+  /** placement writes states for these skills (MVP: written evidence only) */
+  PLACEMENT_SKILLS: ['reading', 'writing'] as const,
 } as const
 
 export type EngineConfig = typeof ENGINE_CONFIG
