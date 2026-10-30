@@ -16,6 +16,7 @@ import HomeView from './home-view'
 import ChatView from './chat-view'
 import TreeView from './tree-view'
 import SeedInboxView from './seed-inbox'
+import SettingsView from './settings-view'
 
 export default function AppRoot() {
   const booted = useAppStore((s) => s.booted)
@@ -72,6 +73,8 @@ export default function AppRoot() {
       return <TreeView />
     case 'seeds':
       return <SeedInboxView />
+    case 'settings':
+      return <SettingsView />
     case 'landing':
     default:
       return <LandingView />

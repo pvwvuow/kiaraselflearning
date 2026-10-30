@@ -53,7 +53,7 @@ const PATTERNS: { category: SafetyCategory; re: RegExp }[] = [
   // hate / harassment
   { category: 'hate', re: /\b(all (muslims|jews|christians|gays|immigrants|blacks|whites)|every (muslim|jew|gay))\b[^.?!]{0,30}\b(should (die|be killed|burn)|are (animals|vermin|subhuman))\b/i },
   // hard illegal how-tos
-  { category: 'illegal', re: /\b(how (to|can i|do i))\b[^.?!]{0,30}\b(launder money|hack (into|an|a) (bank|account)|make (meth|cocaine|drugs)|buy (guns?|drugs) (illegally|online))\b/i },
+  { category: 'illegal', re: /\b(how (to|can i|do i)|help me|tell me how)\b[^.?!]{0,30}\b(launder money|hack( into| in to)? ?(a |the |my |his |her |their )?(bank|account|computer|email|wifi|phone)|steal (a |the |my |his |her |their )?(credit card|car|wallet|password|identity)|make (meth|cocaine|drugs)|buy (guns?|drugs) (illegally|online))\b/i },
 ]
 
 /** Screen one learner message. Pure — no db, no clock, injectable for tests. */

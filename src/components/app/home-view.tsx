@@ -270,19 +270,24 @@ export default function HomeView() {
           </CardContent>
         </Card>
 
-        {/* future view (M9) — honest placeholder, not a fake feature */}
-        <section aria-labelledby="soon" className="space-y-3">
-          <h3 id="soon" className="text-sm font-semibold text-muted-foreground">
-            به‌زودی
-          </h3>
-          <Card className="opacity-70" aria-disabled>
-            <CardContent className="pt-5 space-y-1.5">
-              <Settings className="size-5 text-muted-foreground" aria-hidden />
-              <p className="text-sm font-medium">تنظیمات</p>
-              <p className="text-xs text-muted-foreground leading-6">مایل‌استون M9 — تنظیمات و خروجی داده</p>
-            </CardContent>
-          </Card>
-        </section>
+        {/* settings (M9) — the user owns the controls */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Settings className="size-5 text-primary" aria-hidden />
+              تنظیمات
+            </CardTitle>
+            <CardDescription>
+              سطح، هدف، سبک اصلاح، رضایت هوش مصنوعی — و مالکیت کامل داده‌ات: خروجی JSON یا حذف حساب.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setView('settings')} variant="outline" size="lg" className="w-full sm:w-auto gap-2" data-testid="open-settings">
+              <Settings className="size-4" aria-hidden />
+              باز کردن تنظیمات
+            </Button>
+          </CardContent>
+        </Card>
 
         {error && (
           <p role="alert" className="text-sm text-destructive">

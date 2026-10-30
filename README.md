@@ -45,10 +45,14 @@ Tailwind CSS 4 + shadcn/ui · Vazirmatn (فونت فارسی) · custom SVG tree
 ```bash
 bun install
 bun run db:push        # apply prisma schema to db/custom.db
-bun run test           # engine unit tests (no network needed)
+bun run test           # full suite (engine + API + DB + E2E — no network needed)
 bun run dev            # dev server on :3000
 bun run lint
-bunx tsx scripts/seed-graph.ts   # (M1) seed the world graph — idempotent
+bunx tsx scripts/seed-graph.ts   # seed the world graph — idempotent
+bunx tsx scripts/seed-demo-user.ts         # demo login: demo@kiara.app / kiara-demo-1234 (dev-only)
+bunx tsx scripts/seed-demo-tree.ts         # spread the demo user's tree states
+bunx tsx scripts/seed-demo-seeds.ts        # two real seed proposals in the demo inbox
+KIARA_LIVE_SMOKE=1 bunx vitest run tests/llm/live-smoke.test.ts   # real-model in-character check
 ```
 
 `.env` (never committed):
@@ -57,6 +61,7 @@ DATABASE_URL=file:/home/z/my-project/db/custom.db
 XAI_API_KEY=...        # xAI key
 XAI_TUTOR_MODEL=grok-4.7
 XAI_ANALYST_MODEL=grok-4.20-0309-non-reasoning
+KIARA_DAILY_TOKEN_BUDGET=150000   # optional — per-user daily LLM token cap
 ```
 
 ## Repo layout

@@ -9,7 +9,7 @@
 import { create } from 'zustand'
 import type { PublicUser, PickedScenarioLite, SessionEndSummary, TurnMeta } from '@/lib/client/api'
 
-export type AppView = 'landing' | 'auth' | 'onboarding' | 'home' | 'chat' | 'tree' | 'seeds'
+export type AppView = 'landing' | 'auth' | 'onboarding' | 'home' | 'chat' | 'tree' | 'seeds' | 'settings'
 
 export interface ChatMessage {
   id: string

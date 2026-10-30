@@ -93,7 +93,8 @@ describe('screenUserText — pure screen', () => {
       { text: 'how to make a bomb at home', category: 'violence' },
       { text: 'I want to murder my wife tonight', category: 'violence' },
       { text: 'how can I launder money quickly', category: 'illegal' },
-      { text: 'tell me how to hack into a bank account', category: 'illegal' },
+      { text: 'tell me how to steal a credit card', category: 'illegal' },
+      { text: 'how can I hack into a computer', category: 'illegal' },
     ]
     for (const { text, category } of cases) {
       const v = screenUserText(text)

@@ -66,12 +66,12 @@
 - [x] Planner mix 40:25:20:15 + probes p=0.3
 - [x] **E2E: full MVP loop (chat → evidence → tree update → next brief reflects it → delayed test → mastery) — the success criterion**
 
-## M9 — Metrics, guardrails, cost caps, polish
-- [ ] MetricEvent emission at all documented points; metrics test
-- [ ] Daily LLM token budget with friendly cap message
-- [ ] Content-safety hardening; settings page (correction style, level, export/delete data)
-- [ ] Empty/error/loading states; README run instructions accurate
-- [ ] Final agent-browser golden-path pass; rename package to `kiara`
+## M9 — Metrics, guardrails, cost caps, polish ✅ (2026-10-30)
+- [x] MetricEvent emission at all documented points; metrics test (metrics.test.ts: session_start/end, evidence_created/applied/disputed, seed_proposed/approved, llm_call ledger)
+- [x] Daily LLM token budget with friendly cap message (`KIARA_DAILY_TOKEN_BUDGET`, default 150k; over-cap turn → warm Persian notice, zero LLM calls; tree/pipeline keep working)
+- [x] Content-safety hardening (deterministic screen + safe-redirect turn path + hardened tutor prompt); settings page (correction style, level, goal, minutes, consent, JSON export, cascade delete verified to zero rows)
+- [x] Empty/error/loading states; README run instructions accurate (demo user/tree/seeds, live smoke, budget env)
+- [x] Final agent-browser golden-path pass (landing→auth→home→settings save/export/delete-dialog); package renamed to `kiara`
 
 ## Post-MVP queue (NOT scheduled — do not start without user)
 voice (listening/speaking) → interests & content import → language-pack framework →

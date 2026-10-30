@@ -13,8 +13,8 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0–M8 ALL ✅ DONE → next: M9 (final milestone)** |
-| Tests | 224/224 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+| Current milestone | **M0–M9 ALL ✅ DONE — MVP COMPLETE** |
+| Tests | 248/248 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`); `src/` also fully typechecks (`bunx tsc --noEmit` — examples/skills/scripts noise predates M8) |
 | DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded (world rows; user-generated plantings add rows on top); demo user has a seeded tree + M7 seeds + **M8: `en:word:recommend` mastered via live confirmatory probe; `en:word:journey` failed a probe honestly (7d retry)** |
 | Dev server | auto-runs on :3000 (no schema push in M8 — no restart needed) |
@@ -339,7 +339,63 @@
   next brief counts the word → 4-session ladder → pendingDelayTest → confirmatory 2/3 →
   mastered → tree shows mastered). Brief-builder test fixture updated for the `plan` field.
 
+### M9 — metrics, guardrails, cost caps, polish (2026-10-30) — MVP COMPLETE
+
+- `src/lib/metrics.ts` — the ONE metric writer (`recordMetric`, never throws) + the
+  documented name set (session_start/end, evidence_created/disputed/applied,
+  delay_test_offered/result, seed_proposed/approved/rejected, iplus1_violation,
+  analyst_parse_fail, placement_applied, llm_call, safety_blocked).
+- `src/lib/llm/budget.ts` — daily per-user token cap from `KIARA_DAILY_TOKEN_BUDGET`
+  (default 150k, UTC day key): `budgetState` reads the `llm_call` ledger; over-cap start →
+  `ChatError('budget', BUDGET_MESSAGE_FA)`; over-cap turn → warm bilingual notice bubble +
+  `budgetCapped` meta, ZERO model calls; deterministic flows (confirmatory contexts,
+  pipeline, tree) unaffected. `recordLlmCall` (in xai client path) logs every successful
+  call's tokens as the ledger.
+- `src/lib/llm/safety.ts` — deterministic first-line screen (6 categories, conservative
+  word-boundary patterns, false-positive suite ≈0); flagged turn → NO tutor/analyst call,
+  warm non-accusatory redirect bubble + `safety_blocked` metric. Tutor system prompt
+  hardened (docs/04 TONE & SAFETY block). M9 BUGFIX: illegal pattern's article placement
+  (see Known issues) + test fixture wording replaced per user request (no bank-hack phrase
+  in the repo; two equivalent illegal cases instead).
+- Settings (user owns the controls, docs/00 P5): `PATCH|DELETE /api/settings` +
+  `GET /api/settings/export` (one JSON: user + sessions/turns/evidence + states + seeds +
+  positions + metricEvents). DELETE cascades to ZERO rows (verified per-table in tests);
+  user-generated GraphNodes stay (world content, docs/03 §B5). `src/components/app/
+  settings-view.tsx` — Persian RTL panel (displayName, cefrSelf, goal, dailyMinutes,
+  correctionStyle radio, consent toggle, JSON download, destructive AlertDialog delete →
+  landing); home card is LIVE («باز کردن تنظیمات»), AppView += 'settings'.
+- `tests/api/metrics.test.ts` (M9 acceptance: one fake session through real routes emits
+  session_start/end, evidence_created/applied, seed_proposed/approved with correct props +
+  llm_call ledger) · `tests/llm/budget.test.ts` (env default, day math, over-cap gating) ·
+  `tests/llm/safety.test.ts` (categories + false positives + real-route blocked turn) ·
+  `tests/api/settings.test.ts` (7: PATCH partial/401/400, export sections, DELETE
+  cascade-to-zero-rows + cleared cookie 401).
+- Polish: `package.json` name → `kiara`; README Develop section accurate (demo user/tree/
+  seeds commands, KIARA_LIVE_SMOKE, budget env). Cron commits 912f352/16a7dbf/49747cc
+  carried intermediate M9 work + tool-results junk (harmless; tool-results now gitignored).
+- **Final agent-browser golden-path pass** (demo user): landing → auth → home (4 live cards)
+  → settings renders all controls with current values → dailyMinutes 15→30 → «ذخیره شد ✓»
+  → DB persisted (API verified 30) → restored 15 → export click clean → delete dialog
+  opens/cancels → zero console errors.
+
 ## Known issues / gotchas
+
+- **M9 — `ApiError` field is `errorFa`, not `messageFa`**: the client error class carries
+  the Persian message as `errorFa` (tsc catches `messageFa` — the M5 note "client types in
+  sync" applies to error shapes too).
+- **M9 — safety regex false-negative**: the original illegal pattern `hack (into|an|a)
+  (bank|account)` treated the article as an ALTERNATIVE to "into" — "hack into a bank
+  account" (article BEFORE the noun phrase) never matched. Fixed: optional article group
+  after the verb form + `steal`/wider object list. Lesson: regex "A (b|c) D" patterns need
+  the full surface order spelled out; test fixtures cover the natural word order.
+- **M9 — settings tests need LLM mocks**: any test that calls `POST /api/session/start`
+  through the real route must mock `@/lib/llm/xai` + `@/lib/llm/analyst` (real grok-4.7
+  opener blows the 5s vitest timeout). A fresh user without placement has ZERO
+  UserNodeState rows (data-honest) — seed states/positions directly via `db` for
+  cascade tests. `loadGraph().nodes[0].id` gives a valid nodeId.
+- **M9 — direct `tsc --noEmit` on one file** doesn't resolve `@/*` paths (no tsconfig
+  application) — always typecheck the project, filter `^src/` (skills/examples noise
+  predates M8 and is out of scope).
 
 - **M8 — secret-check self-match resolved**: the check command was documented verbatim in
   this file, so every staged diff matched its own regex text (`sk` + dash inside the
