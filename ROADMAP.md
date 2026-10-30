@@ -27,13 +27,13 @@
 - [x] Guarded API routes (401 when unauthenticated) via `requireUser`; demo user seed (`scripts/seed-demo-user.ts`, demo@kiara.app)
 - [x] Auth round-trip API test (register → login → me → logout) + 400/401/409 cases (9 tests)
 
-## M3 — Tutor chat loop
-- [ ] xAI client (fetch, timeout 30s, 1 retry) reading `.env` models
-- [ ] Prompts module verbatim from `docs/04` (tutor system prompt + user-message wrapping)
-- [ ] Brief builder wired to real state (weak/frontier/error-patterns/scenario) — bounded ≤1.5k tokens
-- [ ] `POST /api/session/start` (brief snapshot + scenario pick) · `POST /api/session/turn` (tutor + i+1 check + rewrite-on-violation + Turn persistence)
-- [ ] Rolling summary every 10 turns
-- [ ] Unit tests: brief content/bounds, i+1 checker math, rewrite path (mocked LLM); live smoke behind env flag
+## M3 — Tutor chat loop ✅ (2026-10-30)
+- [x] xAI client (fetch, timeout 30s, 1 retry) reading `.env` models
+- [x] Prompts module verbatim from `docs/04` (tutor system prompt + user-message wrapping)
+- [x] Brief builder wired to real state (weak/frontier/error-patterns/scenario) — bounded ≤1.5k tokens
+- [x] `POST /api/session/start` (brief snapshot + scenario pick) · `POST /api/session/turn` (tutor + i+1 check + rewrite-on-violation + Turn persistence)
+- [x] Rolling summary every 10 turns
+- [x] Unit tests: brief content/bounds, i+1 checker math, rewrite path (mocked LLM); live smoke behind env flag
 
 ## M4 — Analyst & evidence wiring
 - [ ] Analyst module: per-turn async + end-of-session batch; zod + whitelist + 1 repair retry

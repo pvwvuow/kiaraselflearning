@@ -13,8 +13,8 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ DONE → next: M3** |
-| Tests | 90/90 green (`bun run test`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ DONE → next: M4** |
+| Tests | 125/125 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`) |
 | DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready |
 | Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0+M1+M2 delivered)
+## Current state of the code (M0+M1+M2+M3 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -81,10 +81,41 @@
   `GET|PATCH /api/onboarding` (guarded, 401). `GET /api/graph/stats` stays PUBLIC (world metadata,
   no user data). New user-scoped routes MUST use `requireUser` (M3 chat/tree included).
 - `scripts/seed-demo-user.ts` — dev demo login `demo@kiara.app` / `kiara-demo-1234` (dev-only).
-- Tests: `tests/engine/` (53) + `tests/graph/integrity.test.ts` (9) + `tests/api/graph-stats.test.ts`
+- Tests: `tests/engine/` (53+8 i+1) + `tests/graph/integrity.test.ts` (9) + `tests/api/graph-stats.test.ts`
   + `tests/db/seed-idempotency.test.ts` (runs the real seeder twice against SQLite)
-  + `tests/api/auth-roundtrip.test.ts` (9: round-trip, consent timestamp, guards, 400/401/409).
+  + `tests/api/auth-roundtrip.test.ts` (9: round-trip, consent timestamp, guards, 400/401/409)
+  + **M3**: `tests/engine/iplus1.test.ts` (8) · `tests/llm/prompts.test.ts` (7) ·
+  `tests/llm/xai-client.test.ts` (7: retry/timeout/fail-fast/model routing, injected fetch) ·
+  `tests/session/brief-builder.test.ts` (5: sections, whitelist, ≤1500 tokens, boundToBudget) ·
+  `tests/api/session-flow.test.ts` (8: start/turn/guards/rewrite/fallback/summary — mocked LLM
+  via `vi.mock('@/lib/llm/xai')`) · `tests/llm/live-smoke.test.ts` (1, runs only with
+  `KIARA_LIVE_SMOKE=1` — real grok-4.7 in-character check).
 - `scripts/fsrs-probe.ts` — produces the REAL numeric tables used in docs/03.
+- `src/lib/engine/iplus1.ts` — **M3**: pure i+1 checker (tokenizer, light lemmatizer,
+  irregular map, function/discourse-word exemptions, proper-noun & number exemption,
+  tiny-reply guard ≤3 content words). Violation = rate > 0.1 on >3 content words.
+- `src/lib/llm/xai.ts` — **M3**: OpenAI-compatible fetch client; 30 s AbortController timeout,
+  ONE retry on network/429/5xx (400 ms backoff), injectable `fetchImpl`/`sleep`/`env` for tests;
+  models from `XAI_TUTOR_MODEL` / `XAI_ANALYST_MODEL`; never throws (discriminated result).
+- `src/lib/llm/prompts.ts` — **M3**: docs/04 tutor template VERBATIM + tiny deterministic
+  renderer (`{{#each}}` blocks), `wrapUserMessage` injection defense (<<<USER … >>>),
+  rewrite messages (unknown list fed back), deterministic fallback replies, rolling-summary prompt.
+- `src/lib/session/` — **M3** wiring layer (imports db + engine + llm):
+  `scenarios.ts` (12 goal-tagged roleplay scenarios, FNV-1a deterministic pick per user+day,
+  mustElicit whitelist-resolved) · `brief-builder.ts` (states→knownBands/sampleLemmas,
+  rankWeakNodes dedupe, frontier by freq rank, error patterns from last-30d confident errors
+  with Persian descs + faDigits, `boundToBudget` trims error-patterns→weak→frontier→lemmas,
+  `getKnownLemmas` for the i+1 allowlist) · `chat.ts` (startSession + runTutorTurn;
+  shared `enforceIPlus1`: check → 1 rewrite → fallback, used by opener AND turns;
+  history window 20 + rolling summary injection; summary every 10 user turns via analyst role;
+  `ChatError` → 404/409/400; LLM failure NEVER blocks the conversation — fallback replies).
+- API routes (live-verified on :3000 with real grok-4.7): `POST /api/session/start`
+  (401/403-consent/200 brief+scenario+opener), `POST /api/session/turn`
+  (401/400/404/409/200 tutor+meta{unknownRate,unknownWords,rewritten,fallback}+summaryUpdated).
+  Both `requireUser`-guarded; turn validates ownership (foreign session → 404) + active status.
+- Live-verified behavior: tutor elicits mustElicit targets ("Hotel Mehr is on the left"),
+  i+1 violation triggers rewrite (meta.rewritten=true); LLM flakiness degrades to original/
+  fallback replies without 500s.
 - Landing page `/` — Persian RTL status page (browser-verified, no console errors).
 
 ## Known issues / gotchas
@@ -103,6 +134,19 @@
   this pattern; read cookies via `req.headers.get('cookie')`, set via `set-cookie` header.
 - `package.json` name is still `nextjs_tailwind_shadcn_ts` — fine to rename in M9 polish.
 - The route `src/app/api/route.ts` is a template leftover health endpoint — replace in M3.
+  (M3 note: left as-is; it's harmless. Remove in M9 polish.)
+- **Fresh users have an EMPTY known lexicon** until placement states exist (M1 engine is pure;
+  wiring the quiz into onboarding is not done yet). i+1 then treats most content words as
+  unknown → openers/turns burn a rewrite call and often degrade to the deterministic fallback.
+  This is data-honest (docs: mastery/assumption only via placement), not a bug. Wiring
+  placement → assumed_known into onboarding would soften it (candidate for M4/M5 gap work).
+- DB contains the M0 sample nodes TOO (seed.sample.json): e.g. en:word:airport/hotel/recommend
+  exist ONLY there — when authoring content, check `loadGraph()` (all files) not just words.*.json.
+- xAI latency is real-world slow (opener ~2.5–7 s; a turn + rewrite can hit ~60 s when the
+  rewrite path fires — 30 s timeout × 2 attempts). Keep UI timeouts generous (M5).
+- Known-lexicon counts come from the loader's 268 nodes; `en:word:you/do/good` (sample file)
+  surface as frontier targets — harmless but noisy; consider pruning sample function words in
+  a later data pass.
 
 ## Blockers
 
