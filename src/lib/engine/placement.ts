@@ -214,6 +214,7 @@ export function runLadder(startBand: CefrBand, answers: PlacementAnswer[]): Plac
   return {
     finalBand: finalIdx === null ? null : CEFR_BANDS[finalIdx],
     reachedBand: CEFR_BANDS[reachedIdx],
+    currentBand: CEFR_BANDS[bandIdx],
     perBand,
   }
 }

@@ -233,6 +233,8 @@ export interface PlacementLadderResult {
   finalBand: CefrBand | null
   /** highest band the ladder ever walked into */
   reachedBand: CefrBand
+  /** band the ladder is standing on after the last answer (next item target) */
+  currentBand: CefrBand
   perBand: Record<CefrBand, { correct: number; wrong: number }>
 }
 

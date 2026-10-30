@@ -42,10 +42,11 @@
 - [x] Analyst golden set ≥20 labeled turns, ≥85% attribution accuracy (offline harness)
 - [x] E2E (DB, mocked LLM): fake evidence reproduces the S1–S8 table transitions
 
-## M5 — Chat UI (RTL, single route)
-- [ ] Chat view inside `/` (view-switching via zustand): scenario card, messages, typing state, correction chips, unknown-rate hint, session timer, end-session
-- [ ] Mobile-first responsive; keyboard navigable; contrast ≥4.5:1; LTR bubbles for English text
-- [ ] agent-browser verification: 3-turn conversation renders without console errors
+## M5 — Chat UI (RTL, single route) ✅ (2026-10-30)
+- [x] Chat view inside `/` (view-switching via zustand): scenario card, messages, typing state, correction chips, unknown-rate hint, session timer, end-session (+ auth/onboarding/home views in the same shell)
+- [x] Mobile-first responsive; keyboard navigable; contrast ≥4.5:1; LTR bubbles for English text
+- [x] agent-browser verification: onboarding (incl. live adaptive placement, 378 states lit) → start session → 3 turns with real grok-4.7 → LTR-in-RTL renders without breakage; zero console errors
+- [x] Placement wired into onboarding (M1 gap work): `POST /api/placement` stateless ladder, server-side grading, `assumed_known` upserts + cefrComputed
 
 ## M6 — Tree view (simple SVG)
 - [ ] Deterministic layered layout from prerequisites; `NodePosition` persistence (two renders → identical positions)

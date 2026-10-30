@@ -13,10 +13,10 @@
 | Project | Kiara — language learning with a living personal skill tree |
 | Root | `/home/z/my-project` |
 | Repo | `origin` → https://github.com/pvwvuow/kiaraselflearning (branch `main`) |
-| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ DONE → next: M5** |
-| Tests | 156/156 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
+| Current milestone | **M0 ✅ + M1 ✅ + M2 ✅ + M3 ✅ + M4 ✅ + M5 ✅ DONE → next: M6** |
+| Tests | 164/164 green + 1 env-gated skip (`bun run test`; live smoke needs `KIARA_LIVE_SMOKE=1`) |
 | Lint | clean (`bun run lint`) |
-| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready |
+| DB | SQLite at `db/custom.db`, schema pushed, 268 graph nodes + 205 edges seeded, demo user ready; M5 browser-test user `sara-m5@test.local` has placement states (B1, 378 assumed_known) |
 | Dev server | auto-runs on :3000 (do NOT run `bun run dev` yourself; check `dev.log`) |
 
 ## Environment & secrets (CRITICAL RULES)
@@ -54,7 +54,7 @@
 5. One FSRS review per (node × skill × session) — session aggregation (docs/03 §A1–A2).
 6. UI is Persian, RTL, Vazirmatn (fonts in `public/fonts/`). English inside conversation bubbles.
 
-## Current state of the code (M0–M4 delivered)
+## Current state of the code (M0–M5 delivered)
 
 - `docs/00–05` complete design (bilingual). `README.md` with quickstart.
 - `prisma/schema.prisma` — full model (GraphNode, GraphEdge, UserNodeState, Evidence,
@@ -151,6 +151,36 @@
   hallucinated-id + fenced-output cases), all ids verified against the graph.
 - Live-verified M4 loop (real grok-4.20 analyst): learner message → evidence rows →
   `POST /api/session/end` → FSRS state rows + summary + metrics in one shot (200, 210ms).
+- `src/lib/client/api.ts` — **M5**: typed fetch client for every endpoint (PublicUser, brief,
+  turn meta, session-end summary, placement); `ApiError` carries the server's `errorFa`.
+- `src/stores/app-store.ts` — **M5**: zustand store = single source of truth for client-side
+  view switching on `/` (landing | auth | onboarding | home | chat) + chat session state
+  (messages, typing, status, summary). Exposes `window.__kiaraStore` for browser-test driving.
+- `src/lib/client/format.ts` — **M5**: pure UI formatters (faDigits, formatDuration mm:ss,
+  formatUnknownRate ≥1% else null, wordQuestionTemplate) — unit-tested (tests/ui/format.test.ts).
+- `src/app/api/placement/route.ts` — **M5**: stateless adaptive ladder. Client sends
+  `{ selfBand, answers[{nodeId, optionIndex}], finish? }`; server rebuilds the SAME quiz
+  (seed=hash(userId)), grades where correctIndex lives, reruns ladder (needs `currentBand`
+  — added to `PlacementLadderResult`, engine-tested) and returns the next item WITHOUT
+  correctIndex. `finish:true` → applyPlacement upserts (update:{} — never overwrites
+  practiced state) + cefrComputed + `placement_applied` metric. 401-guarded.
+- `src/components/app/` — **M5** the single-route shell:
+  `app-root.tsx` (boot `/api/auth/me` once → landingViewFor) · `landing-view.tsx` (old page
+  content, CTA wired) · `auth-view.tsx` (login/register tabs, LTR credential inputs) ·
+  `onboarding-view.tsx` (profile → prefs → timestamped consent → LIVE adaptive placement
+  ladder → done screen with finalBand + litCount) · `home-view.tsx` (start-chat card +
+  honest M6/M7/M9 placeholders + logout) · `chat-view.tsx` (start card, scenario header,
+  timer badge Persian digits, tutor/user bubbles `dir="ltr"` inside RTL with logical
+  corner radii, ✏️ unknown-word chips → composer template tap-fill, subtle unknown-rate
+  hint, rewritten/fallback meta notes, typing indicator, AlertDialog end-session →
+  compact summary card).
+- **M5 agent-browser-verified live** (user sara-m5@test.local): register → onboarding
+  (placement ladder 12/12, A2→B1, 378 states lit, never mastered, pendingDelayTest=true) →
+  home → chat start → 3 real grok-4.7 turns (one degraded to fallback — graceful) →
+  end-session summary. LTR-in-RTL renders without breakage (desktop 1280px + mobile 390px).
+  Zero console errors; all API calls 2xx. Keyboard: native tab order, Enter=send,
+  Shift+Enter newline, Radix dialog focus trap, chips tap-fill composer (verified via
+  `__kiaraStore` injection). Contrast: `--muted-foreground` darkened 0.556→0.44 (≈7.8:1).
 
 ## Known issues / gotchas
 
@@ -169,11 +199,16 @@
 - `package.json` name is still `nextjs_tailwind_shadcn_ts` — fine to rename in M9 polish.
 - The route `src/app/api/route.ts` is a template leftover health endpoint — replace in M3.
   (M3 note: left as-is; it's harmless. Remove in M9 polish.)
-- **Fresh users have an EMPTY known lexicon** until placement states exist (M1 engine is pure;
-  wiring the quiz into onboarding is not done yet). i+1 then treats most content words as
-  unknown → openers/turns burn a rewrite call and often degrade to the deterministic fallback.
-  This is data-honest (docs: mastery/assumption only via placement), not a bug. Wiring
-  placement → assumed_known into onboarding would soften it (candidate for M4/M5 gap work).
+- **RESOLVED (M5) — empty known lexicon for fresh users**: placement is now wired into the
+  onboarding wizard (`POST /api/placement` + `applyPlacement` upserts). A user finishing the
+  ladder gets assumed_known states immediately, so i+1 no longer treats everything as unknown.
+  Users who skip/finish with null finalBand still light nothing (data-honest, C2a).
+- **M5 BUGFIX — session-end `applied` shape**: the §A7 pipeline returns `applied: AppliedGroup[]`
+  (per-group FSRS applications), not a count. The first ChatView wiring rendered an empty
+  number; fixed to `r.applied.length` + corrected `SessionEndResponse` type (rootCaused is
+  `string[]` too). Keep client types in sync with pipeline returns.
+- **agent-browser gotcha**: Persian labels contain ZWNJ (‌) — `find text "ثبتنام"` fails;
+  snapshot refs (`@eN`) or `eval` selectors are the reliable way to click Persian UI.
 - **BUGFIX (M4) — track_pattern scoring**: `scoreCandidate` scored the error SOURCE node with
   novelty=0 (it always has a state), so error-pattern seed proposals could never reach the
   0.45 bar — contradicted docs/03 §B3's own example (0.72). Fixed: track_pattern candidates

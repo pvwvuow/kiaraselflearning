@@ -166,6 +166,27 @@ describe('runLadder (2-up / 1-down)', () => {
     expect(clampBand(-5)).toBe('A1')
     expect(clampBand(9)).toBe('B1')
   })
+
+  it('currentBand tracks where the ladder stands for stateless continuation', () => {
+    // M5: the API route rebuilds the ladder from all answers each call and
+    // needs the standing band to pick the next item (server-side grading).
+    const up = runLadder('A1', [
+      { band: 'A1', correct: true },
+      { band: 'A1', correct: true },
+    ])
+    expect(up.currentBand).toBe('A2')
+    expect(up.reachedBand).toBe('A2')
+
+    const down = runLadder('A2', [
+      { band: 'A2', correct: true },
+      { band: 'A2', correct: true },
+      { band: 'B1', correct: false },
+    ])
+    expect(down.currentBand).toBe('A2') // stepped down after the wrong answer
+
+    const floored = runLadder('A1', [{ band: 'A1', correct: false }])
+    expect(floored.currentBand).toBe('A1') // floored, never below A1
+  })
 })
 
 describe('applyPlacement (C1: assumed_known, NEVER mastered)', () => {
